@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import java.util.Objects;
 import java.util.Set;
 
+import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.address.Address;
+
 public class User {
 	private long id;
 	private boolean enabled;
@@ -14,13 +16,13 @@ public class User {
 	private Timestamp dateOfLastPasswordReset;
 	private String firstName;
 	private String lastName;
-	private String address;
+	private Address address;
 
 	public User() {}
 
 	public User(long id, boolean enabled, Set<UserRole> roles, String emailAddress, 
 			String username, String password, Timestamp dateOfLastPasswordReset, 
-			String firstName, String lastName, String address) {
+			String firstName, String lastName, Address address) {
 		this.id = id;
 		this.enabled = enabled;
 		this.roles = roles;
@@ -105,11 +107,11 @@ public class User {
 		this.lastName = lastName;
 	}
 
-	public String getAddress() {
+	public Address getAddress() {
 		return address;
 	}
 
-	public void setAddress(String address) {
+	public void setAddress(Address address) {
 		this.address = address;
 	}
 
