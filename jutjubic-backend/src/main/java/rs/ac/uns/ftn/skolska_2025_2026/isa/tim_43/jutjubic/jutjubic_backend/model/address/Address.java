@@ -2,7 +2,7 @@ package rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.mod
 
 import java.util.Objects;
 
-public class Address {
+public class Address implements Comparable<Address> {
 	private long id;
 	private String street;
 	private String number;
@@ -88,6 +88,48 @@ public class Address {
 
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
+	}
+
+	@Override
+	public int compareTo(Address o) {
+		if (this == o) {
+			return 0;
+		}
+
+		int comparisonValue = Long.compare(id, o.id);
+		if (comparisonValue != 0) {
+			return comparisonValue;
+		}
+		comparisonValue = street.compareTo(o.street);
+		if (comparisonValue != 0) {
+			return comparisonValue;
+		}
+		comparisonValue = number.compareTo(o.number);
+		if (comparisonValue != 0) {
+			return comparisonValue;
+		}
+		comparisonValue = postalCode.compareTo(o.postalCode);
+		if (comparisonValue != 0) {
+			return comparisonValue;
+		}
+		comparisonValue = place.compareTo(o.place);
+		if (comparisonValue != 0) {
+			return comparisonValue;
+		}
+		comparisonValue = country.compareTo(o.country);
+		if (comparisonValue != 0) {
+			return comparisonValue;
+		}
+		comparisonValue = Double.compare(latitude, o.latitude);
+		if (comparisonValue != 0) {
+			return comparisonValue;
+		}
+		comparisonValue = Double.compare(longitude, o.longitude);
+		if (comparisonValue != 0) {
+			return comparisonValue;
+		}
+
+		return 0;
 	}
 
 	@Override

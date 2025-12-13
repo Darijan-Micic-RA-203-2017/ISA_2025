@@ -2,7 +2,7 @@ package rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.mod
 
 import java.util.Objects;
 
-public class UserRole {
+public class UserRole implements Comparable<UserRole> {
 	private long id;
 	private String name;
 
@@ -27,6 +27,24 @@ public class UserRole {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public int compareTo(UserRole o) {
+		if (this == o) {
+			return 0;
+		}
+
+		int comparisonValue = Long.compare(id, o.id);
+		if (comparisonValue != 0) {
+			return comparisonValue;
+		}
+		comparisonValue = name.compareTo(o.name);
+		if (comparisonValue != 0) {
+			return comparisonValue;
+		}
+
+		return 0;
 	}
 
 	@Override

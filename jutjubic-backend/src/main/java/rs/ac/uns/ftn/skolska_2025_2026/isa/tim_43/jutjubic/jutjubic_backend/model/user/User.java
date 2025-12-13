@@ -1,12 +1,13 @@
 package rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.user;
 
 import java.sql.Timestamp;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
 
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.address.Address;
 
-public class User {
+public class User implements Comparable<User> {
 	private long id;
 	private boolean enabled;
 	private Set<UserRole> roles;
@@ -113,6 +114,83 @@ public class User {
 
 	public void setAddress(Address address) {
 		this.address = address;
+	}
+	
+	public int compareRolesWith(User otherUser) {
+		int comparisonValue = 0;
+
+		boolean endOfRolesLoopReached = false;
+		Iterator<UserRole> iteratorOverRoles = roles.iterator();
+		Iterator<UserRole> iteratorOverRolesOfSpecifiedUser = otherUser.roles.iterator();
+		while (!endOfRolesLoopReached) {
+			if (iteratorOverRolesOfSpecifiedUser.hasNext()) {
+				if (iteratorOverRoles.hasNext()) {
+					comparisonValue = iteratorOverRoles.next()
+							.compareTo(iteratorOverRolesOfSpecifiedUser.next());
+					if (comparisonValue != 0) {
+						return comparisonValue;
+					}
+				} else {
+					comparisonValue = -1;
+					endOfRolesLoopReached = true;
+				}
+			} else {
+				comparisonValue = 1;
+				endOfRolesLoopReached = true;
+			}
+		}
+
+		return comparisonValue;
+	}
+
+	@Override
+	public int compareTo(User o) {
+		if (this == o) {
+			return 0;
+		}
+
+		int comparisonValue = Long.compare(id, o.id);
+		if (comparisonValue != 0) {
+			return comparisonValue;
+		}
+		comparisonValue = Boolean.compare(enabled, o.enabled);
+		if (comparisonValue != 0) {
+			return comparisonValue;
+		}
+		comparisonValue = compareRolesWith(o);
+		if (comparisonValue != 0) {
+			return comparisonValue;
+		}
+		comparisonValue = emailAddress.compareTo(o.emailAddress);
+		if (comparisonValue != 0) {
+			return comparisonValue;
+		}
+		comparisonValue = username.compareTo(o.username);
+		if (comparisonValue != 0) {
+			return comparisonValue;
+		}
+		comparisonValue = password.compareTo(o.password);
+		if (comparisonValue != 0) {
+			return comparisonValue;
+		}
+		comparisonValue = dateOfLastPasswordReset.compareTo(o.dateOfLastPasswordReset);
+		if (comparisonValue != 0) {
+			return comparisonValue;
+		}
+		comparisonValue = firstName.compareTo(o.firstName);
+		if (comparisonValue != 0) {
+			return comparisonValue;
+		}
+		comparisonValue = lastName.compareTo(o.lastName);
+		if (comparisonValue != 0) {
+			return comparisonValue;
+		}
+		comparisonValue = address.compareTo(o.address);
+		if (comparisonValue != 0) {
+			return comparisonValue;
+		}
+
+		return 0;
 	}
 
 	@Override
