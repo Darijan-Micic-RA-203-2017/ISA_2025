@@ -29,7 +29,7 @@ public class UserRole implements Comparable<UserRole> {
 		this.name = name;
 	}
 
-	@Override
+	@Override()
 	public int compareTo(UserRole o) {
 		if (this == o) {
 			return 0;
@@ -47,12 +47,12 @@ public class UserRole implements Comparable<UserRole> {
 		return 0;
 	}
 
-	@Override
+	@Override()
 	public int hashCode() {
 		return Objects.hash(id, name);
 	}
 
-	@Override
+	@Override()
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
@@ -67,7 +67,7 @@ public class UserRole implements Comparable<UserRole> {
 		return id == other.id && Objects.equals(name, other.name);
 	}
 
-	@Override
+	@Override()
 	public String toString() {
 		StringBuilder builder = new StringBuilder("UserRole [");
 

@@ -143,7 +143,7 @@ public class User implements Comparable<User> {
 		return comparisonValue;
 	}
 
-	@Override
+	@Override()
 	public int compareTo(User o) {
 		if (this == o) {
 			return 0;
@@ -193,13 +193,13 @@ public class User implements Comparable<User> {
 		return 0;
 	}
 
-	@Override
+	@Override()
 	public int hashCode() {
 		return Objects.hash(id, enabled, roles, emailAddress, username, password, 
 				dateOfLastPasswordReset, firstName, lastName, address);
 	}
 
-	@Override
+	@Override()
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
@@ -222,7 +222,7 @@ public class User implements Comparable<User> {
 				&& Objects.equals(address, other.address);
 	}
 
-	@Override
+	@Override()
 	public String toString() {
 		StringBuilder builder = new StringBuilder("User [");
 

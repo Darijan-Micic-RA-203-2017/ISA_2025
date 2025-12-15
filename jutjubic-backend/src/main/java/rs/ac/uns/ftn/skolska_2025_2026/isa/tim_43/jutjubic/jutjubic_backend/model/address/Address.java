@@ -90,7 +90,7 @@ public class Address implements Comparable<Address> {
 		this.longitude = longitude;
 	}
 
-	@Override
+	@Override()
 	public int compareTo(Address o) {
 		if (this == o) {
 			return 0;
@@ -132,12 +132,12 @@ public class Address implements Comparable<Address> {
 		return 0;
 	}
 
-	@Override
+	@Override()
 	public int hashCode() {
 		return Objects.hash(id, street, number, postalCode, place, country, latitude, longitude);
 	}
 
-	@Override
+	@Override()
 	public boolean equals(Object obj) {
 		if (this == obj) {
 			return true;
@@ -159,7 +159,7 @@ public class Address implements Comparable<Address> {
 				&& Double.doubleToLongBits(longitude) == Double.doubleToLongBits(other.longitude);
 	}
 
-	@Override
+	@Override()
 	public String toString() {
 		StringBuilder builder = new StringBuilder("Address [");
 
