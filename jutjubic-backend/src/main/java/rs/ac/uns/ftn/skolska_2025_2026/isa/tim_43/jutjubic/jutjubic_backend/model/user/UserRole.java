@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.mod
 
 import java.util.Objects;
 
+/** REFERENCE: https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example */
 public class UserRole implements Comparable<UserRole> {
 	private long id;
 	private String name;
@@ -29,6 +30,7 @@ public class UserRole implements Comparable<UserRole> {
 		this.name = name;
 	}
 
+	/** REFERENCE: https://www.geeksforgeeks.org/java/comparable-interface-in-java-with-examples/ */
 	@Override()
 	public int compareTo(UserRole o) {
 		if (this == o) {

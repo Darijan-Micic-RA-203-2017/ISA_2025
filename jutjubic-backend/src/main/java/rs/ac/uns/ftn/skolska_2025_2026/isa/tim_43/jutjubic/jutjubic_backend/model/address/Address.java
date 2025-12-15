@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.mod
 
 import java.util.Objects;
 
+/** REFERENCE: https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example */
 public class Address implements Comparable<Address> {
 	private long id;
 	private String street;
@@ -90,6 +91,7 @@ public class Address implements Comparable<Address> {
 		this.longitude = longitude;
 	}
 
+	/** REFERENCE: https://www.geeksforgeeks.org/java/comparable-interface-in-java-with-examples/ */
 	@Override()
 	public int compareTo(Address o) {
 		if (this == o) {

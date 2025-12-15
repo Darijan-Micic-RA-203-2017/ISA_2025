@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- REFERENCE: https://stackoverflow.com/questions/70692260/cvc-elt-1-a-cannot-find-the-declaration-of-element-project -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -13,6 +14,7 @@
 
 	<groupId>rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic</groupId>
 	<artifactId>jutjubic-backend</artifactId>
+	<!-- REFERENCE: https://semver.org/spec/v1.0.0.html -->
 	<version>0.1.0</version>
 	<name>Jutjubic - back-end</name>
 	<description>Back-end application of Jutjubic platform.</description>
@@ -41,6 +43,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 
+	<!-- REFERENCE: https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example -->
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -60,6 +63,7 @@
 			<scope>compile</scope>
 		</dependency>
 
+		<!-- REFERENCE: https://www.javacodegeeks.com/rest-api-security-with-spring-security-jwt-token-signing.html -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>

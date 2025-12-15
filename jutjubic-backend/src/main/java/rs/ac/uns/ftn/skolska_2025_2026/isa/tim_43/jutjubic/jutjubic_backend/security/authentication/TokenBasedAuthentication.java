@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.sec
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 
+/** REFERENCE: https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example */
 public class TokenBasedAuthentication extends AbstractAuthenticationToken {
 	private static final long serialVersionUID = -6959079774878317053L;
 

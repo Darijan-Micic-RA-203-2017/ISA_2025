@@ -20,6 +20,11 @@ import org.springframework.stereotype.Component;
 
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.user.User;
 
+/**
+ * REFERENCES:
+ * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example
+ * https://www.javacodegeeks.com/rest-api-security-with-spring-security-jwt-token-signing.html
+*/
 @Component()
 public class TokenUtilities {
 	private static final String AUDIENCE = "web";
