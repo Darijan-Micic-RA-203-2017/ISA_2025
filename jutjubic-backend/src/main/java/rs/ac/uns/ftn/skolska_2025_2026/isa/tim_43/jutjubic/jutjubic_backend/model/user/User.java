@@ -1,23 +1,80 @@
 package rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.user;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+
 import java.sql.Timestamp;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.address.Address;
 
-/** REFERENCE: https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example */
-public class User implements Comparable<User> {
+/** REFERENCES:<br/>
+ * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example<br/>
+ * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe3/jpa_example
+*/
+@Entity()
+@Table(name = "users")
+public class User implements UserDetails, Comparable<User> {
+	private static final long serialVersionUID = 3526152576620195123L;
+
+	/** REFERENCE: https://www.postgresql.org/docs/current/datatype-numeric.html */
+	@Id()
+	@SequenceGenerator(name = "generatorOfUsersIds", sequenceName = "sequenceOfUsersIds", 
+			initialValue = 1, allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generatorOfUsersIds")
+	@Column(name = "id", nullable = false, updatable = false, columnDefinition = "bigserial")
 	private long id;
+
+	@Column(name = "enabled", nullable = false)
 	private boolean enabled;
+
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(name = "joining_table_of_users_and_roles", 
+			joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id", 
+					nullable = false, columnDefinition = "bigserial")}, 
+			inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id", 
+					nullable = false, columnDefinition = "bigserial")}
+	)
 	private Set<UserRole> roles;
+
+	@Column(name = "email_address", nullable = false)
 	private String emailAddress;
+
+	@Column(name = "username", nullable = false)
 	private String username;
+
+	/** REFERENCE: https://www.postgresql.org/docs/current/datatype-character.html */
+	@Column(name = "password", nullable = false, columnDefinition = "text")
 	private String password;
+
+	@Column(name = "date_of_last_password_reset", nullable = true)
 	private Timestamp dateOfLastPasswordReset;
+
+	@Column(name = "first_name", nullable = false)
 	private String firstName;
+
+	@Column(name = "last_name", nullable = false)
 	private String lastName;
+
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "address_id", nullable = true, 
+			referencedColumnName = "id", columnDefinition = "bigserial")
 	private Address address;
 
 	public User() {}
@@ -45,6 +102,7 @@ public class User implements Comparable<User> {
 		this.id = id;
 	}
 
+	@Override()
 	public boolean isEnabled() {
 		return enabled;
 	}
@@ -69,6 +127,7 @@ public class User implements Comparable<User> {
 		this.emailAddress = emailAddress;
 	}
 
+	@Override()
 	public String getUsername() {
 		return username;
 	}
@@ -77,6 +136,7 @@ public class User implements Comparable<User> {
 		this.username = username;
 	}
 
+	@Override()
 	public String getPassword() {
 		return password;
 	}
@@ -116,7 +176,27 @@ public class User implements Comparable<User> {
 	public void setAddress(Address address) {
 		this.address = address;
 	}
-	
+
+	@Override()
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override()
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override()
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override()
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return roles;
+	}
+
 	public int compareRolesWith(User otherUser) {
 		int comparisonValue = 0;
 
