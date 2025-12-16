@@ -15,6 +15,7 @@ import jakarta.persistence.Table;
 
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
@@ -141,8 +142,12 @@ public class User implements UserDetails, Comparable<User> {
 		return password;
 	}
 
+	/** REFERENCE: https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example */
 	public void setPassword(String password) {
 		this.password = password;
+
+		Timestamp currentMoment = new Timestamp(new Date().getTime());
+		setDateOfLastPasswordReset(currentMoment);
 	}
 
 	public Timestamp getDateOfLastPasswordReset() {
