@@ -20,9 +20,8 @@ import org.springframework.stereotype.Component;
 
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.user.User;
 
-/**
- * REFERENCES:
- * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example
+/** REFERENCES:<br/>
+ * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example<br/>
  * https://www.javacodegeeks.com/rest-api-security-with-spring-security-jwt-token-signing.html
 */
 @Component()
@@ -62,7 +61,7 @@ public class TokenUtilities {
 		return Keys.hmacShaKeyFor(keyBytes);
 	}
 
-	public String generateToken(String username) {
+	public String generateTokenForUserWith(String username) {
 		return Jwts.builder()
 				.issuer(nameOfApplication)
 				.subject(username)
@@ -77,7 +76,7 @@ public class TokenUtilities {
 		return request.getHeader(authHeader);
 	}
 
-	public String getToken(HttpServletRequest request) {
+	public String extractTokenFrom(HttpServletRequest request) {
 		String authHeader = extractValueOfAuthHeaderFromHeaderOf(request);
 
 		if (authHeader != null && authHeader.startsWith("Bearer ")) {
@@ -165,13 +164,13 @@ public class TokenUtilities {
 		return dateOfTokenExpiration;
 	}
 
-	private Boolean isTokenCreatedBeforeDateOfLastPasswordReset(Date dateOfTokenIssuing, 
+	private boolean isTokenCreatedBeforeDateOfLastPasswordReset(Date dateOfTokenIssuing, 
 			Date dateOfLastPasswordReset) {
 		return (dateOfLastPasswordReset != null 
 				&& dateOfTokenIssuing.before(dateOfLastPasswordReset));
 	}
 
-	public Boolean validateToken(String token, UserDetails userDetails) {
+	public boolean isTokenValid(String token, UserDetails userDetails) {
 		User user = (User) userDetails;
 		final String username = extractUsernameFrom(token);
 		final Date dateOfTokenIssuing = extractDateOfTokenIssuingFrom(token);
