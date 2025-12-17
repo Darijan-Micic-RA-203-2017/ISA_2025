@@ -1,16 +1,49 @@
 package rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.address;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+
 import java.util.Objects;
 
-/** REFERENCE: https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example */
+/** REFERENCES:<br/>
+ * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example<br/>
+ * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe3/jpa_example
+*/
+@Entity()
+@Table(name = "addresses")
 public class Address implements Comparable<Address> {
+	/** REFERENCE: https://www.postgresql.org/docs/current/datatype-numeric.html */
+	@Id()
+	@SequenceGenerator(name = "generatorOfAddressesIds", sequenceName = "sequenceOfAddressesIds", 
+			initialValue = 1, allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generatorOfAddressesIds")
+	@Column(name = "id", nullable = false, updatable = false, columnDefinition = "bigserial")
 	private long id;
+
+	@Column(name = "street", nullable = true)
 	private String street;
+
+	@Column(name = "number", nullable = true)
 	private String number;
+
+	@Column(name = "postal_code", nullable = true)
 	private String postalCode;
+
+	@Column(name = "place", nullable = false)
 	private String place;
+
+	@Column(name = "country", nullable = false)
 	private String country;
+
+	@Column(name = "latitude", nullable = false)
 	private double latitude;
+
+	@Column(name = "longitude", nullable = false)
 	private double longitude;
 
 	public Address() {}
