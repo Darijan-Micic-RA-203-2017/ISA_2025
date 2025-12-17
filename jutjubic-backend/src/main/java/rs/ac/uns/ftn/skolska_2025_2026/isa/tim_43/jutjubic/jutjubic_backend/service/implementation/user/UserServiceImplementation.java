@@ -32,7 +32,7 @@ public class UserServiceImplementation implements UserDetailsService, UserServic
 			throw new UsernameNotFoundException(exceptionMessageBuilder.toString());
 		}
 
-		return null;
+		return user;
 	}
 
 	@Override()
