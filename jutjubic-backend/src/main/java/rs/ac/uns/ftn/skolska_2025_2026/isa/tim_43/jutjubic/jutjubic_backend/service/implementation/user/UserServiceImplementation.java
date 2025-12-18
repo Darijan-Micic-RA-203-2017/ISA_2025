@@ -15,9 +15,11 @@ import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.serv
 /** REFERENCE: https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example */
 @Service()
 public class UserServiceImplementation implements UserDetailsService, UserService {
+	@Autowired()
 	private UserRepository userRepository;
 
-	@Autowired()
+	public UserServiceImplementation() {}
+
 	public UserServiceImplementation(UserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
@@ -26,8 +28,8 @@ public class UserServiceImplementation implements UserDetailsService, UserServic
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = userRepository.findByUsername(username);
 		if (user == null) {
-			StringBuilder exceptionMessageBuilder = new StringBuilder("User with username \"");
-			exceptionMessageBuilder.append(username).append("\" could not be found!");
+			StringBuilder exceptionMessageBuilder = new StringBuilder("The user with the username");
+			exceptionMessageBuilder.append(" \"").append(username).append("\" has not been found!");
 
 			throw new UsernameNotFoundException(exceptionMessageBuilder.toString());
 		}
