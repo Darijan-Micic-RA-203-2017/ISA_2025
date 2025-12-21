@@ -1,1 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* REFERENCE: https://material.angular.dev/guide/getting-started */
+html, body {
+    height: 100%;
+    font-size: 100%;
+}
+
+body {
+    margin: 0%;
+}
