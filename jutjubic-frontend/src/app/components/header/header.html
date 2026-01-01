@@ -5,10 +5,16 @@
 
 	<span></span>
 
-	<div id="usernameDiv" *ngIf="username">
-		<p><b>{{ username }}</b></p>
-	</div>
-	<!-- REFERENCE: https://material.angular.dev/components/button/overview -->
-	<button id="loggingOnPageButton" type="button" matButton="elevated" *ngIf="!username">Пријавите се</button>
-	<button id="loggingOffButton" type="button" matButton="elevated" *ngIf="username" (click)="logOff()">Одјавите се</button>
+	<!-- REFERENCE: https://dev.to/vetriselvan_11/angular-20-control-flow-part-1-say-goodbye-to-ngif-ngfor-and-ngswitch-42d8 -->
+	@if (username) {
+		<div id="usernameDiv">
+			<p><b>{{ username }}</b></p>
+		</div>
+	}
+	@if (!username) {
+		<button id="loggingOnPageButton" type="button" matButton="elevated">Пријавите се</button>
+	}
+	@if (username) {
+		<button id="loggingOffButton" type="button" matButton="elevated" *ngIf="username" (click)="logOff()">Одјавите се</button>
+	}
 </mat-toolbar>
