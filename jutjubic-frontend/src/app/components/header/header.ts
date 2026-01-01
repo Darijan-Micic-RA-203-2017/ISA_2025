@@ -5,12 +5,13 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
-  selector: 'app-header',
+  standalone: true,
   imports: [MatButtonModule, MatToolbarModule],
-  templateUrl: './header.html',
+  selector: 'app-header',
   styleUrl: './header.css',
+  templateUrl: './header.html'
 })
-export class Header implements OnInit {
+export class HeaderComponent implements OnInit {
   username: string | null;
 
   constructor(private router: Router) {
@@ -22,7 +23,7 @@ export class Header implements OnInit {
   }
 
   /** REFERENCE: https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-front-app */
-  logOut(): void {
+  logOff(): void {
     localStorage.removeItem('jwtToken');
     localStorage.removeItem('username');
     localStorage.removeItem('exp');
