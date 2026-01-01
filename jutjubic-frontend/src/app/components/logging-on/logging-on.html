@@ -1,0 +1,31 @@
+<!-- REFERENCE: https://material.angular.dev/components/card/overview -->
+<mat-card id="loggingOnCard">
+	<mat-card-header>
+		<mat-card-title>Пријава на систем Јутјубића</mat-card-title>
+	</mat-card-header>
+	<mat-card-content>
+		@if (!isLoggingOnFormSubmitted) {
+			<!-- REFERENCES:
+			https://angular.dev/guide/forms
+			https://angular.dev/guide/forms/reactive-forms
+			-->
+			<form id="loggingOnForm" [formGroup]="loggingOnFormGroup" (ngSubmit)="submitUserCredentials()">
+				<!-- REFERENCE: https://material.angular.dev/components/form-field/overview -->
+				<mat-form-field>
+					<mat-label>Корисничко име:</mat-label>
+					<!-- REFERENCE: https://material.angular.dev/components/input/overview -->
+					<input #usernameInput type="text" matInput formControlName="usernameControl" />
+				</mat-form-field>
+				<mat-form-field>
+					<mat-label>Лозинка:</mat-label>
+					<input #passwordInput type="password" matInput formControlName="passwordControl" />
+				</mat-form-field>
+				<!-- REFERENCE: https://material.angular.dev/components/button/overview -->
+				<button id="loggingOnButton" type="submit" matButton="text" [disabled]="loggingOnFormGroup.invalid">Пријавите се</button>
+			</form>
+		}
+	</mat-card-content>
+	<mat-card-actions>
+		<button id="landingPageButton" type="button" matButton="text">Почетна страница</button>
+	</mat-card-actions>
+</mat-card>
