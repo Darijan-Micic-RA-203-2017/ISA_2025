@@ -16,10 +16,35 @@
 					<mat-label>Корисничко име:</mat-label>
 					<!-- REFERENCE: https://material.angular.dev/components/input/overview -->
 					<input #usernameInput type="text" matInput formControlName="usernameControl" />
+					<mat-hint align="start">Најмање 4 слова</mat-hint>
+					<mat-hint align="end">8 - 32 знака</mat-hint>
+					@if (loggingOnFormGroup.get('usernameControl')?.errors?.['required']) {
+						<mat-error>Корисничко име мора бити унето!</mat-error>
+					}
+					@if (loggingOnFormGroup.get('usernameControl')?.errors?.['pattern']) {
+						<mat-error>Корисничко име мора садржати бар 4 слова! Дозвољени су сви знакови осим белих знакова,
+							 наводника, витичастих заграда, косих црта, тачке-зареза, зареза и упитника.</mat-error>
+					}
+					@if (loggingOnFormGroup.get('usernameControl')?.errors?.['minlength']
+							|| loggingOnFormGroup.get('usernameControl')?.errors?.['maxlength']) {
+						<mat-error>Корисничко име мора садржати најмање 8, а највише 32 знака!</mat-error>
+					}
 				</mat-form-field>
 				<mat-form-field>
 					<mat-label>Лозинка:</mat-label>
 					<input #passwordInput type="password" matInput formControlName="passwordControl" />
+					<mat-hint align="start">Без белих знакова</mat-hint>
+					<mat-hint align="end">8 - 16 знакова</mat-hint>
+					@if (loggingOnFormGroup.get('passwordControl')?.errors?.['required']) {
+						<mat-error>Лозинка мора бити унета!</mat-error>
+					}
+					@if (loggingOnFormGroup.get('passwordControl')?.errors?.['pattern']) {
+						<mat-error>Лозинка не сме садржати беле знакове!</mat-error>
+					}
+					@if (loggingOnFormGroup.get('passwordControl')?.errors?.['minlength']
+							|| loggingOnFormGroup.get('passwordControl')?.errors?.['maxlength']) {
+						<mat-error>Лозинка мора саржати најмање 8, а највише 16 знакова!</mat-error>
+					}
 				</mat-form-field>
 				<!-- REFERENCE: https://material.angular.dev/components/button/overview -->
 				<button id="loggingOnButton" type="submit" matButton="text" [disabled]="loggingOnFormGroup.invalid">Пријавите се</button>
