@@ -26,7 +26,7 @@ public class UserServiceImplementation implements UserDetailsService, UserServic
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userRepository.findByUsername(username);
+		User user = userRepository.fetchByUsernameAsNeededForAuthentication(username);
 		if (user == null) {
 			StringBuilder exceptionMessageBuilder = new StringBuilder("The user with the username");
 			exceptionMessageBuilder.append(" \"").append(username).append("\" has not been found!");
@@ -39,11 +39,11 @@ public class UserServiceImplementation implements UserDetailsService, UserServic
 
 	@Override()
 	public List<User> findAll() {
-		return userRepository.findAll();
+		return userRepository.fetchAll();
 	}
 
 	@Override()
 	public User findById(long id) {
-		return userRepository.findById(id).orElse(null);
+		return userRepository.fetchById(id);
 	}
 }
