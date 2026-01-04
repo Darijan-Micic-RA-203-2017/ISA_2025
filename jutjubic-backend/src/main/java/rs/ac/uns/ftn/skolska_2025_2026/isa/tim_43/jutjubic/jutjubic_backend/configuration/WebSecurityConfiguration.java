@@ -69,7 +69,7 @@ public class WebSecurityConfiguration {
 				.authenticationEntryPoint(restAuthenticationEntryPoint));
 
 		httpSecurity.authorizeHttpRequests((authorizationMRMR) -> authorizationMRMR
-				.requestMatchers("/users/log-on").permitAll()
+				.requestMatchers("/log-on").permitAll()
 				.requestMatchers("/css/**", "/favicon.ico", "/images/**", "/js/**", "/static/**", 
 						"/webjars/**").permitAll()
 				.anyRequest().authenticated());

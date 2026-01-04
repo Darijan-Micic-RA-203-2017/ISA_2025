@@ -25,7 +25,7 @@ import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.util
 
 /** REFERENCE: https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example */
 @RestController()
-@RequestMapping(path = {"/users"}, consumes = {MediaType.APPLICATION_JSON_VALUE}, 
+@RequestMapping(path = {"/log-on"}, consumes = {MediaType.APPLICATION_JSON_VALUE}, 
 		produces = {MediaType.APPLICATION_JSON_VALUE})
 public class LoggingOnController {
 	private AuthenticationManager authenticationManager;
@@ -38,8 +38,8 @@ public class LoggingOnController {
 		this.tokenUtilities = tokenUtilities;
 	}
 
-	@PostMapping(path = {"/log-on"})
-	public ResponseEntity<ObjectWithTextualContextDTO> logOn(
+	@PostMapping(path = {""})
+	public ResponseEntity<ObjectWithTextualContextDTO> logOnWith(
 			@RequestBody() UserCredentialsDTO userCredentialsDTO) {
 		String username = userCredentialsDTO.getUsername();
 		String password = userCredentialsDTO.getPassword();
