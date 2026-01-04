@@ -8,10 +8,10 @@ import { UserCredentials } from '../../model/user/user-credentials';
 
 /** REFERENCE: https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-front-app */
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
-export class Authentication {
-  private urlOfLoggingOnMethod: string = 'http://localhost:8080/users/log-on';
+export class AuthenticationService {
+  private urlOfLoggingOnMethod: string = 'http://localhost:8080/log-on';
   private token: string | null;
 
   constructor(private httpClient: HttpClient) {
