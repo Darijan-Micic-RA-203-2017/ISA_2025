@@ -24,9 +24,9 @@ public class UserServiceImplementation implements UserDetailsService, UserServic
 		this.userRepository = userRepository;
 	}
 
-	@Override
+	@Override()
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userRepository.fetchByUsernameAsNeededForAuthentication(username);
+		User user = userRepository.findByUsername(username);
 		if (user == null) {
 			StringBuilder exceptionMessageBuilder = new StringBuilder("The user with the username");
 			exceptionMessageBuilder.append(" \"").append(username).append("\" has not been found!");
