@@ -13,9 +13,8 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
-import java.sql.Timestamp;
+import java.time.ZonedDateTime;
 import java.util.Collection;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
@@ -25,8 +24,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.address.Address;
 
-/** REFERENCES:<br/>
- * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example<br/>
+/** REFERENCES:<br />
+ * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example<br />
  * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe3/jpa_example
 */
 @Entity()
@@ -36,9 +35,9 @@ public class User implements UserDetails, Comparable<User> {
 
 	/** REFERENCE: https://www.postgresql.org/docs/current/datatype-numeric.html */
 	@Id()
-	@SequenceGenerator(name = "generatorOfUsersIds", sequenceName = "sequenceOfUsersIds", 
+	@SequenceGenerator(name = "generator_of_users_ids", sequenceName = "users_id_seq", 
 			initialValue = 1, allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generatorOfUsersIds")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generator_of_users_ids")
 	@Column(name = "id", nullable = false, updatable = false, columnDefinition = "bigserial")
 	private long id;
 
@@ -60,12 +59,16 @@ public class User implements UserDetails, Comparable<User> {
 	@Column(name = "username", nullable = false)
 	private String username;
 
-	/** REFERENCE: https://www.postgresql.org/docs/current/datatype-character.html */
-	@Column(name = "password", nullable = false, columnDefinition = "text")
+	@Column(name = "password", nullable = false)
 	private String password;
 
-	@Column(name = "date_of_last_password_reset", nullable = true)
-	private Timestamp dateOfLastPasswordReset;
+	/** REFERENCES:<br />
+	 * https://in.relation.to/2024/04/22/stop-using-date/
+	 * https://medium.com/decisionbrain/dates-time-in-modern-java-4ed9d5848a3e<br />
+	 * https://medium.com/@ujjawalr/stop-using-java-util-date-heres-why-and-what-to-use-instead-a1e6023e3c58
+	*/
+	@Column(name = "date_and_time_of_last_password_change", nullable = true)
+	private ZonedDateTime dateAndTimeOfLastPasswordChange;
 
 	@Column(name = "first_name", nullable = false)
 	private String firstName;
@@ -81,7 +84,7 @@ public class User implements UserDetails, Comparable<User> {
 	public User() {}
 
 	public User(long id, boolean enabled, Set<UserRole> roles, String emailAddress, 
-			String username, String password, Timestamp dateOfLastPasswordReset, 
+			String username, String password, ZonedDateTime dateAndTimeOfLastPasswordChange, 
 			String firstName, String lastName, Address address) {
 		this.id = id;
 		this.enabled = enabled;
@@ -89,7 +92,7 @@ public class User implements UserDetails, Comparable<User> {
 		this.emailAddress = emailAddress;
 		this.username = username;
 		this.password = password;
-		this.dateOfLastPasswordReset = dateOfLastPasswordReset;
+		this.dateAndTimeOfLastPasswordChange = dateAndTimeOfLastPasswordChange;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.address = address;
@@ -146,16 +149,17 @@ public class User implements UserDetails, Comparable<User> {
 	public void setPassword(String password) {
 		this.password = password;
 
-		Timestamp currentMoment = new Timestamp(new Date().getTime());
-		setDateOfLastPasswordReset(currentMoment);
+		// REFERENCE: https://mkyong.com/java/how-to-get-current-timestamps-in-java/
+		ZonedDateTime currentDateAndTime = ZonedDateTime.now();
+		setDateAndTimeOfLastPasswordChange(currentDateAndTime);
 	}
 
-	public Timestamp getDateOfLastPasswordReset() {
-		return dateOfLastPasswordReset;
+	public ZonedDateTime getDateAndTimeOfLastPasswordChange() {
+		return dateAndTimeOfLastPasswordChange;
 	}
 
-	public void setDateOfLastPasswordReset(Timestamp dateOfLastPasswordReset) {
-		this.dateOfLastPasswordReset = dateOfLastPasswordReset;
+	public void setDateAndTimeOfLastPasswordChange(ZonedDateTime dateAndTimeOfLastPasswordChange) {
+		this.dateAndTimeOfLastPasswordChange = dateAndTimeOfLastPasswordChange;
 	}
 
 	public String getFirstName() {
@@ -260,7 +264,8 @@ public class User implements UserDetails, Comparable<User> {
 		if (comparisonValue != 0) {
 			return comparisonValue;
 		}
-		comparisonValue = dateOfLastPasswordReset.compareTo(o.dateOfLastPasswordReset);
+		comparisonValue = 
+				dateAndTimeOfLastPasswordChange.compareTo(o.dateAndTimeOfLastPasswordChange);
 		if (comparisonValue != 0) {
 			return comparisonValue;
 		}
@@ -283,7 +288,7 @@ public class User implements UserDetails, Comparable<User> {
 	@Override()
 	public int hashCode() {
 		return Objects.hash(id, enabled, roles, emailAddress, username, password, 
-				dateOfLastPasswordReset, firstName, lastName, address);
+				dateAndTimeOfLastPasswordChange, firstName, lastName, address);
 	}
 
 	@Override()
@@ -303,7 +308,8 @@ public class User implements UserDetails, Comparable<User> {
 				&& Objects.equals(emailAddress, other.emailAddress) 
 				&& Objects.equals(username, other.username) 
 				&& Objects.equals(password, other.password) 
-				&& Objects.equals(dateOfLastPasswordReset, other.dateOfLastPasswordReset) 
+				&& Objects.equals(dateAndTimeOfLastPasswordChange, 
+						other.dateAndTimeOfLastPasswordChange) 
 				&& Objects.equals(firstName, other.firstName)  
 				&& Objects.equals(lastName, other.lastName) 
 				&& Objects.equals(address, other.address);
@@ -318,7 +324,8 @@ public class User implements UserDetails, Comparable<User> {
 				.append(", emailAddress = ").append(emailAddress)
 				.append(", username = ").append(username)
 				.append(", password = ").append(password)
-				.append(", dateOfLastPasswordReset = ").append(dateOfLastPasswordReset)
+				.append(", dateAndTimeOfLastPasswordChange = ")
+				.append(dateAndTimeOfLastPasswordChange)
 				.append(", firstName = ").append(firstName)
 				.append(", lastName = ").append(lastName)
 				.append(", address = ").append(address)

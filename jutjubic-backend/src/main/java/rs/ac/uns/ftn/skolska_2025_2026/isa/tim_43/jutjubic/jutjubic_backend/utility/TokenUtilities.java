@@ -10,6 +10,8 @@ import io.jsonwebtoken.security.MacAlgorithm;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.nio.charset.StandardCharsets;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 import javax.crypto.SecretKey;
@@ -33,7 +35,7 @@ public class TokenUtilities {
 	private String nameOfApplication;
 
 	@Value(value = "${secret-of-application}")
-	public String secretOfApplication;
+	private String secretOfApplication;
 
 	@Value(value = "${life-duration-of-token-in-milliseconds}")
 	private int lifeDurationOfTokenInMilliseconds;
@@ -51,10 +53,16 @@ public class TokenUtilities {
 		return AUDIENCE;
 	}
 
-	private Date generateDateOfTokenExpiration() {
-		return new Date(new Date().getTime() + lifeDurationOfTokenInMilliseconds);
+	/** REFERENCES:<br />
+	 * https://in.relation.to/2024/04/22/stop-using-date/
+	 * https://medium.com/decisionbrain/dates-time-in-modern-java-4ed9d5848a3e<br />
+	 * https://medium.com/@ujjawalr/stop-using-java-util-date-heres-why-and-what-to-use-instead-a1e6023e3c58<br />
+	 * https://mkyong.com/java/how-to-get-current-timestamps-in-java/
+	*/
+	private ZonedDateTime generateDateAndTimeOfTokenExpiration() {
+		return ZonedDateTime.now().plusNanos(1000000 * getLifeDurationOfTokenInMilliseconds());
 	}
-	
+
 	private SecretKey generateSigningKey() {
 		byte[] keyBytes = secretOfApplication.getBytes(StandardCharsets.UTF_8);
 
@@ -67,11 +75,12 @@ public class TokenUtilities {
 				.subject(username)
 				.audience().add(generateAudience()).and()
 				.issuedAt(new Date())
-				.expiration(generateDateOfTokenExpiration())
+				// REFERENCE: https://mkyong.com/java/how-to-get-current-timestamps-in-java/
+				.expiration(new Date(generateDateAndTimeOfTokenExpiration().getNano() / 1000000))
 				.signWith(generateSigningKey(), SIGNATURE_ALGORITHM)
 				.compact();
 	}
-	
+
 	public String extractValueOfAuthHeaderFromHeaderOf(HttpServletRequest request) {
 		return request.getHeader(authHeader);
 	}
@@ -119,19 +128,19 @@ public class TokenUtilities {
 		return username;
 	}
 
-	public Date extractDateOfTokenIssuingFrom(String token) {
-		Date dateOfTokenIssuing = null;
+	public Date extractDateAndTimeOfTokenIssuingFrom(String token) {
+		Date dateAndTimeOfTokenIssuing = null;
 
 		try {
 			final Claims claims = extractAllClaimsFrom(token);
-			dateOfTokenIssuing = claims.getIssuedAt();
+			dateAndTimeOfTokenIssuing = claims.getIssuedAt();
 		} catch (ExpiredJwtException eJWTE) {
 			System.out.println(eJWTE.getMessage());
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
 
-		return dateOfTokenIssuing;
+		return dateAndTimeOfTokenIssuing;
 	}
 
 	public String extractAudienceFrom(String token) {
@@ -149,34 +158,38 @@ public class TokenUtilities {
 		return audience;
 	}
 
-	public Date extractDateOfTokenExpirationFrom(String token) {
-		Date dateOfTokenExpiration = null;
+	public Date extractDateAndTimeOfTokenExpirationFrom(String token) {
+		Date dateAndTimeOfTokenExpiration = null;
 
 		try {
 			final Claims claims = extractAllClaimsFrom(token);
-			dateOfTokenExpiration = claims.getExpiration();
+			dateAndTimeOfTokenExpiration = claims.getExpiration();
 		} catch (ExpiredJwtException eJWTE) {
 			System.out.println(eJWTE.getMessage());
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
 
-		return dateOfTokenExpiration;
+		return dateAndTimeOfTokenExpiration;
 	}
 
-	private boolean isTokenCreatedBeforeDateOfLastPasswordReset(Date dateOfTokenIssuing, 
-			Date dateOfLastPasswordReset) {
-		return (dateOfLastPasswordReset != null 
-				&& dateOfTokenIssuing.before(dateOfLastPasswordReset));
+	private boolean isTokenCreatedBeforeDateAndTimeOfLastPasswordChange(
+			ZonedDateTime dateAndTimeOfTokenIssuing, 
+			ZonedDateTime dateAndTimeOfLastPasswordChange) {
+		return (dateAndTimeOfLastPasswordChange != null 
+				&& dateAndTimeOfTokenIssuing.isBefore(dateAndTimeOfLastPasswordChange));
 	}
 
 	public boolean isTokenValid(String token, UserDetails userDetails) {
 		User user = (User) userDetails;
 		final String username = extractUsernameFrom(token);
-		final Date dateOfTokenIssuing = extractDateOfTokenIssuingFrom(token);
+		final Date dateAndTimeOfTokenIssuing = extractDateAndTimeOfTokenIssuingFrom(token);
 
 		return (username != null && username.equals(user.getUsername()) 
-				&& !isTokenCreatedBeforeDateOfLastPasswordReset(dateOfTokenIssuing, 
-						user.getDateOfLastPasswordReset()));
+				&& !isTokenCreatedBeforeDateAndTimeOfLastPasswordChange(
+						// REFERENCE: https://mkyong.com/java/how-to-get-current-timestamps-in-java/
+						ZonedDateTime.ofInstant(dateAndTimeOfTokenIssuing.toInstant(), 
+								ZoneId.systemDefault()), 
+						user.getDateAndTimeOfLastPasswordChange()));
 	}
 }
