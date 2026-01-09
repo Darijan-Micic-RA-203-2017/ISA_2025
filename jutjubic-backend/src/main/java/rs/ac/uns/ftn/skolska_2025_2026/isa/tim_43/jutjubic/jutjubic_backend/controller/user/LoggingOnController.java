@@ -118,11 +118,13 @@ public class LoggingOnController {
 		StringBuilder textualContextBuilder = new StringBuilder();
 		textualContextBuilder.append("The user with the username \"").append(username);
 		textualContextBuilder.append("\" has been logged on.");
+		String textualContext = textualContextBuilder.toString();
+		System.out.println(textualContext);
 
 		return new ResponseEntity<ObjectWithTextualContextDTO>(
 				new ObjectWithTextualContextDTO(
 						new TokenWithLifeDurationDTO(token, lifeDurationOfTokenInMilliseconds), 
-						textualContextBuilder.toString()), 
+						textualContext), 
 				HttpStatus.OK);
 	}
 }

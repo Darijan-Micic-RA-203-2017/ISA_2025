@@ -10,8 +10,8 @@ import jakarta.persistence.Table;
 
 import java.util.Objects;
 
-/** REFERENCES:<br/>
- * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example<br/>
+/** REFERENCES:<br />
+ * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example<br />
  * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe3/jpa_example
 */
 @Entity()
@@ -19,9 +19,9 @@ import java.util.Objects;
 public class Address implements Comparable<Address> {
 	/** REFERENCE: https://www.postgresql.org/docs/current/datatype-numeric.html */
 	@Id()
-	@SequenceGenerator(name = "generatorOfAddressesIds", sequenceName = "sequenceOfAddressesIds", 
+	@SequenceGenerator(name = "generator_of_addresses_ids", sequenceName = "addresses_id_seq", 
 			initialValue = 1, allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generatorOfAddressesIds")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generator_of_addresses_ids")
 	@Column(name = "id", nullable = false, updatable = false, columnDefinition = "bigserial")
 	private long id;
 

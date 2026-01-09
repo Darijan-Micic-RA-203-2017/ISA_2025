@@ -12,8 +12,8 @@ import java.util.Objects;
 
 import org.springframework.security.core.GrantedAuthority;
 
-/** REFERENCES:
- * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example
+/** REFERENCES:<br />
+ * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example<br />
  * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe3/jpa_example
 */
 @Entity()
@@ -23,14 +23,13 @@ public class UserRole implements GrantedAuthority, Comparable<UserRole> {
 
 	/** REFERENCE: https://www.postgresql.org/docs/current/datatype-numeric.html */
 	@Id()
-	@SequenceGenerator(name = "generatorOfUserRolesIds", sequenceName = "sequenceOfUserRolesIds", 
+	@SequenceGenerator(name = "generator_of_user_roles_ids", sequenceName = "user_roles_id_seq", 
 			initialValue = 1, allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generatorOfUserRolesIds")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generator_of_user_roles_ids")
 	@Column(name = "id", nullable = false, updatable = false, columnDefinition = "bigserial")
 	private long id;
 
-	/** REFERENCE: https://www.postgresql.org/docs/current/datatype-character.html */
-	@Column(name = "name", nullable = false, columnDefinition = "text")
+	@Column(name = "name", nullable = false)
 	private String name;
 
 	public UserRole() {}
