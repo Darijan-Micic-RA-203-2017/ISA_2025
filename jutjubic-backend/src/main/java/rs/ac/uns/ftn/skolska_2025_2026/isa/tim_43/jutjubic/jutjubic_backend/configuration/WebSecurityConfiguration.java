@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
@@ -42,22 +43,8 @@ public class WebSecurityConfiguration {
 	}
 
 	@Bean()
-	public UserDetailsService userDetailsService() {
-		return new UserServiceImplementation();
-	}
-
-	@Bean()
-	public BCryptPasswordEncoder passwordEncoder() {
+	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder(10);
-	}
-
-	@Bean()
-	public DaoAuthenticationProvider authenticationProvider() {
-		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-		authenticationProvider.setUserDetailsService(userDetailsService());
-		authenticationProvider.setPasswordEncoder(passwordEncoder());
-
-		return authenticationProvider;
 	}
 
 	@Bean()
@@ -78,11 +65,16 @@ public class WebSecurityConfiguration {
 
 		httpSecurity.csrf((csrfC) -> csrfC.disable());
 
+		// REFERENCE: https://stackoverflow.com/questions/78774925/spring-security-warning-how-to-fix-authenticationprovider-vs-userdetailsservic
+		UserDetailsService userDetailsService = new UserServiceImplementation();
 		httpSecurity.addFilterBefore(
-				new TokenAuthenticationFilter(tokenUtilities, userDetailsService()), 
+				new TokenAuthenticationFilter(tokenUtilities, userDetailsService), 
 				BasicAuthenticationFilter.class);
 
-		httpSecurity.authenticationProvider(authenticationProvider());
+		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+		authenticationProvider.setUserDetailsService(userDetailsService);
+		authenticationProvider.setPasswordEncoder(passwordEncoder());
+		httpSecurity.authenticationProvider(authenticationProvider);
 
 		return httpSecurity.build();
 	}
