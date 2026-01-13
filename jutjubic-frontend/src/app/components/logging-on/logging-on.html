@@ -10,7 +10,8 @@
 			https://angular.dev/guide/forms
 			https://angular.dev/guide/forms/reactive-forms
 			-->
-			<form id="loggingOnForm" [formGroup]="loggingOnFormGroup" (ngSubmit)="submitUserCredentials()">
+			<form #loggingOnForm [formGroup]="loggingOnFormGroup"
+					(ngSubmit)="submitUserCredentials(isLoggingOnFormSubmitted, snackBar)">
 				<!-- REFERENCE: https://material.angular.dev/components/form-field/overview -->
 				<mat-form-field>
 					<mat-label>Корисничко име:</mat-label>
@@ -23,7 +24,7 @@
 					}
 					@if (loggingOnFormGroup.get('usernameControl')?.errors?.['pattern']) {
 						<mat-error>Корисничко име мора садржати бар 4 слова! Дозвољени су сви знакови осим белих знакова,
-							 наводника, витичастих заграда, косих црта, тачке-зареза, зареза и упитника.</mat-error>
+								 наводника, витичастих заграда, косих црта, тачке-зареза, зареза и упитника.</mat-error>
 					}
 					@if (loggingOnFormGroup.get('usernameControl')?.errors?.['minlength']
 							|| loggingOnFormGroup.get('usernameControl')?.errors?.['maxlength']) {
@@ -47,11 +48,15 @@
 					}
 				</mat-form-field>
 				<!-- REFERENCE: https://material.angular.dev/components/button/overview -->
-				<button id="loggingOnButton" type="submit" matButton="text" [disabled]="loggingOnFormGroup.invalid">Пријавите се</button>
+				<button id="loggingOnButton" type="submit" matButton="text" [disabled]="loggingOnFormGroup.invalid">
+					Пријавите се
+				</button>
 			</form>
 		}
 	</mat-card-content>
 	<mat-card-actions>
-		<button id="landingPageButton" type="button" matButton="text">Почетна страница</button>
+		<button id="landingPageButton" type="button" matButton="text" [disabled]="isLoggingOnFormSubmitted">
+			Почетна страница
+		</button>
 	</mat-card-actions>
 </mat-card>

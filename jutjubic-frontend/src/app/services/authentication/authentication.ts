@@ -18,12 +18,16 @@ export class AuthenticationService {
     this.token = null;
   }
 
+  isTokenPresent(): boolean {
+    return this.token != undefined && this.token != null && this.token?.length > 0;
+  }
+
   getToken(): string | null {
     return this.token;
   }
 
-  isTokenPresent(): boolean {
-    return this.token != undefined && this.token != null;
+  setToken(token: string | null): void {
+    this.token = token;
   }
 
   logOnWith(userCredentials: UserCredentials): Observable<ObjectWithTextualContext> {
