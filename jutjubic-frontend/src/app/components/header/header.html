@@ -15,6 +15,6 @@
 		<button id="loggingOnPageButton" type="button" matButton="elevated">Пријавите се</button>
 	}
 	@if (username) {
-		<button id="loggingOffButton" type="button" matButton="elevated" *ngIf="username" (click)="logOff()">Одјавите се</button>
+		<button id="loggingOffButton" type="button" matButton="elevated" (click)="logOff()">Одјавите се</button>
 	}
 </mat-toolbar>
