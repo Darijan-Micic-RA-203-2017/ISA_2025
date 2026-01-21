@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal, WritableSignal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -8,11 +9,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
+import { JwtPayload, jwtDecode } from 'jwt-decode';
+
 import { AuthenticationService } from '../../services/authentication/authentication';
 
 import { ObjectWithTextualContext } from '../../model/object-with-textual-context';
 import { TokenWithLifeDuration } from '../../model/user/token-with-life-duration';
 import { UserCredentials } from '../../model/user/user-credentials';
+import { ParametersOfSubmitUserCredentialsFunction } from '../../utilities/parameters-of-submit-user-credentials-function';
 
 @Component({
   standalone: true,
@@ -27,12 +31,20 @@ import { UserCredentials } from '../../model/user/user-credentials';
 })
 export class LoggingOnComponent {
   loggingOnFormGroup: FormGroup;
-  isLoggingOnFormSubmitted: boolean;
+  userCredentials: UserCredentials;
+  /** REFERENCES:
+   * https://www.programfarmer.com/en-US/articles/2021/javascript-pass-by-value-pass-by-reference-pass-by-sharing
+   * https://angular.dev/essentials/signals
+   * https://angular.dev/guide/signals
+  */
+  isLoggingOnFormSubmitted: WritableSignal<boolean>;
 
   // REFERENCE: https://material.angular.dev/components/snack-bar/overview
   snackBar: MatSnackBar = inject(MatSnackBar);
 
-  constructor(private formBuilder: FormBuilder, private authenticationService: AuthenticationService) {
+  parametersOfSubmitUserCredentialsFunction: ParametersOfSubmitUserCredentialsFunction;
+
+  constructor(private formBuilder: FormBuilder, private authenticationService: AuthenticationService, public router: Router) {
     this.loggingOnFormGroup = this.formBuilder.group({
       usernameControl: new FormControl<string | null>('', {
         /* REFERENCES:
@@ -50,24 +62,28 @@ export class LoggingOnComponent {
         updateOn: 'change'
       })
     });
-    this.isLoggingOnFormSubmitted = false;
+    this.userCredentials = new UserCredentials(null);
+    this.isLoggingOnFormSubmitted = signal<boolean>(false);
+
+    this.parametersOfSubmitUserCredentialsFunction = new ParametersOfSubmitUserCredentialsFunction(this.userCredentials, 
+        this.isLoggingOnFormSubmitted, this.snackBar, router);
   }
 
   /** REFERENCE: https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-front-app */
-  submitUserCredentials(isFormSubmitted: boolean, snackBar: MatSnackBar): void {
-    isFormSubmitted = true;
+  submitUserCredentials(parametersOfSubmitUserCredentialsFunction: ParametersOfSubmitUserCredentialsFunction): void {
+    parametersOfSubmitUserCredentialsFunction.setIsLoggingOnFormSubmitted(true);
 
     /* REFERENCES:<br />
      * https://stackoverflow.com/questions/56410007/cast-angular-http-response-into-class<br />
      * https://stackoverflow.com/questions/51763745/angular-6-error-typeerror-is-not-a-function-but-it-is
     */
-    let userCredentials: UserCredentials = new UserCredentials({
-      'username': this.loggingOnFormGroup.value['usernameControl'],
-      'password': this.loggingOnFormGroup.value['passwordControl']
-    });
+    this.parametersOfSubmitUserCredentialsFunction.getUserCredentials()
+        .setUsername(this.loggingOnFormGroup.value['usernameControl']);
+    this.parametersOfSubmitUserCredentialsFunction.getUserCredentials()
+        .setPassword(this.loggingOnFormGroup.value['passwordControl']);
 
     // REFERENCE: https://rxjs.dev/deprecations/subscribe-arguments
-    this.authenticationService.logOnWith(userCredentials).subscribe({
+    this.authenticationService.logOnWith(this.userCredentials).subscribe({
       next(responseObject: ObjectWithTextualContext): void {
         /* REFERENCES:<br />
          * https://stackoverflow.com/questions/56410007/cast-angular-http-response-into-class<br />
@@ -79,32 +95,55 @@ export class LoggingOnComponent {
         let tokenWithLifeDuration: TokenWithLifeDuration = new TokenWithLifeDuration(objectWithTextualContext.getObject());
         let token: string | null = tokenWithLifeDuration.getToken();
         localStorage.setItem('jwtToken', token);
+        /* REFERENCES:
+         * https://stackoverflow.com/questions/48075688/how-to-decode-the-jwt-encoded-token-payload-on-client-side-in-angular
+         * https://github.com/auth0/jwt-decode
+        */
+        let decodedToken: JwtPayload = jwtDecode<JwtPayload>(token);
+        let subjectOfToken: string | undefined = decodedToken.sub;
+        if (subjectOfToken) {
+          localStorage.setItem('username', subjectOfToken.toString());
+        }
+        let lifeDurationOfTokenInMilliseconds: number | undefined = decodedToken.exp;
+        if (lifeDurationOfTokenInMilliseconds) {
+          localStorage.setItem('exp', lifeDurationOfTokenInMilliseconds.toString());
+        } else {
+          localStorage.setItem('exp', tokenWithLifeDuration.getLifeDurationOfTokenInMilliseconds().toString());
+        }
 
-        snackBar.open('Успешно сте пријављени на систем Јутјубића.', 'Затворите', { duration: 5000 });
+        // REFERENCE: https://material.angular.dev/components/snack-bar/overview
+        parametersOfSubmitUserCredentialsFunction.getSnackBar().open('Успешно сте пријављени на систем Јутјубића.', 
+            'Затворите', { duration: 5000 });
+
+        parametersOfSubmitUserCredentialsFunction.getRouter().navigateByUrl('/').then(() => { window.location.reload(); });
       },
       error(errorResponse: HttpErrorResponse): void {
-        isFormSubmitted = false;
+        parametersOfSubmitUserCredentialsFunction.setIsLoggingOnFormSubmitted(false);
 
         let error: ObjectWithTextualContext = new ObjectWithTextualContext(errorResponse.error);
         console.log(`Error while logging in!\n\n${error.getTextualContext()}`);
         // REFERENCE: https://material.angular.dev/components/snack-bar/overview
         if (errorResponse.status == 406) {
-          snackBar.open('Кориснички налог је онемогућен!', 'Затворите', { duration: 5000 });
+          parametersOfSubmitUserCredentialsFunction.getSnackBar().open('Кориснички налог је онемогућен!', 
+              'Затворите', { duration: 5000 });
 
           return;
         }
         if (errorResponse.status == 423) {
-          snackBar.open('Кориснички налог је закључан!', 'Затворите', { duration: 5000 });
+          parametersOfSubmitUserCredentialsFunction.getSnackBar().open('Кориснички налог је закључан!', 
+              'Затворите', { duration: 5000 });
 
           return;
         }
         if (errorResponse.status == 400) {
-          snackBar.open('Унето је неисправно корисничко име и/или лозинка!', 'Затворите', { duration: 5000 });
+          parametersOfSubmitUserCredentialsFunction.getSnackBar().open('Унето је неисправно корисничко име и/или лозинка!', 
+              'Затворите', { duration: 5000 });
 
           return;
         }
         if (errorResponse.status == 422) {
-          snackBar.open('Дошло је до унутрашње аутентификационе грешке! Молимо Вас, покушајте поново касније.',
+          parametersOfSubmitUserCredentialsFunction.getSnackBar().open(
+              'Дошло је до унутрашње аутентификационе грешке! Молимо Вас, покушајте поново касније.', 
               'Затворите', { duration: 5000 });
         }
       }
