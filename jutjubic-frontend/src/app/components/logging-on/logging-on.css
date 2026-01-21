@@ -13,7 +13,17 @@ mat-card-header {
 	padding-bottom: 16px;
 }
 
-mat-card-content {
+/* REFERENCES:
+ * https://www.2hatslogic.com/help-desk/select-a-parent-div-based-on-its-immediate-child-using-css/
+ * https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/:has
+*/
+mat-card-content:has(> mat-progress-spinner) {
+	display: flex;
+	flex-direction: row;
+	justify-items: center;
+	justify-content: center;
+	align-items: center;
+	align-content: center;
 	margin-bottom: 4%;
 }
 
