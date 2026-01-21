@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { AuthenticationService } from '../../services/authentication/authentication';
@@ -19,7 +20,7 @@ import { ParametersOfSubmitUserCredentialsFunction } from '../../utilities/param
   * https://angular.dev/guide/forms
   * https://angular.dev/guide/forms/reactive-forms
   */
-  imports: [ReactiveFormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule],
+  imports: [ReactiveFormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule],
   selector: 'app-logging-on',
   styleUrl: './logging-on.css',
   templateUrl: './logging-on.html'

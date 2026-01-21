@@ -5,13 +5,13 @@
 	</mat-card-header>
 	<mat-card-content>
 		<!-- REFERENCE: https://dev.to/vetriselvan_11/angular-20-control-flow-part-1-say-goodbye-to-ngif-ngfor-and-ngswitch-42d8 -->
-		@if (!isLoggingOnFormSubmitted) {
+		@if (!isLoggingOnFormSubmitted()) {
 			<!-- REFERENCES:
 			https://angular.dev/guide/forms
 			https://angular.dev/guide/forms/reactive-forms
 			-->
-			<form #loggingOnForm [formGroup]="loggingOnFormGroup"
-					(ngSubmit)="submitUserCredentials(isLoggingOnFormSubmitted, snackBar)">
+			<form #loggingOnForm [formGroup]="loggingOnFormGroup" 
+					(ngSubmit)="submitUserCredentials(parametersOfSubmitUserCredentialsFunction)">
 				<!-- REFERENCE: https://material.angular.dev/components/form-field/overview -->
 				<mat-form-field>
 					<mat-label>Корисничко име:</mat-label>
@@ -53,9 +53,13 @@
 				</button>
 			</form>
 		}
+		@else {
+			<!-- REFERENCE: https://material.angular.dev/components/progress-spinner/overview -->
+			<mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+		}
 	</mat-card-content>
 	<mat-card-actions>
-		<button id="landingPageButton" type="button" matButton="text" [disabled]="isLoggingOnFormSubmitted">
+		<button id="landingPageButton" type="button" matButton="text" [disabled]="isLoggingOnFormSubmitted()">
 			Почетна страница
 		</button>
 	</mat-card-actions>
