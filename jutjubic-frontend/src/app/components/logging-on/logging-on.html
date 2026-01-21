@@ -33,7 +33,13 @@
 				</mat-form-field>
 				<mat-form-field>
 					<mat-label>Лозинка:</mat-label>
-					<input #passwordInput type="password" matInput formControlName="passwordControl" />
+					<!-- REFERENCE: https://material.angular.dev/components/form-field/examples -->
+					<input #passwordInput [type]="shouldPasswordBeHidden() ? 'password' : 'text'" 
+							matInput formControlName="passwordControl" />
+					<button id="showOrHidePasswordButton" type="button" matIconButton matSuffix 
+							(click)="changeVisibilityOfPassword($event)">
+						<mat-icon>{{ shouldPasswordBeHidden() ? 'visibility_off' : 'visibility' }}</mat-icon>
+					</button>
 					<mat-hint align="start">Без белих знакова</mat-hint>
 					<mat-hint align="end">8 - 16 знакова</mat-hint>
 					@if (loggingOnFormGroup.get('passwordControl')?.errors?.['required']) {

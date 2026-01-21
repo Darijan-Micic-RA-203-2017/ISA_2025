@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -20,19 +21,21 @@ import { ParametersOfSubmitUserCredentialsFunction } from '../../utilities/param
   * https://angular.dev/guide/forms
   * https://angular.dev/guide/forms/reactive-forms
   */
-  imports: [ReactiveFormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatInputModule, MatProgressSpinnerModule],
+  imports: [ReactiveFormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatIconModule, MatInputModule, 
+      MatProgressSpinnerModule],
   selector: 'app-logging-on',
   styleUrl: './logging-on.css',
   templateUrl: './logging-on.html'
 })
 export class LoggingOnComponent {
   loggingOnFormGroup: FormGroup;
-  userCredentials: UserCredentials;
   /** REFERENCES:
    * https://www.programfarmer.com/en-US/articles/2021/javascript-pass-by-value-pass-by-reference-pass-by-sharing
    * https://angular.dev/essentials/signals
    * https://angular.dev/guide/signals
   */
+  shouldPasswordBeHidden: WritableSignal<boolean>;
+  userCredentials: UserCredentials;
   isLoggingOnFormSubmitted: WritableSignal<boolean>;
 
   // REFERENCE: https://material.angular.dev/components/snack-bar/overview
@@ -58,11 +61,19 @@ export class LoggingOnComponent {
         updateOn: 'change'
       })
     });
+    this.shouldPasswordBeHidden = signal<boolean>(true);
     this.userCredentials = new UserCredentials(null);
     this.isLoggingOnFormSubmitted = signal<boolean>(false);
 
     this.parametersOfSubmitUserCredentialsFunction = new ParametersOfSubmitUserCredentialsFunction(this.userCredentials, 
         this.isLoggingOnFormSubmitted, this.snackBar, router);
+  }
+
+  /** REFERENCE: https://material.angular.dev/components/form-field/examples */
+  changeVisibilityOfPassword(event: MouseEvent): void {
+    this.shouldPasswordBeHidden.set(!this.shouldPasswordBeHidden());
+
+    event.stopPropagation();
   }
 
   /** REFERENCE: https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-front-app */
