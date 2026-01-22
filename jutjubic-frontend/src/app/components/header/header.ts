@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
   standalone: true,
-  imports: [MatButtonModule, MatToolbarModule],
+  // REFERENCE: https://stackoverflow.com/questions/78168666/how-can-i-solve-this-error-usging-routerlink-in-angular-17-2/78168794
+  imports: [RouterLink, MatButtonModule, MatToolbarModule],
   selector: 'app-header',
   styleUrl: './header.css',
   templateUrl: './header.html'

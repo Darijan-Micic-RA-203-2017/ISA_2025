@@ -1,7 +1,8 @@
 <!-- REFERENCE: https://material.angular.dev/components/toolbar/overview -->
 <mat-toolbar>
 	<!-- REFERENCE: https://material.angular.dev/components/button/overview -->
-	<button id="landingPageButton" type="button" matButton="text">Јутјубић</button>
+	<!-- REFERENCE: https://angular.love/angular-router-everything-you-need-to-know-about -->
+	<button id="landingPageButton" type="button" matButton="text" routerLink="/">Јутјубић</button>
 
 	<span></span>
 
@@ -12,7 +13,8 @@
 		</div>
 	}
 	@if (!username) {
-		<button id="loggingOnPageButton" type="button" matButton="elevated">Пријавите се</button>
+		<!-- REFERENCE: https://angular.love/angular-router-everything-you-need-to-know-about -->
+		<button id="loggingOnPageButton" type="button" matButton="elevated" routerLink="/log-on">Пријавите се</button>
 	}
 	@if (username) {
 		<button id="loggingOffButton" type="button" matButton="elevated" (click)="logOff()">Одјавите се</button>

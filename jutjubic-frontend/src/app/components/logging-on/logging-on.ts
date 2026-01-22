@@ -1,6 +1,6 @@
 import { Component, inject, signal, WritableSignal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -18,10 +18,11 @@ import { ParametersOfSubmitUserCredentialsFunction } from '../../utilities/param
 @Component({
   standalone: true,
   /* REFERENCES:
-  * https://angular.dev/guide/forms
-  * https://angular.dev/guide/forms/reactive-forms
+   * https://angular.dev/guide/forms
+   * https://angular.dev/guide/forms/reactive-forms
+   * https://stackoverflow.com/questions/78168666/how-can-i-solve-this-error-usging-routerlink-in-angular-17-2/78168794
   */
-  imports: [ReactiveFormsModule, MatButtonModule, MatCardModule, MatFormFieldModule, MatIconModule, MatInputModule, 
+  imports: [ReactiveFormsModule, RouterLink, MatButtonModule, MatCardModule, MatFormFieldModule, MatIconModule, MatInputModule, 
       MatProgressSpinnerModule],
   selector: 'app-logging-on',
   styleUrl: './logging-on.css',
@@ -29,7 +30,7 @@ import { ParametersOfSubmitUserCredentialsFunction } from '../../utilities/param
 })
 export class LoggingOnComponent {
   loggingOnFormGroup: FormGroup;
-  /** REFERENCES:
+  /* REFERENCES:
    * https://www.programfarmer.com/en-US/articles/2021/javascript-pass-by-value-pass-by-reference-pass-by-sharing
    * https://angular.dev/essentials/signals
    * https://angular.dev/guide/signals

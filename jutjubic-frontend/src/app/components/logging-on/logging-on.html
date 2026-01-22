@@ -65,7 +65,8 @@
 		}
 	</mat-card-content>
 	<mat-card-actions>
-		<button id="landingPageButton" type="button" matButton="text" [disabled]="isLoggingOnFormSubmitted()">
+		<!-- REFERENCE: https://angular.love/angular-router-everything-you-need-to-know-about -->
+		<button id="landingPageButton" type="button" matButton="text" [disabled]="isLoggingOnFormSubmitted()" routerLink="/">
 			Почетна страница
 		</button>
 	</mat-card-actions>
