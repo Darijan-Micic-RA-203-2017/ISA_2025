@@ -63,6 +63,13 @@
 			<scope>compile</scope>
 		</dependency>
 
+		<!-- REFERENCE: https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe1/validation_example -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+			<scope>compile</scope>
+		</dependency>
+
 		<!-- REFERENCE: https://www.javacodegeeks.com/rest-api-security-with-spring-security-jwt-token-signing.html -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
