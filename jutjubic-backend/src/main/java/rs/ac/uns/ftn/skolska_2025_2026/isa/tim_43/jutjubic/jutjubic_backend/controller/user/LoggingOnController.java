@@ -17,13 +17,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.ObjectWithTextualContextDTO;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.user.TokenWithLifeDurationDTO;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.user.UserCredentialsDTO;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.user.User;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.utility.TokenUtilities;
 
-/** REFERENCE: https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example */
+/** REFERENCES:<br />
+ * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example<br />
+ * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe1/validation_example<br />
+ * https://beanvalidation.org/1.0/spec/<br />
+ * https://docs.spring.io/spring-framework/docs/4.1.x/spring-framework-reference/html/validation.html
+*/
 @RestController()
 @RequestMapping(path = {"/log-on"}, consumes = {MediaType.APPLICATION_JSON_VALUE}, 
 		produces = {MediaType.APPLICATION_JSON_VALUE})
@@ -40,7 +46,7 @@ public class LoggingOnController {
 
 	@PostMapping(path = {""})
 	public ResponseEntity<ObjectWithTextualContextDTO> logOnWith(
-			@RequestBody() UserCredentialsDTO userCredentialsDTO) {
+			@Valid() @RequestBody() UserCredentialsDTO userCredentialsDTO) {
 		String username = userCredentialsDTO.getUsername();
 		String password = userCredentialsDTO.getPassword();
 
