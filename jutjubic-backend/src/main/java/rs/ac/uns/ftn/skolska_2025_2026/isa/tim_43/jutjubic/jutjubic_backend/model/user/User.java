@@ -12,6 +12,13 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 import java.time.ZonedDateTime;
 import java.util.Collection;
@@ -23,10 +30,19 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.address.Address;
+import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.validation.constraint.ContainsLetters;
 
 /** REFERENCES:<br />
  * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example<br />
- * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe3/jpa_example
+ * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe3/jpa_example<br />
+ * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe1/validation_example<br />
+ * https://beanvalidation.org/1.0/spec/<br />
+ * https://docs.spring.io/spring-framework/docs/4.1.x/spring-framework-reference/html/validation.html<br />
+ * https://stackoverflow.com/questions/74227120/how-can-i-create-custom-validator-on-java-list-type<br />
+ * https://dev.to/eric6166/creating-custom-annotations-for-validation-in-spring-boot-16j1<br />
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions<br />
+ * https://www.convex.dev/typescript/core-concepts/functions-methods/typescript-regex<br />
+ * https://forum.knime.com/t/string-manipulation-multi-column-regex-patternsyntaxexception-illegal-repetition/60894/4
 */
 @Entity()
 @Table(name = "users")
@@ -42,6 +58,7 @@ public class User implements UserDetails, Comparable<User> {
 	private long id;
 
 	@Column(name = "enabled", nullable = false)
+	@NotNull(message = "The \"enabled\" field has to have a non-null value!")
 	private boolean enabled;
 
 	@ManyToMany(fetch = FetchType.LAZY)
@@ -51,15 +68,33 @@ public class User implements UserDetails, Comparable<User> {
 			inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id", 
 					nullable = false, columnDefinition = "bigserial")}
 	)
+	@NotEmpty(message = "There has to be at least one role assigned to the user!")
 	private Set<UserRole> roles;
 
 	@Column(name = "email_address", nullable = false)
+	@NotBlank(message = "The e-mail address has to be non-blank!")
+	@Email(message = "The e-mail address has to be well-formed!")
 	private String emailAddress;
 
 	@Column(name = "username", nullable = false)
+	@NotBlank(message = "The username has to be non-blank!")
+	@Pattern(regexp = "^[A-Za-z0-9~!@#\\$%\\^&\\*\\(\\)\\-_=\\+\\[\\]\\|:<>\\.]+$", 
+			message = "The username has to not contain any white-space characters, " 
+					+ "quotation marks, curly brackets, slashes, semicolons, commas " 
+					+ "or question marks!")
+	@ContainsLetters(minLetters = 4, 
+			message = "The username has to contain at least 4 letters!")
+	@Size(min = 8, max = 32, 
+			message = "The username has to contain at least 8 and at most 32 characters!")
 	private String username;
 
 	@Column(name = "password", nullable = false)
+	@NotBlank(message = "The password has to be non-blank!")
+	@Pattern(regexp = "^\\S+$", 
+			message = "The password has to not contain any white-space characters!")
+	@Size(min = 8, max = 60, 
+			message = "The password has to contain at least 8 and at most 16 characters! " 
+					+ "The encrypted password has to contain at most 60 characters!")
 	private String password;
 
 	/** REFERENCES:<br />
@@ -68,12 +103,24 @@ public class User implements UserDetails, Comparable<User> {
 	 * https://medium.com/@ujjawalr/stop-using-java-util-date-heres-why-and-what-to-use-instead-a1e6023e3c58
 	*/
 	@Column(name = "date_and_time_of_last_password_change", nullable = true)
+	@PastOrPresent(message = "The date and time of last password change has to be in the past " 
+			+ "or in the present!")
 	private ZonedDateTime dateAndTimeOfLastPasswordChange;
 
 	@Column(name = "first_name", nullable = false)
+	@NotBlank(message = "The first name has to be non-blank!")
+	@Pattern(regexp = "^\\p{L}('\\p{Lu})?\\p{Ll}+([ \\-]\\p{L}('\\p{Lu})?\\p{Ll}+){1,2}$", 
+			flags = {Pattern.Flag.UNICODE_CASE}, 
+			message = "The first name has to not contain any non-letters, " 
+					+ "except space, hyphen and single quotation mark!")
 	private String firstName;
 
 	@Column(name = "last_name", nullable = false)
+	@NotBlank(message = "The last name has to be non-blank!")
+	@Pattern(regexp = "^\\p{L}('\\p{Lu})?\\p{Ll}+([ \\-]\\p{L}('\\p{Lu})?\\p{Ll}+){1,2}$", 
+			flags = {Pattern.Flag.UNICODE_CASE}, 
+			message = "The last name has to not contain any non-letters, " 
+					+ "except space, hyphen and single quotation mark!")
 	private String lastName;
 
 	@OneToOne(fetch = FetchType.LAZY)

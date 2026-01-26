@@ -7,12 +7,20 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 import java.util.Objects;
 
 /** REFERENCES:<br />
  * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example<br />
- * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe3/jpa_example
+ * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe3/jpa_example<br />
+ * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe1/validation_example<br />
+ * https://beanvalidation.org/1.0/spec/<br />
+ * https://docs.spring.io/spring-framework/docs/4.1.x/spring-framework-reference/html/validation.html<br />
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions<br />
+ * https://www.convex.dev/typescript/core-concepts/functions-methods/typescript-regex<br />
+ * https://forum.knime.com/t/string-manipulation-multi-column-regex-patternsyntaxexception-illegal-repetition/60894/4
 */
 @Entity()
 @Table(name = "addresses")
@@ -35,9 +43,14 @@ public class Address implements Comparable<Address> {
 	private String postalCode;
 
 	@Column(name = "place", nullable = false)
+	@NotBlank(message = "The place has to be non-blank!")
 	private String place;
 
 	@Column(name = "country", nullable = false)
+	@NotBlank(message = "The country has to be non-blank!")
+	@Pattern(regexp = "^\\p{Lu}\\p{Ll}+( \\p{Lu}\\p{Ll}+)?$", 
+			flags = {Pattern.Flag.UNICODE_CASE}, 
+			message = "The country has to not contain any non-letters, except spaces!")
 	private String country;
 
 	@Column(name = "latitude", nullable = false)
