@@ -15,7 +15,9 @@ import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.
 /** REFERENCES:<br />
  * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe1/validation_example<br />
  * https://beanvalidation.org/1.0/spec/<br />
- * https://docs.spring.io/spring-framework/docs/4.1.x/spring-framework-reference/html/validation.html
+ * https://docs.spring.io/spring-framework/docs/4.1.x/spring-framework-reference/html/validation.html<br />
+ * https://stackoverflow.com/questions/74227120/how-can-i-create-custom-validator-on-java-list-type<br />
+ * https://dev.to/eric6166/creating-custom-annotations-for-validation-in-spring-boot-16j1
 */
 @RestControllerAdvice()
 public class ValidationErrorsHandler {
