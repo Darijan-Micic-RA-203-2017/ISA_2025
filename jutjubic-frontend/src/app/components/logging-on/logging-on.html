@@ -23,8 +23,11 @@
 						<mat-error>Корисничко име мора бити унето!</mat-error>
 					}
 					@if (loggingOnFormGroup.get('usernameControl')?.errors?.['pattern']) {
-						<mat-error>Корисничко име мора садржати бар 4 слова! Дозвољени су сви знакови осим белих знакова,
-								 наводника, витичастих заграда, косих црта, тачке-зареза, зареза и упитника.</mat-error>
+						<mat-error>Корисничко име не сме садржати беле знакове, наводнике, витичасте заграде, косе црте,
+								 тачка-зарезе, зарезе и упитнике!</mat-error>
+					}
+					@if (loggingOnFormGroup.get('usernameControl')?.errors?.['numberOfLetters']) {
+						<mat-error>Корисничко име мора садржати бар 4 слова!</mat-error>
 					}
 					@if (loggingOnFormGroup.get('usernameControl')?.errors?.['minlength']
 							|| loggingOnFormGroup.get('usernameControl')?.errors?.['maxlength']) {

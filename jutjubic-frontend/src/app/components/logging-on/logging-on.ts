@@ -14,6 +14,7 @@ import { AuthenticationService } from '../../services/authentication/authenticat
 
 import { UserCredentials } from '../../model/user/user-credentials';
 import { ParametersOfSubmitUserCredentialsFunction } from '../../utilities/parameters-of-submit-user-credentials-function';
+import { numberOfLettersValidator } from '../../validation/number-of-letters-validator';
 
 @Component({
   standalone: true,
@@ -48,12 +49,14 @@ export class LoggingOnComponent {
     this.loggingOnFormGroup = this.formBuilder.group({
       usernameControl: new FormControl<string | null>('', {
         /* REFERENCES:
-        * https://angular.dev/guide/forms/form-validation
-        * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions
-        * https://www.convex.dev/typescript/core-concepts/functions-methods/typescript-regex
+         * https://angular.dev/guide/forms/form-validation
+         * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions
+         * https://www.convex.dev/typescript/core-concepts/functions-methods/typescript-regex
+         * https://angular.dev/guide/forms/form-validation
+         * https://blog.angular-university.io/angular-custom-validators/
         */
         validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9~!@#\$%\^&\*\(\)\-_=\+\[\]\|:<>\.]+$/),
-            Validators.pattern(/([^A-Za-z]?[A-Za-z][^A-Za-z]?){4,}/), Validators.minLength(8), Validators.maxLength(32)],
+            numberOfLettersValidator(4), Validators.minLength(8), Validators.maxLength(32)],
         updateOn: 'change'
       }),
       passwordControl: new FormControl<string | null>('', {
