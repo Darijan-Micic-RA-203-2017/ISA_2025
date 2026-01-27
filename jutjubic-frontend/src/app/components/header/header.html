@@ -14,9 +14,12 @@
 	}
 	@if (!username) {
 		<!-- REFERENCE: https://angular.love/angular-router-everything-you-need-to-know-about -->
-		<button id="loggingOnPageButton" type="button" matButton="elevated" routerLink="/log-on">Пријавите се</button>
+		<button id="registrationPageButton" type="button" matButton="elevated" routerLink="/register">Регистрација</button>
+	}
+	@if (!username) {
+		<button id="loggingOnPageButton" type="button" matButton="elevated" routerLink="/log-on">Пријава</button>
 	}
 	@if (username) {
-		<button id="loggingOffButton" type="button" matButton="elevated" (click)="logOff()">Одјавите се</button>
+		<button id="loggingOffButton" type="button" matButton="elevated" (click)="logOff()">Одјава</button>
 	}
 </mat-toolbar>
