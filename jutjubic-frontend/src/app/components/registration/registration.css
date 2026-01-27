@@ -1,0 +1,42 @@
+/* REFERENCE: https://www.w3schools.com/css/default.asp */
+
+mat-card {
+	text-align: center;
+	height: 100%;
+	margin-top: 10px;
+	margin-right: 25%;
+	margin-bottom: 10px;
+	margin-left: 25%;
+}
+
+mat-card-header {
+	padding-bottom: 16px;
+}
+
+/* REFERENCES:
+ * https://www.2hatslogic.com/help-desk/select-a-parent-div-based-on-its-immediate-child-using-css/
+ * https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/:has
+*/
+mat-card-content:has(> mat-progress-spinner) {
+	display: flex;
+	flex-direction: row;
+	justify-items: center;
+	justify-content: center;
+	align-items: center;
+	align-content: center;
+	margin-bottom: 4%;
+}
+
+/* REFERENCE: https://material.angular.dev/components/form-field/overview */
+mat-form-field {
+	min-width: 100%;
+	margin-bottom: 8%;
+}
+
+#registrationButton {
+	width: 50%;
+}
+
+mat-card-actions > button {
+	width: 100%;
+}

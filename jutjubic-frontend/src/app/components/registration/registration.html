@@ -1,0 +1,76 @@
+<!-- REFERENCE: https://material.angular.dev/components/card/overview -->
+<mat-card id="registrationCard">
+	<mat-card-header>
+		<mat-card-title>Регистрација на систем Јутјубића</mat-card-title>
+	</mat-card-header>
+	<mat-card-content>
+		<!-- REFERENCE: https://dev.to/vetriselvan_11/angular-20-control-flow-part-1-say-goodbye-to-ngif-ngfor-and-ngswitch-42d8 -->
+		@if (!isRegistrationFormSubmitted()) {
+			<!-- REFERENCES:
+			https://angular.dev/guide/forms
+			https://angular.dev/guide/forms/reactive-forms
+			-->
+			<form #registrationForm [formGroup]="registrationFormGroup" 
+					(ngSubmit)="submitUserRegistrationRequest(parametersOfSubmitUserRegistrationRequestFunction)">
+				<!-- REFERENCE: https://material.angular.dev/components/form-field/overview -->
+				<mat-form-field>
+					<mat-label>Корисничко име:</mat-label>
+					<!-- REFERENCE: https://material.angular.dev/components/input/overview -->
+					<input #usernameInput type="text" matInput formControlName="usernameControl" />
+					<mat-hint align="start">Најмање 4 слова</mat-hint>
+					<mat-hint align="end">8 - 32 знака</mat-hint>
+					@if (registrationFormGroup.get('usernameControl')?.errors?.['required']) {
+						<mat-error>Корисничко име мора бити унето!</mat-error>
+					}
+					@if (registrationFormGroup.get('usernameControl')?.errors?.['pattern']) {
+						<mat-error>Корисничко име не сме садржати беле знакове, наводнике, витичасте заграде, косе црте,
+								 тачка-зарезе, зарезе и упитнике!</mat-error>
+					}
+					@if (registrationFormGroup.get('usernameControl')?.errors?.['numberOfLetters']) {
+						<mat-error>Корисничко име мора садржати бар 4 слова!</mat-error>
+					}
+					@if (registrationFormGroup.get('usernameControl')?.errors?.['minlength']
+							|| registrationFormGroup.get('usernameControl')?.errors?.['maxlength']) {
+						<mat-error>Корисничко име мора садржати најмање 8, а највише 32 знака!</mat-error>
+					}
+				</mat-form-field>
+				<mat-form-field>
+					<mat-label>Лозинка:</mat-label>
+					<!-- REFERENCE: https://material.angular.dev/components/form-field/examples -->
+					<input #passwordInput [type]="shouldPasswordBeHidden() ? 'password' : 'text'" 
+							matInput formControlName="passwordControl" />
+					<button id="showOrHidePasswordButton" type="button" matIconButton matSuffix 
+							(click)="changeVisibilityOfPassword($event)">
+						<mat-icon>{{ shouldPasswordBeHidden() ? 'visibility_off' : 'visibility' }}</mat-icon>
+					</button>
+					<mat-hint align="start">Без белих знакова</mat-hint>
+					<mat-hint align="end">8 - 16 знакова</mat-hint>
+					@if (registrationFormGroup.get('passwordControl')?.errors?.['required']) {
+						<mat-error>Лозинка мора бити унета!</mat-error>
+					}
+					@if (registrationFormGroup.get('passwordControl')?.errors?.['pattern']) {
+						<mat-error>Лозинка не сме садржати беле знакове!</mat-error>
+					}
+					@if (registrationFormGroup.get('passwordControl')?.errors?.['minlength']
+							|| registrationFormGroup.get('passwordControl')?.errors?.['maxlength']) {
+						<mat-error>Лозинка мора саржати најмање 8, а највише 16 знакова!</mat-error>
+					}
+				</mat-form-field>
+				<!-- REFERENCE: https://material.angular.dev/components/button/overview -->
+				<button id="registrationButton" type="submit" matButton="text" [disabled]="registrationFormGroup.invalid">
+					Региструјте се
+				</button>
+			</form>
+		}
+		@else {
+			<!-- REFERENCE: https://material.angular.dev/components/progress-spinner/overview -->
+			<mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+		}
+	</mat-card-content>
+	<mat-card-actions>
+		<!-- REFERENCE: https://angular.love/angular-router-everything-you-need-to-know-about -->
+		<button id="landingPageButton" type="button" matButton="text" [disabled]="isRegistrationFormSubmitted()" routerLink="/">
+			Почетна страница
+		</button>
+	</mat-card-actions>
+</mat-card>
