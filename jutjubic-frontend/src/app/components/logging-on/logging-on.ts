@@ -81,7 +81,7 @@ export class LoggingOnComponent {
   }
 
   /** REFERENCE: https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-front-app */
-  submitUserCredentials(parametersOfSubmitUserCredentialsFunction: ParametersOfSubmitUserCredentialsFunction): void {
+  submitUserCredentials(parameters: ParametersOfSubmitUserCredentialsFunction): void {
     this.parametersOfSubmitUserCredentialsFunction.setIsLoggingOnFormSubmitted(true);
 
     /* REFERENCES:<br />
@@ -93,6 +93,6 @@ export class LoggingOnComponent {
     this.parametersOfSubmitUserCredentialsFunction.getUserCredentials()
         .setPassword(this.loggingOnFormGroup.value['passwordControl']);
 
-    this.authenticationService.logOnWith(parametersOfSubmitUserCredentialsFunction);
+    this.authenticationService.logOnWith(parameters);
   }
 }
