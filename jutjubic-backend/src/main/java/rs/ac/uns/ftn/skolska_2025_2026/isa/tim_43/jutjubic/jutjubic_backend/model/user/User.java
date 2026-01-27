@@ -18,6 +18,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
 import java.time.ZonedDateTime;
@@ -55,6 +56,7 @@ public class User implements UserDetails, Comparable<User> {
 			initialValue = 1, allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generator_of_users_ids")
 	@Column(name = "id", nullable = false, updatable = false, columnDefinition = "bigserial")
+	@PositiveOrZero(message = "The id has to be positive or zero!")
 	private long id;
 
 	@Column(name = "enabled", nullable = false)

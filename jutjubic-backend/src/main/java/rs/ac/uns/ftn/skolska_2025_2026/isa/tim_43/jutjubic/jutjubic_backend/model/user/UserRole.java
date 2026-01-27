@@ -9,6 +9,7 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.PositiveOrZero;
 
 import java.util.Objects;
 
@@ -34,6 +35,7 @@ public class UserRole implements GrantedAuthority, Comparable<UserRole> {
 			initialValue = 1, allocationSize = 1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "generator_of_user_roles_ids")
 	@Column(name = "id", nullable = false, updatable = false, columnDefinition = "bigserial")
+	@PositiveOrZero(message = "The id has to be positive or zero!")
 	private long id;
 
 	@Column(name = "name", nullable = false)
