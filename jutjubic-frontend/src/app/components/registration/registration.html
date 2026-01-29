@@ -29,7 +29,7 @@
 					@if (registrationFormGroup.get('usernameControl')?.errors?.['numberOfLetters']) {
 						<mat-error>Корисничко име мора садржати бар 4 слова!</mat-error>
 					}
-					@if (registrationFormGroup.get('usernameControl')?.errors?.['minlength']
+					@if (registrationFormGroup.get('usernameControl')?.errors?.['minlength'] 
 							|| registrationFormGroup.get('usernameControl')?.errors?.['maxlength']) {
 						<mat-error>Корисничко име мора садржати најмање 8, а највише 32 знака!</mat-error>
 					}
@@ -51,8 +51,36 @@
 					@if (registrationFormGroup.get('passwordControl')?.errors?.['pattern']) {
 						<mat-error>Лозинка не сме садржати беле знакове!</mat-error>
 					}
-					@if (registrationFormGroup.get('passwordControl')?.errors?.['minlength']
+					@if (registrationFormGroup.get('passwordControl')?.errors?.['passwordIsNotRepeated']) {
+						<mat-error>Лозинка се мора поклапати с поновљеном лозинком!</mat-error>
+					}
+					@if (registrationFormGroup.get('passwordControl')?.errors?.['minlength'] 
 							|| registrationFormGroup.get('passwordControl')?.errors?.['maxlength']) {
+						<mat-error>Лозинка мора саржати најмање 8, а највише 16 знакова!</mat-error>
+					}
+				</mat-form-field>
+				<mat-form-field>
+					<mat-label>Поновљена лозинка:</mat-label>
+					<!-- REFERENCE: https://material.angular.dev/components/form-field/examples -->
+					<input #repeatedPasswordInput [type]="shouldRepeatedPasswordBeHidden() ? 'password' : 'text'" 
+							matInput formControlName="repeatedPasswordControl" />
+					<button id="showOrHideRepeatedPasswordButton" type="button" matIconButton matSuffix 
+							(click)="changeVisibilityOfRepeatedPassword($event)">
+						<mat-icon>{{ shouldRepeatedPasswordBeHidden() ? 'visibility_off' : 'visibility' }}</mat-icon>
+					</button>
+					<mat-hint align="start">Без белих знакова</mat-hint>
+					<mat-hint align="end">8 - 16 знакова</mat-hint>
+					@if (registrationFormGroup.get('repeatedPasswordControl')?.errors?.['required']) {
+						<mat-error>Поновљена лозинка мора бити унета!</mat-error>
+					}
+					@if (registrationFormGroup.get('repeatedPasswordControl')?.errors?.['pattern']) {
+						<mat-error>Лозинка не сме садржати беле знакове!</mat-error>
+					}
+					@if (registrationFormGroup.get('repeatedPasswordControl')?.errors?.['passwordIsNotRepeated']) {
+						<mat-error>Поновљена лозинка се мора поклапати с лозинком!</mat-error>
+					}
+					@if (registrationFormGroup.get('repeatedPasswordControl')?.errors?.['minlength'] 
+							|| registrationFormGroup.get('repeatedPasswordControl')?.errors?.['maxlength']) {
 						<mat-error>Лозинка мора саржати најмање 8, а највише 16 знакова!</mat-error>
 					}
 				</mat-form-field>

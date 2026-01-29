@@ -14,7 +14,8 @@ import { RegistrationService } from '../../services/registration/registration';
 
 import { UserRegistrationRequest } from '../../model/user/user-registration-request';
 import { ParametersOfSubmitUserRegistrationRequestFunction } from '../../utilities/parameters-of-submit-user-registration-request-function';
-import { numberOfLettersValidator } from '../../validation/number-of-letters-validator';
+import { numberOfLettersValidator } from '../../validation/number-of-letters/number-of-letters-validator';
+import { repeatedPasswordValidator } from '../../validation/repeated-password/repeated-password-validator';
 
 @Component({
   standalone: true,
@@ -36,6 +37,7 @@ export class RegistrationComponent {
    * https://angular.dev/guide/signals
   */
   shouldPasswordBeHidden: WritableSignal<boolean>;
+  shouldRepeatedPasswordBeHidden: WritableSignal<boolean>;
   userRegistrationRequest: UserRegistrationRequest;
   isRegistrationFormSubmitted: WritableSignal<boolean>;
 
@@ -46,7 +48,7 @@ export class RegistrationComponent {
 
   constructor(private formBuilder: FormBuilder, private registrationService: RegistrationService, public router: Router) {
     this.registrationFormGroup = this.formBuilder.group({
-      usernameControl: new FormControl<string | null>('', {
+      usernameControl: new FormControl<string>('', {
         /* REFERENCES:
          * https://angular.dev/guide/forms/form-validation
          * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions
@@ -58,13 +60,19 @@ export class RegistrationComponent {
             numberOfLettersValidator(4), Validators.minLength(8), Validators.maxLength(32)],
         updateOn: 'change'
       }),
-      passwordControl: new FormControl<string | null>('', {
-        validators: [Validators.required, Validators.pattern(/^\S+$/),
+      passwordControl: new FormControl<string>('', {
+        validators: [Validators.required, Validators.pattern(/^\S+$/), repeatedPasswordValidator(),
+            Validators.minLength(8), Validators.maxLength(16)],
+        updateOn: 'change'
+      }),
+      repeatedPasswordControl: new FormControl<string>('', {
+        validators: [Validators.required, Validators.pattern(/^\S+$/), repeatedPasswordValidator(),
             Validators.minLength(8), Validators.maxLength(16)],
         updateOn: 'change'
       })
     });
     this.shouldPasswordBeHidden = signal<boolean>(true);
+    this.shouldRepeatedPasswordBeHidden = signal<boolean>(true);
     this.userRegistrationRequest = new UserRegistrationRequest(null);
     this.isRegistrationFormSubmitted = signal<boolean>(false);
 
@@ -75,6 +83,13 @@ export class RegistrationComponent {
   /** REFERENCE: https://material.angular.dev/components/form-field/examples */
   changeVisibilityOfPassword(event: MouseEvent): void {
     this.shouldPasswordBeHidden.set(!this.shouldPasswordBeHidden());
+
+    event.stopPropagation();
+  }
+
+  /** REFERENCE: https://material.angular.dev/components/form-field/examples */
+  changeVisibilityOfRepeatedPassword(event: MouseEvent): void {
+    this.shouldRepeatedPasswordBeHidden.set(!this.shouldRepeatedPasswordBeHidden());
 
     event.stopPropagation();
   }
