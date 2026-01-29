@@ -29,7 +29,7 @@
 					@if (loggingOnFormGroup.get('usernameControl')?.errors?.['numberOfLetters']) {
 						<mat-error>Корисничко име мора садржати бар 4 слова!</mat-error>
 					}
-					@if (loggingOnFormGroup.get('usernameControl')?.errors?.['minlength']
+					@if (loggingOnFormGroup.get('usernameControl')?.errors?.['minlength'] 
 							|| loggingOnFormGroup.get('usernameControl')?.errors?.['maxlength']) {
 						<mat-error>Корисничко име мора садржати најмање 8, а највише 32 знака!</mat-error>
 					}
@@ -51,7 +51,7 @@
 					@if (loggingOnFormGroup.get('passwordControl')?.errors?.['pattern']) {
 						<mat-error>Лозинка не сме садржати беле знакове!</mat-error>
 					}
-					@if (loggingOnFormGroup.get('passwordControl')?.errors?.['minlength']
+					@if (loggingOnFormGroup.get('passwordControl')?.errors?.['minlength'] 
 							|| loggingOnFormGroup.get('passwordControl')?.errors?.['maxlength']) {
 						<mat-error>Лозинка мора саржати најмање 8, а највише 16 знакова!</mat-error>
 					}

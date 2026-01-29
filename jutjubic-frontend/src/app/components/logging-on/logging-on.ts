@@ -14,7 +14,7 @@ import { AuthenticationService } from '../../services/authentication/authenticat
 
 import { UserCredentials } from '../../model/user/user-credentials';
 import { ParametersOfSubmitUserCredentialsFunction } from '../../utilities/parameters-of-submit-user-credentials-function';
-import { numberOfLettersValidator } from '../../validation/number-of-letters-validator';
+import { numberOfLettersValidator } from '../../validation/number-of-letters/number-of-letters-validator';
 
 @Component({
   standalone: true,
@@ -47,7 +47,7 @@ export class LoggingOnComponent {
 
   constructor(private formBuilder: FormBuilder, private authenticationService: AuthenticationService, public router: Router) {
     this.loggingOnFormGroup = this.formBuilder.group({
-      usernameControl: new FormControl<string | null>('', {
+      usernameControl: new FormControl<string>('', {
         /* REFERENCES:
          * https://angular.dev/guide/forms/form-validation
          * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions
@@ -59,7 +59,7 @@ export class LoggingOnComponent {
             numberOfLettersValidator(4), Validators.minLength(8), Validators.maxLength(32)],
         updateOn: 'change'
       }),
-      passwordControl: new FormControl<string | null>('', {
+      passwordControl: new FormControl<string>('', {
         validators: [Validators.required, Validators.pattern(/^\S+$/),
             Validators.minLength(8), Validators.maxLength(16)],
         updateOn: 'change'
