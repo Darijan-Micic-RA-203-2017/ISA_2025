@@ -52,7 +52,8 @@ public class Address implements Comparable<Address> {
 	@NotBlank(message = "The country has to be non-blank!")
 	@Pattern(regexp = "^\\p{Lu}\\p{Ll}+( \\p{Lu}\\p{Ll}+)?$", 
 			flags = {Pattern.Flag.UNICODE_CASE}, 
-			message = "The country has to not contain any non-letters, except spaces!")
+			message = "The country has to contain capitalized words and " 
+					+ "has to not contain any non-letters, except spaces!")
 	private String country;
 
 	@Column(name = "latitude", nullable = false)
