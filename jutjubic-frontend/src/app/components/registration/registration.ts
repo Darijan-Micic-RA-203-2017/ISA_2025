@@ -12,6 +12,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { RegistrationService } from '../../services/registration/registration';
 
+import { Address } from '../../model/address/address';
 import { UserRegistrationRequest } from '../../model/user/user-registration-request';
 import { ParametersOfSubmitUserRegistrationRequestFunction } from '../../utilities/parameters-of-submit-user-registration-request-function';
 import { numberOfLettersValidator } from '../../validation/number-of-letters/number-of-letters-validator';
@@ -30,7 +31,7 @@ import { repeatedPasswordValidator } from '../../validation/repeated-password/re
   styleUrl: './registration.css',
 })
 export class RegistrationComponent {
-  registrationFormGroup: FormGroup;
+  registrationFormGroup: FormGroup<any>;
   /* REFERENCES:
    * https://www.programfarmer.com/en-US/articles/2021/javascript-pass-by-value-pass-by-reference-pass-by-sharing
    * https://angular.dev/essentials/signals
@@ -48,12 +49,17 @@ export class RegistrationComponent {
 
   constructor(private formBuilder: FormBuilder, private registrationService: RegistrationService, public router: Router) {
     this.registrationFormGroup = this.formBuilder.group({
-      usernameControl: new FormControl<string>('', {
+      emailAddressControl: new FormControl<string>('', {
         /* REFERENCES:
          * https://angular.dev/guide/forms/form-validation
+        */
+        validators: [Validators.required, Validators.email],
+        updateOn: 'change'
+      }),
+      usernameControl: new FormControl<string>('', {
+        /* REFERENCES:
          * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions
          * https://www.convex.dev/typescript/core-concepts/functions-methods/typescript-regex
-         * https://angular.dev/guide/forms/form-validation
          * https://blog.angular-university.io/angular-custom-validators/
         */
         validators: [Validators.required, Validators.pattern(/^[A-Za-z0-9~!@#\$%\^&\*\(\)\-_=\+\[\]\|:<>\.]+$/),
@@ -69,6 +75,45 @@ export class RegistrationComponent {
         validators: [Validators.required, Validators.pattern(/^\S+$/), repeatedPasswordValidator(),
             Validators.minLength(8), Validators.maxLength(16)],
         updateOn: 'change'
+      }),
+      firstNameControl: new FormControl<string>('', {
+        // REFERENCE: https://forum.knime.com/t/string-manipulation-multi-column-regex-patternsyntaxexception-illegal-repetition/60894/4
+        validators: [Validators.required, Validators.pattern(/^\p{Lu}('\p{Lu})?\p{Ll}+([ \-]\p{Lu}('\p{Lu})?\p{Ll}+){1,2}$/u)],
+        updateOn: 'change'
+      }),
+      lastNameControl: new FormControl<string>('', {
+        validators: [Validators.required, Validators.pattern(/^\p{L}('\p{Lu})?\p{Ll}+([ \-]\p{L}('\p{Lu})?\p{Ll}+){1,2}$/u)],
+        updateOn: 'change'
+      }),
+      addressFormGroup: this.formBuilder.group({
+        streetControl: new FormControl<string | null>(null, {
+          validators: Validators.pattern(/^$|\S/u),
+          updateOn: 'change'
+        }),
+        numberControl: new FormControl<string | null>(null, {
+          validators: Validators.pattern(/^$|\S/u),
+          updateOn: 'change'
+        }),
+        postalCodeControl: new FormControl<string | null>(null, {
+          validators: Validators.pattern(/^$|\S/u),
+          updateOn: 'change'
+        }),
+        placeControl: new FormControl<string>('', {
+          validators: [Validators.required, Validators.pattern(/^$|\S/u)],
+          updateOn: 'change'
+        }),
+        countryControl: new FormControl<string>('', {
+          validators: [Validators.required, Validators.pattern(/^\p{Lu}\p{Ll}+( \p{Lu}\p{Ll}+)?$/u)],
+          updateOn: 'change'
+        }),
+        latitudeControl: new FormControl<number>(0.0, {
+          validators: [Validators.required, Validators.min(-90.0), Validators.max(90.0)],
+          updateOn: 'change'
+        }),
+        longitudeControl: new FormControl<number>(0.0, {
+          validators: [Validators.required, Validators.min(-180.0), Validators.max(180.0)],
+          updateOn: 'change'
+        })
       })
     });
     this.shouldPasswordBeHidden = signal<boolean>(true);
@@ -103,9 +148,24 @@ export class RegistrationComponent {
      * https://stackoverflow.com/questions/51763745/angular-6-error-typeerror-is-not-a-function-but-it-is
     */
     this.parametersOfSubmitUserRegistrationRequestFunction.getUserRegistrationRequest()
+        .setEmailAddress(this.registrationFormGroup.value['emailAddressControl']);
+    this.parametersOfSubmitUserRegistrationRequestFunction.getUserRegistrationRequest()
         .setUsername(this.registrationFormGroup.value['usernameControl']);
     this.parametersOfSubmitUserRegistrationRequestFunction.getUserRegistrationRequest()
         .setPassword(this.registrationFormGroup.value['passwordControl']);
+    this.parametersOfSubmitUserRegistrationRequestFunction.getUserRegistrationRequest()
+        .setFirstName(this.registrationFormGroup.value['firstNameControl']);
+    this.parametersOfSubmitUserRegistrationRequestFunction.getUserRegistrationRequest()
+        .setLastName(this.registrationFormGroup.value['lastNameControl']);
+    let enteredAddress: Address = new Address(null);
+    enteredAddress.setStreet(this.registrationFormGroup.get('addressFormGroup')?.value['streetControl']);
+    enteredAddress.setNumber(this.registrationFormGroup.get('addressFormGroup')?.value['numberControl']);
+    enteredAddress.setPostalCode(this.registrationFormGroup.get('addressFormGroup')?.value['postalCodeControl']);
+    enteredAddress.setPlace(this.registrationFormGroup.get('addressFormGroup')?.value['placeControl']);
+    enteredAddress.setCountry(this.registrationFormGroup.get('addressFormGroup')?.value['countryControl']);
+    enteredAddress.setLatitude(this.registrationFormGroup.get('addressFormGroup')?.value['latitudeControl']);
+    enteredAddress.setLongitude(this.registrationFormGroup.get('addressFormGroup')?.value['longitudeControl']);
+    this.parametersOfSubmitUserRegistrationRequestFunction.getUserRegistrationRequest().setAddress(enteredAddress);
 
     this.registrationService.registerWith(parameters);
   }

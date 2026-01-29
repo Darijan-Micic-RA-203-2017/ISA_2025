@@ -6,6 +6,7 @@
 	<mat-card-content>
 		<!-- REFERENCE: https://dev.to/vetriselvan_11/angular-20-control-flow-part-1-say-goodbye-to-ngif-ngfor-and-ngswitch-42d8 -->
 		@if (!isRegistrationFormSubmitted()) {
+			<h2>Лични подаци</h2>
 			<!-- REFERENCES:
 			https://angular.dev/guide/forms
 			https://angular.dev/guide/forms/reactive-forms
@@ -14,8 +15,18 @@
 					(ngSubmit)="submitUserRegistrationRequest(parametersOfSubmitUserRegistrationRequestFunction)">
 				<!-- REFERENCE: https://material.angular.dev/components/form-field/overview -->
 				<mat-form-field>
-					<mat-label>Корисничко име:</mat-label>
+					<mat-label>Адреса електронске поште:</mat-label>
 					<!-- REFERENCE: https://material.angular.dev/components/input/overview -->
+					<input #emailAddressInput type="email" matInput formControlName="emailAddressControl" />
+					@if (registrationFormGroup.get('emailAddressControl')?.errors?.['required']) {
+						<mat-error>Адреса електронске поште мора бити унета!</mat-error>
+					}
+					@if (registrationFormGroup.get('emailAddressControl')?.errors?.['email']) {
+						<mat-error>Адреса електронске поште мора бити добро обликована!</mat-error>
+					}
+				</mat-form-field>
+				<mat-form-field>
+					<mat-label>Корисничко име:</mat-label>
 					<input #usernameInput type="text" matInput formControlName="usernameControl" />
 					<mat-hint align="start">Најмање 4 слова</mat-hint>
 					<mat-hint align="end">8 - 32 знака</mat-hint>
@@ -81,9 +92,109 @@
 					}
 					@if (registrationFormGroup.get('repeatedPasswordControl')?.errors?.['minlength'] 
 							|| registrationFormGroup.get('repeatedPasswordControl')?.errors?.['maxlength']) {
-						<mat-error>Лозинка мора саржати најмање 8, а највише 16 знакова!</mat-error>
+						<mat-error>Поновљена лозинка мора саржати најмање 8, а највише 16 знакова!</mat-error>
 					}
 				</mat-form-field>
+				<mat-form-field>
+					<mat-label>Име:</mat-label>
+					<input #firstNameInput type="text" matInput formControlName="firstNameControl" />
+					<mat-hint align="start">Започиње великим словом</mat-hint>
+					<mat-hint align="end">1 - 2 речи</mat-hint>
+					@if (registrationFormGroup.get('firstNameControl')?.errors?.['required']) {
+						<mat-error>Име мора бити унето!</mat-error>
+					}
+					@if (registrationFormGroup.get('firstNameControl')?.errors?.['pattern']) {
+						<mat-error>Име мора започети великим словом и садржати највише 2 речи, раздвојене размаком или цртом!
+								 Дозвољен је унос највише 2 једнострука наводника.</mat-error>
+					}
+				</mat-form-field>
+				<mat-form-field>
+					<mat-label>Презиме:</mat-label>
+					<input #lastNameInput type="text" matInput formControlName="lastNameControl" />
+					<mat-hint align="end">2 - 3 речи</mat-hint>
+					@if (registrationFormGroup.get('lastNameControl')?.errors?.['required']) {
+						<mat-error>Презиме мора бити унето!</mat-error>
+					}
+					@if (registrationFormGroup.get('lastNameControl')?.errors?.['pattern']) {
+						<mat-error>Презиме мора садржати највише 3 речи, раздвојене размаком или цртом!
+								 Дозвољен је унос највише 3 једнострука наводника.</mat-error>
+					}
+				</mat-form-field>
+				<h2>Адреса</h2>
+				<!-- REFERENCE: https://stackoverflow.com/questions/69160512/type-abstractcontrol-null-is-not-assignable-to-type-formgroup -->
+				<form #addressForm [formGroup]="$any(registrationFormGroup.get('addressFormGroup'))">
+					<mat-form-field>
+						<mat-label>Улица:</mat-label>
+						<input #streetInput type="text" matInput formControlName="streetControl" />
+						<mat-hint align="end">Не мора бити унета</mat-hint>
+						@if (registrationFormGroup.get('addressFormGroup')?.get('streetControl')?.errors?.['pattern']) {
+							<mat-error>Улица не сме бити празна (садржати само беле знакове) ако је унета!</mat-error>
+						}
+					</mat-form-field>
+					<mat-form-field>
+						<mat-label>Број:</mat-label>
+						<input #numberInput type="text" matInput formControlName="numberControl" />
+						<mat-hint align="end">Не мора бити унет</mat-hint>
+						@if (registrationFormGroup.get('addressFormGroup')?.get('numberControl')?.errors?.['pattern']) {
+							<mat-error>Број не сме бити празан (садржати само беле знакове) ако је унет!</mat-error>
+						}
+					</mat-form-field>
+					<mat-form-field>
+						<mat-label>Поштански број:</mat-label>
+						<input #postalCodeInput type="text" matInput formControlName="postalCodeControl" />
+						<mat-hint align="end">Не мора бити унет</mat-hint>
+						@if (registrationFormGroup.get('addressFormGroup')?.get('postalCodeControl')?.errors?.['pattern']) {
+							<mat-error>Поштански број не сме бити празан (садржати само беле знакове) ако је унет!</mat-error>
+						}
+					</mat-form-field>
+					<mat-form-field>
+						<mat-label>Место:</mat-label>
+						<input #placeInput type="text" matInput formControlName="placeControl" />
+						<mat-hint align="end">Мора бити унето</mat-hint>
+						@if (registrationFormGroup.get('addressFormGroup')?.get('placeControl')?.errors?.['required']) {
+							<mat-error>Место мора бити унето!</mat-error>
+						}
+						@if (registrationFormGroup.get('addressFormGroup')?.get('placeControl')?.errors?.['pattern']) {
+							<mat-error>Место не сме бити празно (садржати само беле знакове)!</mat-error>
+						}
+					</mat-form-field>
+					<mat-form-field>
+						<mat-label>Држава:</mat-label>
+						<input #countryInput type="text" matInput formControlName="countryControl" />
+						<mat-hint align="end">Мора бити унета</mat-hint>
+						@if (registrationFormGroup.get('addressFormGroup')?.get('countryControl')?.errors?.['required']) {
+							<mat-error>Држава мора бити унета!</mat-error>
+						}
+						@if (registrationFormGroup.get('addressFormGroup')?.get('countryControl')?.errors?.['pattern']) {
+							<mat-error>Назив државе мора садржати речи које започињу великим словима и не сме садржати ништа
+									 што нису слова, осим размака!</mat-error>
+						}
+					</mat-form-field>
+					<mat-form-field>
+						<mat-label>Географска ширина:</mat-label>
+						<input #latitudeInput type="number" matInput formControlName="latitudeControl" />
+						<mat-hint align="start">Молимо Вас да унесете вредност</mat-hint>
+						@if (registrationFormGroup.get('addressFormGroup')?.get('latitudeControl')?.errors?.['required']) {
+							<mat-error>Географска ширина мора бити унета!</mat-error>
+						}
+						@if (registrationFormGroup.get('addressFormGroup')?.get('latitudeControl')?.errors?.['min'] 
+								|| registrationFormGroup.get('addressFormGroup')?.get('latitudeControl')?.errors?.['max']) {
+							<mat-error>Географска ширина мора бити у распону [-90.0, 90.0]!</mat-error>
+						}
+					</mat-form-field>
+					<mat-form-field>
+						<mat-label>Географска дужина:</mat-label>
+						<input #longitudeInput type="number" matInput formControlName="longitudeControl" />
+						<mat-hint align="start">Молимо Вас да унесете вредност</mat-hint>
+						@if (registrationFormGroup.get('addressFormGroup')?.get('longitudeControl')?.errors?.['required']) {
+							<mat-error>Географска дужина бити унета!</mat-error>
+						}
+						@if (registrationFormGroup.get('addressFormGroup')?.get('longitudeControl')?.errors?.['min'] 
+								|| registrationFormGroup.get('addressFormGroup')?.get('longitudeControl')?.errors?.['max']) {
+							<mat-error>Географска дужина мора бити у распону [-180.0, 180.0]!</mat-error>
+						}
+					</mat-form-field>
+				</form>
 				<!-- REFERENCE: https://material.angular.dev/components/button/overview -->
 				<button id="registrationButton" type="submit" matButton="text" [disabled]="registrationFormGroup.invalid">
 					Региструјте се
