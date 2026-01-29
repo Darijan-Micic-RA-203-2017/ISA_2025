@@ -1,22 +1,22 @@
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 
-import { NumberOfLettersValidationError } from '../utilities/number-of-letters-validation-error';
-import { WrappedNumberOfLettersValidationError } from '../utilities/wrapped-number-of-letters-validation-error';
+import { NumberOfLettersValidationError } from './number-of-letters-validation-error';
+import { WrappedNumberOfLettersValidationError } from './wrapped-number-of-letters-validation-error';
 
 /** REFERENCES:<br />
  * https://angular.dev/guide/forms/form-validation<br />
  * https://blog.angular-university.io/angular-custom-validators/
 */
 export function numberOfLettersValidator(minLetters: number, maxLetters?: number): ValidatorFn {
-	return (control: AbstractControl<string | null, string | null, string | null>): ValidationErrors | null => {
+	return (control: AbstractControl<string, string, string>): ValidationErrors | null => {
 		if (maxLetters == undefined) {
 			maxLetters = 0;
 		}
 		let wrappedNumberOfLettersValidationError: WrappedNumberOfLettersValidationError = 
-				new WrappedNumberOfLettersValidationError(new NumberOfLettersValidationError(minLetters, 0, maxLetters))
+				new WrappedNumberOfLettersValidationError(new NumberOfLettersValidationError(minLetters, 0, maxLetters));
 
-		let valueEnteredIntoFormControl: string | null = control.value;
-		if (valueEnteredIntoFormControl == null) {
+		let valueEnteredIntoFormControl: string = control.value;
+		if (valueEnteredIntoFormControl === '') {
 			return wrappedNumberOfLettersValidationError;
 		}
 
@@ -47,6 +47,7 @@ export function numberOfLettersValidator(minLetters: number, maxLetters?: number
 		}
 
 		wrappedNumberOfLettersValidationError.getNumberOfLetters().setActualNumberOfLetters(numberOfLetters);
+
 		return wrappedNumberOfLettersValidationError;
-	}
+	};
 }
