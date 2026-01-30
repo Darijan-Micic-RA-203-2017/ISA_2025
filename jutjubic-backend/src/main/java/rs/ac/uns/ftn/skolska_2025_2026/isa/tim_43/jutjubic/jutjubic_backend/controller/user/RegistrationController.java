@@ -1,0 +1,65 @@
+package rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.controller.user;
+
+import jakarta.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.ObjectWithTextualContextDTO;
+import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.user.UserRegistrationRequestDTO;
+import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.user.User;
+import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.service.user.RegistrationService;
+
+/** REFERENCES:<br />
+ * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example<br />
+ * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe1/validation_example<br />
+ * https://beanvalidation.org/1.0/spec/<br />
+ * https://docs.spring.io/spring-framework/docs/4.1.x/spring-framework-reference/html/validation.html
+*/
+@RestController()
+@RequestMapping(path = {"/register"}, consumes = {MediaType.APPLICATION_JSON_VALUE}, 
+		produces = {MediaType.APPLICATION_JSON_VALUE})
+public class RegistrationController {
+	private RegistrationService registrationService;
+
+	@Autowired()
+	public RegistrationController(RegistrationService registrationService) {
+		this.registrationService = registrationService;
+	}
+
+	@PostMapping(path = {""})
+	public ResponseEntity<ObjectWithTextualContextDTO> registerWith(
+			@Valid() @RequestBody() UserRegistrationRequestDTO userRegistrationRequestDTO) {
+		User possiblyRegisteredUser = 
+				registrationService.registerWith(userRegistrationRequestDTO);
+		if (possiblyRegisteredUser == null) {
+			StringBuilder textualContextBuilder = new StringBuilder();
+			textualContextBuilder.append("The e-mail address \"");
+			textualContextBuilder.append(userRegistrationRequestDTO.getEmailAddress());
+			textualContextBuilder.append("\" is already associated to a user account!");
+
+			// REFERENCE: https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.6
+			return new ResponseEntity<ObjectWithTextualContextDTO>(
+					new ObjectWithTextualContextDTO(possiblyRegisteredUser, 
+							textualContextBuilder.toString()), 
+					HttpStatus.NOT_ACCEPTABLE);
+		}
+
+		StringBuilder textualContextBuilder = new StringBuilder();
+		textualContextBuilder.append("The user with the e-mail address \"");
+		textualContextBuilder.append(userRegistrationRequestDTO.getEmailAddress());
+		textualContextBuilder.append("\" has been registered.");
+		String textualContext = textualContextBuilder.toString();
+		System.out.println(textualContext);
+
+		return new ResponseEntity<ObjectWithTextualContextDTO>(
+				new ObjectWithTextualContextDTO(possiblyRegisteredUser, textualContext), 
+				HttpStatus.OK);
+	}
+}
