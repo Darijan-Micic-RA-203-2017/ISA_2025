@@ -8,4 +8,7 @@ import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.mode
 public interface UserService {
 	List<User> findAll();
 	User findById(long id);
+	User findByEmailAddress(String emailAddress);
+	User findByUsername(String username);
+	User save(User user);
 }

@@ -46,4 +46,19 @@ public class UserServiceImplementation implements UserDetailsService, UserServic
 	public User findById(long id) {
 		return userRepository.fetchById(id);
 	}
+
+	@Override()
+	public User findByEmailAddress(String emailAddress) {
+		return userRepository.findByEmailAddress(emailAddress);
+	}
+
+	@Override()
+	public User findByUsername(String username) {
+		return userRepository.findByUsername(username);
+	}
+
+	@Override()
+	public User save(User user) {
+		return userRepository.save(user);
+	}
 }
