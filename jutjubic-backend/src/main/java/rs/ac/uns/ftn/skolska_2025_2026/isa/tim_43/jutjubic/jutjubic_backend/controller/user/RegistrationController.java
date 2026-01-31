@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.ObjectWithTextualContextDTO;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.user.UserRegistrationRequestDTO;
+import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.exception.EmailAddressAlreadyAssociatedWithSomeUserException;
+import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.exception.UsernameAlreadyAssociatedWithSomeUserException;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.user.User;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.service.user.RegistrationService;
 
@@ -36,18 +38,14 @@ public class RegistrationController {
 	@PostMapping(path = {""})
 	public ResponseEntity<ObjectWithTextualContextDTO> registerWith(
 			@Valid() @RequestBody() UserRegistrationRequestDTO userRegistrationRequestDTO) {
-		User possiblyRegisteredUser = 
-				registrationService.registerWith(userRegistrationRequestDTO);
-		if (possiblyRegisteredUser == null) {
-			StringBuilder textualContextBuilder = new StringBuilder();
-			textualContextBuilder.append("The e-mail address \"");
-			textualContextBuilder.append(userRegistrationRequestDTO.getEmailAddress());
-			textualContextBuilder.append("\" is already associated to a user account!");
-
+		User possiblyRegisteredUser = null;
+		try {
+			possiblyRegisteredUser = registrationService.registerWith(userRegistrationRequestDTO);
+		} catch (EmailAddressAlreadyAssociatedWithSomeUserException 
+				| UsernameAlreadyAssociatedWithSomeUserException e) {
 			// REFERENCE: https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.6
 			return new ResponseEntity<ObjectWithTextualContextDTO>(
-					new ObjectWithTextualContextDTO(possiblyRegisteredUser, 
-							textualContextBuilder.toString()), 
+					new ObjectWithTextualContextDTO(possiblyRegisteredUser, e.getMessage()), 
 					HttpStatus.NOT_ACCEPTABLE);
 		}
 

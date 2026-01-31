@@ -5,6 +5,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.user.UserRegistrationRequestDTO;
+import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.exception.EmailAddressAlreadyAssociatedWithSomeUserException;
+import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.exception.UsernameAlreadyAssociatedWithSomeUserException;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.address.Address;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.user.User;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.service.address.AddressService;
@@ -27,16 +29,48 @@ public class RegistrationServiceImplementation implements RegistrationService {
 	}
 
 	@Override()
-	public User registerWith(UserRegistrationRequestDTO userRegistrationRequestDTO) {
-		User possiblyExistentUserWithSameEmailAddress = 
-				userService.findByEmailAddress(userRegistrationRequestDTO.getEmailAddress());
-		if (possiblyExistentUserWithSameEmailAddress != null) {
-			return null;
+	public boolean isEmailAddressAlreadyAssociatedWithSomeUser(String emailAddress) {
+		User possibleExistingUserWithSameEmailAddress = 
+				userService.findByEmailAddress(emailAddress);
+		if (possibleExistingUserWithSameEmailAddress != null) {
+			return true;
 		}
-		User possiblyExistentUserWithSameUsername = 
-				userService.findByUsername(userRegistrationRequestDTO.getUsername());
-		if (possiblyExistentUserWithSameUsername != null) {
-			return null;
+
+		return false;
+	}
+
+	@Override()
+	public boolean isUsernameAlreadyAssociatedWithSomeUser(String username) {
+		User possibleExistingUserWithSameUsername = userService.findByUsername(username);
+		if (possibleExistingUserWithSameUsername != null) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override()
+	public User registerWith(UserRegistrationRequestDTO userRegistrationRequestDTO) 
+			throws EmailAddressAlreadyAssociatedWithSomeUserException, 
+			UsernameAlreadyAssociatedWithSomeUserException {
+		String emailAddress = userRegistrationRequestDTO.getEmailAddress();
+		if (isEmailAddressAlreadyAssociatedWithSomeUser(emailAddress)) {
+			StringBuilder exceptionMessageBuilder = new StringBuilder();
+			exceptionMessageBuilder.append("The e-mail address \"").append(emailAddress);
+			exceptionMessageBuilder.append("\" is already associated with some user!");
+
+			throw new EmailAddressAlreadyAssociatedWithSomeUserException(
+					exceptionMessageBuilder.toString());
+		}
+
+		String username = userRegistrationRequestDTO.getUsername();
+		if (isUsernameAlreadyAssociatedWithSomeUser(username)) {
+			StringBuilder exceptionMessageBuilder = new StringBuilder();
+			exceptionMessageBuilder.append("The username \"").append(username);
+			exceptionMessageBuilder.append("\" is already associated with some user!");
+
+			throw new UsernameAlreadyAssociatedWithSomeUserException(
+					exceptionMessageBuilder.toString());
 		}
 
 		Address addressOfNewUser = new Address();
