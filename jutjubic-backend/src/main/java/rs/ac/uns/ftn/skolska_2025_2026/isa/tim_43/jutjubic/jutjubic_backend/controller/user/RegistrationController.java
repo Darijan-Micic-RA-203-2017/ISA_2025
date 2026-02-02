@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.ObjectWithTextualContextDTO;
+import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.user.UserDTO;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.user.UserRegistrationRequestDTO;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.exception.EmailAddressAlreadyAssociatedWithSomeUserException;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.exception.UsernameAlreadyAssociatedWithSomeUserException;
@@ -39,14 +40,30 @@ public class RegistrationController {
 	public ResponseEntity<ObjectWithTextualContextDTO> registerWith(
 			@Valid() @RequestBody() UserRegistrationRequestDTO userRegistrationRequestDTO) {
 		User possiblyRegisteredUser = null;
+		UserDTO possiblyRegisteredUserDTO = null;
 		try {
 			possiblyRegisteredUser = registrationService.registerWith(userRegistrationRequestDTO);
 		} catch (EmailAddressAlreadyAssociatedWithSomeUserException 
 				| UsernameAlreadyAssociatedWithSomeUserException e) {
 			// REFERENCE: https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.6
 			return new ResponseEntity<ObjectWithTextualContextDTO>(
-					new ObjectWithTextualContextDTO(possiblyRegisteredUser, e.getMessage()), 
+					new ObjectWithTextualContextDTO(possiblyRegisteredUserDTO, e.getMessage()), 
 					HttpStatus.NOT_ACCEPTABLE);
+		}
+
+		if (possiblyRegisteredUser == null) {
+			StringBuilder textualContextBuilder = new StringBuilder();
+			textualContextBuilder.append("The user with the e-mail address \"");
+			textualContextBuilder.append(userRegistrationRequestDTO.getEmailAddress());
+			textualContextBuilder.append("\" has not been registered because an internal ");
+			textualContextBuilder.append("server error has occured!");
+			String textualContext = textualContextBuilder.toString();
+			System.out.println(textualContext);
+
+			// REFERENCE: https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1
+			return new ResponseEntity<ObjectWithTextualContextDTO>(
+					new ObjectWithTextualContextDTO(possiblyRegisteredUserDTO, textualContext), 
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		StringBuilder textualContextBuilder = new StringBuilder();
@@ -56,8 +73,10 @@ public class RegistrationController {
 		String textualContext = textualContextBuilder.toString();
 		System.out.println(textualContext);
 
+		possiblyRegisteredUserDTO = new UserDTO(possiblyRegisteredUser);
+
 		return new ResponseEntity<ObjectWithTextualContextDTO>(
-				new ObjectWithTextualContextDTO(possiblyRegisteredUser, textualContext), 
+				new ObjectWithTextualContextDTO(possiblyRegisteredUserDTO, textualContext), 
 				HttpStatus.OK);
 	}
 }

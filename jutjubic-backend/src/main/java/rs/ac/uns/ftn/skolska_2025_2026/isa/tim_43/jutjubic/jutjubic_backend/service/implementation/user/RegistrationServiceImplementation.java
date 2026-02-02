@@ -1,5 +1,8 @@
 package rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.service.implementation.user;
 
+import java.util.Set;
+import java.util.TreeSet;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -9,21 +12,26 @@ import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.exce
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.exception.UsernameAlreadyAssociatedWithSomeUserException;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.address.Address;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.user.User;
+import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.user.UserRole;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.service.address.AddressService;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.service.user.RegistrationService;
+import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.service.user.UserRoleService;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.service.user.UserService;
 
 /** REFERENCE: https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example */
 @Service()
 public class RegistrationServiceImplementation implements RegistrationService {
 	private AddressService addressService;
+	private UserRoleService userRoleService;
 	private UserService userService;
 	private PasswordEncoder passwordEncoder;
 
 	@Autowired()
 	public RegistrationServiceImplementation(AddressService addressService, 
-			UserService userService, PasswordEncoder passwordEncoder) {
+			UserRoleService userRoleService, UserService userService, 
+			PasswordEncoder passwordEncoder) {
 		this.addressService = addressService;
+		this.userRoleService = userRoleService;
 		this.userService = userService;
 		this.passwordEncoder = passwordEncoder;
 	}
@@ -88,6 +96,9 @@ public class RegistrationServiceImplementation implements RegistrationService {
 
 		User newUser = new User();
 		newUser.setEnabled(false);
+		Set<UserRole> roles = new TreeSet<UserRole>();
+		roles.add(userRoleService.findById(1L));
+		newUser.setRoles(roles);
 		newUser.setEmailAddress(userRegistrationRequestDTO.getEmailAddress());
 		newUser.setUsername(userRegistrationRequestDTO.getUsername());
 		newUser.setPassword(passwordEncoder.encode(userRegistrationRequestDTO.getPassword()));
