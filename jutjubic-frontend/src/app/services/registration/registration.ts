@@ -1,0 +1,72 @@
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+
+import { ObjectWithTextualContext } from '../../model/object-with-textual-context';
+import { User } from '../../model/user/user';
+import { ParametersOfSubmitUserRegistrationRequestFunction } from '../../utilities/parameters-of-submit-user-registration-request-function';
+
+/** REFERENCE: https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-front-app */
+@Injectable({
+  providedIn: 'root'
+})
+export class RegistrationService {
+  private urlOfRegistrationMethod: string = 'http://localhost:8080/register';
+
+  constructor(private httpClient: HttpClient) { }
+
+  registerWith(parametersOfSubmitUserRegistrationRequestFunction: ParametersOfSubmitUserRegistrationRequestFunction): void {
+    const headersOfHttpRequestWithNonEmpthyBody: HttpHeaders = new HttpHeaders({
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    });
+
+    this.httpClient.post<ObjectWithTextualContext>(this.urlOfRegistrationMethod, 
+        JSON.stringify(parametersOfSubmitUserRegistrationRequestFunction.getUserRegistrationRequest()), {
+            headers: headersOfHttpRequestWithNonEmpthyBody
+    })
+    // REFERENCE: https://rxjs.dev/deprecations/subscribe-arguments
+    .subscribe({
+      next(responseObject: ObjectWithTextualContext): void {
+        /* REFERENCES:<br />
+         * https://stackoverflow.com/questions/56410007/cast-angular-http-response-into-class<br />
+         * https://stackoverflow.com/questions/51763745/angular-6-error-typeerror-is-not-a-function-but-it-is
+        */
+        let objectWithTextualContext: ObjectWithTextualContext = new ObjectWithTextualContext(responseObject);
+        let newUser: User = new User(objectWithTextualContext.getObject());
+        console.log('Registration response:', newUser);
+
+        // REFERENCE: https://material.angular.dev/components/snack-bar/overview
+        parametersOfSubmitUserRegistrationRequestFunction.getSnackBar().open('На систему Јутјубића направљен је кориснички налог ' 
+            + 'с унетим подацима. Том налогу тренутно је онемогућено деловање. Да би успешно завршили регистрацију Вашег налога, ' 
+            + 'посетите Ваше пријемно сандуче сервиса електронске поште у ком Вас очекује електронска порука с повезницом за ' 
+            + 'омогућавање деловања. Кликом на повезницу или копирањем повезнице у другу картицу и посетом ка њој Ваш налог ' 
+            + 'биће регистрован и моћи ћете да користите услуге Јутјубића.', 
+            'Затворите');
+      },
+      error(errorResponse: HttpErrorResponse): void {
+        parametersOfSubmitUserRegistrationRequestFunction.setIsRegistrationFormSubmitted(false);
+
+        let error: ObjectWithTextualContext = new ObjectWithTextualContext(errorResponse.error);
+        let textualContext: string = error.getTextualContext();
+        console.log(`Error on registration!\n\n${textualContext}`);
+        // REFERENCE: https://material.angular.dev/components/snack-bar/overview
+        if (errorResponse.status == 406) {
+          if (textualContext.includes('e-mail address')) {
+            parametersOfSubmitUserRegistrationRequestFunction.getSnackBar().open(
+                'Унета адреса електронске поште је већ повезана с неким корисником!', 'Затворите');
+          } else {
+            parametersOfSubmitUserRegistrationRequestFunction.getSnackBar().open(
+                'Унето корисничко име је већ повезано с неким корисником!', 'Затворите');
+          }
+
+          return;
+        }
+        if (errorResponse.status == 500) {
+          parametersOfSubmitUserRegistrationRequestFunction.getSnackBar().open(
+              'Дошло је до унутрашње грешке на услуживачу! Молимо Вас, покушајте поново касније.', 
+              'Затворите', { duration: 5000 });
+        }
+      }
+    });
+  }
+}
