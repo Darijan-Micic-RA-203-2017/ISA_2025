@@ -1,6 +1,4 @@
 import { WritableSignal } from "@angular/core";
-import { Router } from "@angular/router";
-
 import { MatSnackBar } from "@angular/material/snack-bar";
 
 import { UserRegistrationRequest } from "../model/user/user-registration-request";
@@ -14,15 +12,13 @@ export class ParametersOfSubmitUserRegistrationRequestFunction {
 	*/
 	private isRegistrationFormSubmitted: WritableSignal<boolean>;
 	private snackBar: MatSnackBar;
-	private router: Router;
 
 	/** REFERENCE: https://www.programfarmer.com/en-US/articles/2021/javascript-pass-by-value-pass-by-reference-pass-by-sharing */
 	constructor(userRegistrationRequest: UserRegistrationRequest, isRegistrationFormSubmitted: WritableSignal<boolean>, 
-			snackBar: MatSnackBar, router: Router) {
+			snackBar: MatSnackBar) {
 		this.userRegistrationRequest = userRegistrationRequest;
 		this.isRegistrationFormSubmitted = isRegistrationFormSubmitted;
 		this.snackBar = snackBar;
-		this.router = router;
 	}
 
 	public getUserRegistrationRequest(): UserRegistrationRequest {
@@ -48,9 +44,5 @@ export class ParametersOfSubmitUserRegistrationRequestFunction {
 
 	public getSnackBar(): MatSnackBar {
 		return this.snackBar;
-	}
-
-	public getRouter(): Router {
-		return this.router;
 	}
 }

@@ -44,14 +44,14 @@ public class UserRegistrationRequestDTO {
 	private String password;
 
 	@NotBlank(message = "The first name has to be non-blank!")
-	@Pattern(regexp = "^\\p{Lu}('\\p{Lu})?\\p{Ll}+([ \\-]\\p{Lu}('\\p{Lu})?\\p{Ll}+){1,2}$", 
+	@Pattern(regexp = "^\\p{Lu}('\\p{Lu})?\\p{Ll}+([ \\-]\\p{Lu}('\\p{Lu})?\\p{Ll}+)?$", 
 			flags = {Pattern.Flag.UNICODE_CASE}, 
 			message = "The first name has to not contain any non-letters, " 
 					+ "except space, hyphen and single quotation mark!")
 	private String firstName;
 
 	@NotBlank(message = "The last name has to be non-blank!")
-	@Pattern(regexp = "^\\p{L}('\\p{Lu})?\\p{Ll}+([ \\-]\\p{L}('\\p{Lu})?\\p{Ll}+){1,2}$", 
+	@Pattern(regexp = "^\\p{L}('\\p{Lu})?\\p{Ll}+([ \\-]\\p{L}('\\p{Lu})?\\p{Ll}+){0,2}$", 
 			flags = {Pattern.Flag.UNICODE_CASE}, 
 			message = "The last name has to not contain any non-letters, " 
 					+ "except space, hyphen and single quotation mark!")

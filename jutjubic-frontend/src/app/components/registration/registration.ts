@@ -1,6 +1,6 @@
 import { Component, inject, signal, WritableSignal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -47,7 +47,7 @@ export class RegistrationComponent {
 
   parametersOfSubmitUserRegistrationRequestFunction: ParametersOfSubmitUserRegistrationRequestFunction;
 
-  constructor(private formBuilder: FormBuilder, private registrationService: RegistrationService, public router: Router) {
+  constructor(private formBuilder: FormBuilder, private registrationService: RegistrationService) {
     this.registrationFormGroup = this.formBuilder.group({
       emailAddressControl: new FormControl<string>('', {
         /* REFERENCES:
@@ -78,11 +78,11 @@ export class RegistrationComponent {
       }),
       firstNameControl: new FormControl<string>('', {
         // REFERENCE: https://forum.knime.com/t/string-manipulation-multi-column-regex-patternsyntaxexception-illegal-repetition/60894/4
-        validators: [Validators.required, Validators.pattern(/^\p{Lu}('\p{Lu})?\p{Ll}+([ \-]\p{Lu}('\p{Lu})?\p{Ll}+){1,2}$/u)],
+        validators: [Validators.required, Validators.pattern(/^\p{Lu}('\p{Lu})?\p{Ll}+([ \-]\p{Lu}('\p{Lu})?\p{Ll}+)?$/u)],
         updateOn: 'change'
       }),
       lastNameControl: new FormControl<string>('', {
-        validators: [Validators.required, Validators.pattern(/^\p{L}('\p{Lu})?\p{Ll}+([ \-]\p{L}('\p{Lu})?\p{Ll}+){1,2}$/u)],
+        validators: [Validators.required, Validators.pattern(/^\p{L}('\p{Lu})?\p{Ll}+([ \-]\p{L}('\p{Lu})?\p{Ll}+){0,2}$/u)],
         updateOn: 'change'
       }),
       addressFormGroup: this.formBuilder.group({
@@ -122,7 +122,7 @@ export class RegistrationComponent {
     this.isRegistrationFormSubmitted = signal<boolean>(false);
 
     this.parametersOfSubmitUserRegistrationRequestFunction = new ParametersOfSubmitUserRegistrationRequestFunction(
-        this.userRegistrationRequest, this.isRegistrationFormSubmitted, this.snackBar, router);
+        this.userRegistrationRequest, this.isRegistrationFormSubmitted, this.snackBar);
   }
 
   /** REFERENCE: https://material.angular.dev/components/form-field/examples */
