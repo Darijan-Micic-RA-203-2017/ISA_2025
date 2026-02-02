@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
 
+import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.user.UserRole;
+
 /** REFERENCES:<br />
  * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe1/validation_example<br />
  * https://beanvalidation.org/1.0/spec/<br />
@@ -26,6 +28,11 @@ public class UserRoleDTO {
 	public UserRoleDTO(long id, String name) {
 		this.id = id;
 		this.name = name;
+	}
+
+	public UserRoleDTO(UserRole userRole) {
+		this.id = userRole.getId();
+		this.name = userRole.getName();
 	}
 
 	public long getId() {

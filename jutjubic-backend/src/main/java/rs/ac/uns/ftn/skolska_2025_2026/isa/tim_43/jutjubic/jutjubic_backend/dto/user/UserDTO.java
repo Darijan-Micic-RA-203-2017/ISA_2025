@@ -8,9 +8,12 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.address.AddressDTO;
+import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.user.User;
+import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.user.UserRole;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.validation.constraint.ContainsLetters;
 
 /** REFERENCES:<br />
@@ -50,14 +53,14 @@ public class UserDTO {
 	private String username;
 
 	@NotBlank(message = "The first name has to be non-blank!")
-	@Pattern(regexp = "^\\p{Lu}('\\p{Lu})?\\p{Ll}+([ \\-]\\p{Lu}('\\p{Lu})?\\p{Ll}+){1,2}$", 
+	@Pattern(regexp = "^\\p{Lu}('\\p{Lu})?\\p{Ll}+([ \\-]\\p{Lu}('\\p{Lu})?\\p{Ll}+)?$", 
 			flags = {Pattern.Flag.UNICODE_CASE}, 
 			message = "The first name has to not contain any non-letters, " 
 					+ "except space, hyphen and single quotation mark!")
 	private String firstName;
 
 	@NotBlank(message = "The last name has to be non-blank!")
-	@Pattern(regexp = "^\\p{L}('\\p{Lu})?\\p{Ll}+([ \\-]\\p{L}('\\p{Lu})?\\p{Ll}+){1,2}$", 
+	@Pattern(regexp = "^\\p{L}('\\p{Lu})?\\p{Ll}+([ \\-]\\p{L}('\\p{Lu})?\\p{Ll}+){0,2}$", 
 			flags = {Pattern.Flag.UNICODE_CASE}, 
 			message = "The last name has to not contain any non-letters, " 
 					+ "except space, hyphen and single quotation mark!")
@@ -78,6 +81,20 @@ public class UserDTO {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.address = address;
+	}
+
+	public UserDTO(User user) {
+		this.id = user.getId();
+		this.enabled = user.isEnabled();
+		this.roles = new ArrayList<UserRoleDTO>();
+		for (UserRole r: user.getRoles()) {
+			this.roles.add(new UserRoleDTO(r));
+		}
+		this.emailAddress = user.getEmailAddress();
+		this.username = user.getUsername();
+		this.firstName = user.getFirstName();
+		this.lastName = user.getLastName();
+		this.address = new AddressDTO(user.getAddress());
 	}
 
 	public long getId() {

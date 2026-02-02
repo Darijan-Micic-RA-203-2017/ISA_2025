@@ -4,6 +4,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.PositiveOrZero;
 
+import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.address.Address;
+
 /** REFERENCES:<br />
  * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe1/validation_example<br />
  * https://beanvalidation.org/1.0/spec/<br />
@@ -48,6 +50,17 @@ public class AddressDTO {
 		this.country = country;
 		this.latitude = latitude;
 		this.longitude = longitude;
+	}
+
+	public AddressDTO(Address address) {
+		this.id = address.getId();
+		this.street = address.getStreet();
+		this.number = address.getNumber();
+		this.postalCode = address.getPostalCode();
+		this.place = address.getPlace();
+		this.country = address.getCountry();
+		this.latitude = address.getLatitude();
+		this.longitude = address.getLongitude();
 	}
 
 	public long getId() {
