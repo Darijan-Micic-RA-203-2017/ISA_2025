@@ -58,6 +58,39 @@ public class RegistrationServiceImplementation implements RegistrationService {
 	}
 
 	@Override()
+	public Address saveAddressOfNewUser(UserRegistrationRequestDTO userRegistrationRequestDTO) {
+		Address addressOfNewUser = new Address();
+		addressOfNewUser.setStreet(userRegistrationRequestDTO.getAddress().getStreet());
+		addressOfNewUser.setNumber(userRegistrationRequestDTO.getAddress().getNumber());
+		addressOfNewUser.setPostalCode(userRegistrationRequestDTO.getAddress().getPostalCode());
+		addressOfNewUser.setPlace(userRegistrationRequestDTO.getAddress().getPlace());
+		addressOfNewUser.setCountry(userRegistrationRequestDTO.getAddress().getCountry());
+		addressOfNewUser.setLatitude(userRegistrationRequestDTO.getAddress().getLatitude());
+		addressOfNewUser.setLongitude(userRegistrationRequestDTO.getAddress().getLongitude());
+
+		return addressService.save(addressOfNewUser);
+	}
+
+	@Override()
+	public User saveNewUser(UserRegistrationRequestDTO userRegistrationRequestDTO, 
+			Address addressOfNewUser) {
+		User newUser = new User();
+		newUser.setEnabled(false);
+		Set<UserRole> roles = new TreeSet<UserRole>();
+		roles.add(userRoleService.findById(1L));
+		newUser.setRoles(roles);
+		newUser.setEmailAddress(userRegistrationRequestDTO.getEmailAddress());
+		newUser.setUsername(userRegistrationRequestDTO.getUsername());
+		String encodedPassword = passwordEncoder.encode(userRegistrationRequestDTO.getPassword());
+		newUser.setPassword(encodedPassword);
+		newUser.setFirstName(userRegistrationRequestDTO.getFirstName());
+		newUser.setLastName(userRegistrationRequestDTO.getLastName());
+		newUser.setAddress(addressOfNewUser);
+
+		return userService.save(newUser);
+	}
+
+	@Override()
 	public User registerWith(UserRegistrationRequestDTO userRegistrationRequestDTO) 
 			throws EmailAddressAlreadyAssociatedWithSomeUserException, 
 			UsernameAlreadyAssociatedWithSomeUserException {
@@ -81,31 +114,11 @@ public class RegistrationServiceImplementation implements RegistrationService {
 					exceptionMessageBuilder.toString());
 		}
 
-		Address addressOfNewUser = new Address();
-		addressOfNewUser.setStreet(userRegistrationRequestDTO.getAddress().getStreet());
-		addressOfNewUser.setNumber(userRegistrationRequestDTO.getAddress().getNumber());
-		addressOfNewUser.setPostalCode(userRegistrationRequestDTO.getAddress().getPostalCode());
-		addressOfNewUser.setPlace(userRegistrationRequestDTO.getAddress().getPlace());
-		addressOfNewUser.setCountry(userRegistrationRequestDTO.getAddress().getCountry());
-		addressOfNewUser.setLatitude(userRegistrationRequestDTO.getAddress().getLatitude());
-		addressOfNewUser.setLongitude(userRegistrationRequestDTO.getAddress().getLongitude());
-		Address returnValueOfSaveAddressMethod = addressService.save(addressOfNewUser);
-		if (returnValueOfSaveAddressMethod == null || returnValueOfSaveAddressMethod.getId() < 1) {
+		Address addressOfNewUser = saveAddressOfNewUser(userRegistrationRequestDTO);
+		if (addressOfNewUser == null || addressOfNewUser.getId() < 1) {
 			return null;
 		}
 
-		User newUser = new User();
-		newUser.setEnabled(false);
-		Set<UserRole> roles = new TreeSet<UserRole>();
-		roles.add(userRoleService.findById(1L));
-		newUser.setRoles(roles);
-		newUser.setEmailAddress(userRegistrationRequestDTO.getEmailAddress());
-		newUser.setUsername(userRegistrationRequestDTO.getUsername());
-		newUser.setPassword(passwordEncoder.encode(userRegistrationRequestDTO.getPassword()));
-		newUser.setFirstName(userRegistrationRequestDTO.getFirstName());
-		newUser.setLastName(userRegistrationRequestDTO.getLastName());
-		newUser.setAddress(returnValueOfSaveAddressMethod);
-
-		return userService.save(newUser);
+		return saveNewUser(userRegistrationRequestDTO, addressOfNewUser);
 	}
 }
