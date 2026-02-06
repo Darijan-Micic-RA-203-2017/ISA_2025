@@ -165,7 +165,8 @@ public class RegistrationServiceImplementation implements RegistrationService {
 
 	@Override()
 	public void cancelRegistrationOf(User newUser) {
-		addressService.deleteById(newUser.getAddress().getId());
+		long idOfAddressOfNewUser = newUser.getAddress().getId();
 		userService.deleteById(newUser.getId());
+		addressService.deleteById(idOfAddressOfNewUser);
 	}
 }
