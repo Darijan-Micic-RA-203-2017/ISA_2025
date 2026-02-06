@@ -1,9 +1,12 @@
 package rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.service.implementation.user;
 
+import java.time.ZonedDateTime;
 import java.util.Set;
 import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
+import org.springframework.mail.MailException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -14,26 +17,36 @@ import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.mode
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.user.User;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.user.UserRole;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.service.address.AddressService;
+import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.service.notification.EmailService;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.service.user.RegistrationService;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.service.user.UserRoleService;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.service.user.UserService;
+import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.utility.TextualEmailMessageData;
 
-/** REFERENCE: https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example */
+/** REFERENCES:<br />
+ * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example<br />
+ * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe2/async_example<br />
+ * https://mailtrap.io/blog/spring-send-email/
+*/
 @Service()
 public class RegistrationServiceImplementation implements RegistrationService {
 	private AddressService addressService;
 	private UserRoleService userRoleService;
 	private UserService userService;
 	private PasswordEncoder passwordEncoder;
+	private Environment environment;
+	private EmailService emailService;
 
 	@Autowired()
 	public RegistrationServiceImplementation(AddressService addressService, 
 			UserRoleService userRoleService, UserService userService, 
-			PasswordEncoder passwordEncoder) {
+			PasswordEncoder passwordEncoder, Environment environment, EmailService emailService) {
 		this.addressService = addressService;
 		this.userRoleService = userRoleService;
 		this.userService = userService;
 		this.passwordEncoder = passwordEncoder;
+		this.environment = environment;
+		this.emailService = emailService;
 	}
 
 	@Override()
@@ -120,5 +133,33 @@ public class RegistrationServiceImplementation implements RegistrationService {
 		}
 
 		return saveNewUser(userRegistrationRequestDTO, addressOfNewUser);
+	}
+
+	@Override()
+	public void sendEmailMessageForAccountActivationOf(User newUser) throws MailException {
+		TextualEmailMessageData dataOfEmailMessageForAccountActivation = 
+				new TextualEmailMessageData();
+		dataOfEmailMessageForAccountActivation.setBcc(null);
+		dataOfEmailMessageForAccountActivation.setCc(null);
+		dataOfEmailMessageForAccountActivation.setFrom(
+				environment.getRequiredProperty("spring.mail.username"));
+		dataOfEmailMessageForAccountActivation.setReplyTo(null);
+		// REFERENCE: https://mkyong.com/java/how-to-get-current-timestamps-in-java/
+		ZonedDateTime currentDateAndTime = ZonedDateTime.now();
+		dataOfEmailMessageForAccountActivation.setSentDate(currentDateAndTime);
+		dataOfEmailMessageForAccountActivation.setSubject(
+				"Јутјубић - омогућавање деловања корисничког налога");
+		StringBuilder emailMessageTextBuilder = new StringBuilder("Поштовани/а ");
+		emailMessageTextBuilder.append(newUser.getFirstName()).append(",\n\n");
+		emailMessageTextBuilder.append("Хвала Вам за регистрацију на нашој платформи! ");
+		emailMessageTextBuilder.append("Да би омогућили деловање Вашег корисничког налога, ");
+		emailMessageTextBuilder.append("молимо Вас да кликнете на следећу повезницу:\n");
+		emailMessageTextBuilder.append("http://localhost:4200/activate-account/");
+		emailMessageTextBuilder.append(newUser.getPassword()).append("\n\n");
+		emailMessageTextBuilder.append("Поздрав!\nЈутјубић\n");
+		dataOfEmailMessageForAccountActivation.setText(emailMessageTextBuilder.toString());
+		dataOfEmailMessageForAccountActivation.setTo(new String[] {newUser.getEmailAddress()});
+
+		emailService.sendTextualEmailMessageWith(dataOfEmailMessageForAccountActivation);
 	}
 }
