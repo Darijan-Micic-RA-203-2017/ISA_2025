@@ -23,4 +23,5 @@ public interface RegistrationService {
 			throws EmailAddressAlreadyAssociatedWithSomeUserException, 
 			UsernameAlreadyAssociatedWithSomeUserException;
 	void sendEmailMessageForAccountActivationOf(User newUser) throws MailException;
+	void cancelRegistrationOf(User newUser);
 }

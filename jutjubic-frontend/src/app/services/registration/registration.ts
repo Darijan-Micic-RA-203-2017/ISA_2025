@@ -61,6 +61,14 @@ export class RegistrationService {
 
           return;
         }
+        if (errorResponse.status == 409) {
+          parametersOfSubmitUserRegistrationRequestFunction.getSnackBar().open(
+              'Дошло је до грешке при слању електронске поруке с повезницом за омогућавање деловања Вашег корисничког налога!' 
+                  + ' Због те грешке, регистрација је поништена! Молимо Вас, покушајте поново касније.', 
+              'Затворите', { duration: 5000 });
+
+          return;
+        }
         if (errorResponse.status == 500) {
           parametersOfSubmitUserRegistrationRequestFunction.getSnackBar().open(
               'Дошло је до унутрашње грешке на услуживачу! Молимо Вас, покушајте поново касније.', 

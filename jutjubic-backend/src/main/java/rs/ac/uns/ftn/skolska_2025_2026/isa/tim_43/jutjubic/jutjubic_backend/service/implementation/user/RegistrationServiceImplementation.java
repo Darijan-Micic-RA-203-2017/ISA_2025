@@ -162,4 +162,10 @@ public class RegistrationServiceImplementation implements RegistrationService {
 
 		emailService.sendTextualEmailMessageWith(dataOfEmailMessageForAccountActivation);
 	}
+
+	@Override()
+	public void cancelRegistrationOf(User newUser) {
+		addressService.deleteById(newUser.getAddress().getId());
+		userService.deleteById(newUser.getId());
+	}
 }

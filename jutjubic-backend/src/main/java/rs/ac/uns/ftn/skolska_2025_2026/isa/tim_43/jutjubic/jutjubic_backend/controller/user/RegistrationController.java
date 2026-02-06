@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,19 +40,19 @@ public class RegistrationController {
 	@PostMapping(path = {""})
 	public ResponseEntity<ObjectWithTextualContextDTO> registerWith(
 			@Valid() @RequestBody() UserRegistrationRequestDTO userRegistrationRequestDTO) {
-		User possiblyRegisteredUser = null;
-		UserDTO possiblyRegisteredUserDTO = null;
+		User registeredUser = null;
+		UserDTO registeredUserDTO = null;
 		try {
-			possiblyRegisteredUser = registrationService.registerWith(userRegistrationRequestDTO);
+			registeredUser = registrationService.registerWith(userRegistrationRequestDTO);
 		} catch (EmailAddressAlreadyAssociatedWithSomeUserException 
 				| UsernameAlreadyAssociatedWithSomeUserException e) {
 			// REFERENCE: https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.6
 			return new ResponseEntity<ObjectWithTextualContextDTO>(
-					new ObjectWithTextualContextDTO(possiblyRegisteredUserDTO, e.getMessage()), 
+					new ObjectWithTextualContextDTO(registeredUserDTO, e.getMessage()), 
 					HttpStatus.NOT_ACCEPTABLE);
 		}
 
-		if (possiblyRegisteredUser == null) {
+		if (registeredUser == null) {
 			StringBuilder textualContextBuilder = new StringBuilder();
 			textualContextBuilder.append("The user with the e-mail address \"");
 			textualContextBuilder.append(userRegistrationRequestDTO.getEmailAddress());
@@ -62,8 +63,27 @@ public class RegistrationController {
 
 			// REFERENCE: https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1
 			return new ResponseEntity<ObjectWithTextualContextDTO>(
-					new ObjectWithTextualContextDTO(possiblyRegisteredUserDTO, textualContext), 
+					new ObjectWithTextualContextDTO(registeredUserDTO, textualContext), 
 					HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		try {
+			registrationService.sendEmailMessageForAccountActivationOf(registeredUser);
+		} catch (MailException mE) {
+			registrationService.cancelRegistrationOf(registeredUser);
+
+			StringBuilder textualContextBuilder = new StringBuilder();
+			textualContextBuilder.append("The registration of the user with the e-mail address \"");
+			textualContextBuilder.append(userRegistrationRequestDTO.getEmailAddress());
+			textualContextBuilder.append("\" has been cancelled because an e-mail exception has ");
+			textualContextBuilder.append("occurred! The user has been deleted from the database!");
+			String textualContext = textualContextBuilder.toString();
+			System.out.println(textualContext);
+
+			// REFERENCE: https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.8
+			return new ResponseEntity<ObjectWithTextualContextDTO>(
+					new ObjectWithTextualContextDTO(registeredUserDTO, textualContext), 
+					HttpStatus.CONFLICT);
 		}
 
 		StringBuilder textualContextBuilder = new StringBuilder();
@@ -73,10 +93,11 @@ public class RegistrationController {
 		String textualContext = textualContextBuilder.toString();
 		System.out.println(textualContext);
 
-		possiblyRegisteredUserDTO = new UserDTO(possiblyRegisteredUser);
+		registeredUserDTO = new UserDTO(registeredUser);
 
+		// REFERENCE: https://datatracker.ietf.org/doc/html/rfc7231#section-6.3.2
 		return new ResponseEntity<ObjectWithTextualContextDTO>(
-				new ObjectWithTextualContextDTO(possiblyRegisteredUserDTO, textualContext), 
-				HttpStatus.OK);
+				new ObjectWithTextualContextDTO(registeredUserDTO, textualContext), 
+				HttpStatus.CREATED);
 	}
 }
