@@ -9,4 +9,5 @@ public interface UserRoleService {
 	List<UserRole> findAll();
 	UserRole findById(long id);
 	UserRole findByName(String name);
+	void deleteById(long id);
 }

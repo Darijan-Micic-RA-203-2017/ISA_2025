@@ -33,4 +33,9 @@ public class AddressServiceImplementation implements AddressService {
 	public Address save(Address address) {
 		return addressRepository.save(address);
 	}
+
+	@Override()
+	public void deleteById(long id) {
+		addressRepository.deleteById(id);
+	}
 }

@@ -61,4 +61,9 @@ public class UserServiceImplementation implements UserDetailsService, UserServic
 	public User save(User user) {
 		return userRepository.save(user);
 	}
+
+	@Override()
+	public void deleteById(long id) {
+		userRepository.deleteById(id);
+	}
 }

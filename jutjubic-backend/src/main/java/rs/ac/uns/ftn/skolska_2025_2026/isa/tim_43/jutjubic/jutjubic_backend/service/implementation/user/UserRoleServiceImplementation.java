@@ -33,4 +33,9 @@ public class UserRoleServiceImplementation implements UserRoleService {
 	public UserRole findByName(String name) {
 		return userRoleRepository.findByName(name);
 	}
+
+	@Override()
+	public void deleteById(long id) {
+		userRoleRepository.deleteById(id);
+	}
 }
