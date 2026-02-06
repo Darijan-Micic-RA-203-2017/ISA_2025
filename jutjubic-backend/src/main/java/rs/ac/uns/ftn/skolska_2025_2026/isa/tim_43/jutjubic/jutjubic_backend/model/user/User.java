@@ -100,7 +100,7 @@ public class User implements UserDetails, Comparable<User> {
 	private String password;
 
 	/** REFERENCES:<br />
-	 * https://in.relation.to/2024/04/22/stop-using-date/
+	 * https://in.relation.to/2024/04/22/stop-using-date/<br />
 	 * https://medium.com/decisionbrain/dates-time-in-modern-java-4ed9d5848a3e<br />
 	 * https://medium.com/@ujjawalr/stop-using-java-util-date-heres-why-and-what-to-use-instead-a1e6023e3c58
 	*/
