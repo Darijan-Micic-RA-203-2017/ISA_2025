@@ -70,6 +70,8 @@ public class RegistrationController {
 		try {
 			registrationService.sendEmailMessageForAccountActivationOf(registeredUser);
 		} catch (MailException mE) {
+			mE.printStackTrace();
+
 			registrationService.cancelRegistrationOf(registeredUser);
 
 			StringBuilder textualContextBuilder = new StringBuilder();

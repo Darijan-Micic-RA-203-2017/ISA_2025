@@ -151,12 +151,24 @@ public class RegistrationServiceImplementation implements RegistrationService {
 				"Јутјубић - омогућавање деловања корисничког налога");
 		StringBuilder emailMessageTextBuilder = new StringBuilder("Поштовани/а ");
 		emailMessageTextBuilder.append(newUser.getFirstName()).append(",\n\n");
-		emailMessageTextBuilder.append("Хвала Вам за регистрацију на нашој платформи! ");
-		emailMessageTextBuilder.append("Да би омогућили деловање Вашег корисничког налога, ");
-		emailMessageTextBuilder.append("молимо Вас да кликнете на следећу повезницу:\n");
+		emailMessageTextBuilder.append("Хвала Вам што сте започели поступак регистрације на ");
+		emailMessageTextBuilder.append("нашој платформи! Отворите следећу повезницу (кликом ");
+		emailMessageTextBuilder.append("на њу или њеним копирањем у адресно поље друге картице ");
+		emailMessageTextBuilder.append("Веб читача и посетом к њој) да бисте успешно завршили ");
+		emailMessageTextBuilder.append("регистрацију Вашег корисничког налога:\n");
 		emailMessageTextBuilder.append("http://localhost:4200/activate-account/");
 		emailMessageTextBuilder.append(newUser.getPassword()).append("\n\n");
-		emailMessageTextBuilder.append("Поздрав!\nЈутјубић\n");
+		emailMessageTextBuilder.append("Поздрав!\nЈутјубић\n\n\n");
+		emailMessageTextBuilder.append("Respected ").append(newUser.getFirstName()).append(",\n\n");
+		emailMessageTextBuilder.append("Thank you for beginning the registration process on ");
+		emailMessageTextBuilder.append("our platform! Please open the following link (by ");
+		emailMessageTextBuilder.append("clicking on it or copying it into the address field of ");
+		emailMessageTextBuilder.append("the other Web browser tab and visiting it) in order to ");
+		emailMessageTextBuilder.append("successfully complete the registration of your user ");
+		emailMessageTextBuilder.append("account:\n");
+		emailMessageTextBuilder.append("http://localhost:4200/activate-account/");
+		emailMessageTextBuilder.append(newUser.getPassword()).append("\n\n");
+		emailMessageTextBuilder.append("Best regards,\nJutjubic\n");
 		dataOfEmailMessageForAccountActivation.setText(emailMessageTextBuilder.toString());
 		dataOfEmailMessageForAccountActivation.setTo(new String[] {newUser.getEmailAddress()});
 
