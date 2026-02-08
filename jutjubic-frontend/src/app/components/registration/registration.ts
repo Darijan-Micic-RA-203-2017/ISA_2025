@@ -144,22 +144,17 @@ export class RegistrationComponent {
 
   /** REFERENCE: https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-front-app */
   submitUserRegistrationRequest(parameters: ParametersOfSubmitUserRegistrationRequestFunction): void {
-    this.parametersOfSubmitUserRegistrationRequestFunction.setIsRegistrationFormSubmitted(true);
+    parameters.setIsRegistrationFormSubmitted(true);
 
     /* REFERENCES:<br />
      * https://stackoverflow.com/questions/56410007/cast-angular-http-response-into-class<br />
      * https://stackoverflow.com/questions/51763745/angular-6-error-typeerror-is-not-a-function-but-it-is
     */
-    this.parametersOfSubmitUserRegistrationRequestFunction.getUserRegistrationRequest()
-        .setEmailAddress(this.registrationFormGroup.value['emailAddressControl']);
-    this.parametersOfSubmitUserRegistrationRequestFunction.getUserRegistrationRequest()
-        .setUsername(this.registrationFormGroup.value['usernameControl']);
-    this.parametersOfSubmitUserRegistrationRequestFunction.getUserRegistrationRequest()
-        .setPassword(this.registrationFormGroup.value['passwordControl']);
-    this.parametersOfSubmitUserRegistrationRequestFunction.getUserRegistrationRequest()
-        .setFirstName(this.registrationFormGroup.value['firstNameControl']);
-    this.parametersOfSubmitUserRegistrationRequestFunction.getUserRegistrationRequest()
-        .setLastName(this.registrationFormGroup.value['lastNameControl']);
+    parameters.getUserRegistrationRequest().setEmailAddress(this.registrationFormGroup.value['emailAddressControl']);
+    parameters.getUserRegistrationRequest().setUsername(this.registrationFormGroup.value['usernameControl']);
+    parameters.getUserRegistrationRequest().setPassword(this.registrationFormGroup.value['passwordControl']);
+    parameters.getUserRegistrationRequest().setFirstName(this.registrationFormGroup.value['firstNameControl']);
+    parameters.getUserRegistrationRequest().setLastName(this.registrationFormGroup.value['lastNameControl']);
     let enteredAddress: Address = new Address(null);
     enteredAddress.setStreet(this.registrationFormGroup.get('addressFormGroup')?.value['streetControl']);
     enteredAddress.setNumber(this.registrationFormGroup.get('addressFormGroup')?.value['numberControl']);
@@ -168,7 +163,7 @@ export class RegistrationComponent {
     enteredAddress.setCountry(this.registrationFormGroup.get('addressFormGroup')?.value['countryControl']);
     enteredAddress.setLatitude(this.registrationFormGroup.get('addressFormGroup')?.value['latitudeControl']);
     enteredAddress.setLongitude(this.registrationFormGroup.get('addressFormGroup')?.value['longitudeControl']);
-    this.parametersOfSubmitUserRegistrationRequestFunction.getUserRegistrationRequest().setAddress(enteredAddress);
+    parameters.getUserRegistrationRequest().setAddress(enteredAddress);
 
     this.registrationService.registerWith(parameters);
   }

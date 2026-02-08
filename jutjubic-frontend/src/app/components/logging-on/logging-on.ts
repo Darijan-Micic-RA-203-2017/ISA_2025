@@ -82,16 +82,14 @@ export class LoggingOnComponent {
 
   /** REFERENCE: https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-front-app */
   submitUserCredentials(parameters: ParametersOfSubmitUserCredentialsFunction): void {
-    this.parametersOfSubmitUserCredentialsFunction.setIsLoggingOnFormSubmitted(true);
+    parameters.setIsLoggingOnFormSubmitted(true);
 
     /* REFERENCES:<br />
      * https://stackoverflow.com/questions/56410007/cast-angular-http-response-into-class<br />
      * https://stackoverflow.com/questions/51763745/angular-6-error-typeerror-is-not-a-function-but-it-is
     */
-    this.parametersOfSubmitUserCredentialsFunction.getUserCredentials()
-        .setUsername(this.loggingOnFormGroup.value['usernameControl']);
-    this.parametersOfSubmitUserCredentialsFunction.getUserCredentials()
-        .setPassword(this.loggingOnFormGroup.value['passwordControl']);
+    parameters.getUserCredentials().setUsername(this.loggingOnFormGroup.value['usernameControl']);
+    parameters.getUserCredentials().setPassword(this.loggingOnFormGroup.value['passwordControl']);
 
     this.authenticationService.logOnWith(parameters);
   }

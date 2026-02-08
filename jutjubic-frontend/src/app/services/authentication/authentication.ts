@@ -31,15 +31,14 @@ export class AuthenticationService {
     this.token = token;
   }
 
-  logOnWith(parametersOfSubmitUserCredentialsFunction: ParametersOfSubmitUserCredentialsFunction): void {
+  logOnWith(parameters: ParametersOfSubmitUserCredentialsFunction): void {
     const headersOfHttpRequestWithNonEmpthyBody: HttpHeaders = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     });
 
-    this.httpClient.post<ObjectWithTextualContext>(this.urlOfLoggingOnMethod, 
-        JSON.stringify(parametersOfSubmitUserCredentialsFunction.getUserCredentials()), {
-            headers: headersOfHttpRequestWithNonEmpthyBody
+    this.httpClient.post<ObjectWithTextualContext>(this.urlOfLoggingOnMethod, JSON.stringify(parameters.getUserCredentials()), {
+        headers: headersOfHttpRequestWithNonEmpthyBody
     })
     // REFERENCE: https://rxjs.dev/deprecations/subscribe-arguments
     .subscribe({
@@ -71,38 +70,33 @@ export class AuthenticationService {
         }
 
         // REFERENCE: https://material.angular.dev/components/snack-bar/overview
-        parametersOfSubmitUserCredentialsFunction.getSnackBar().open('Успешно сте пријављени на систем Јутјубића.', 
-            'Затворите', { duration: 5000 });
+        parameters.getSnackBar().open('Успешно сте пријављени на систем Јутјубића.', 'Затворите', { duration: 5000 });
 
-        parametersOfSubmitUserCredentialsFunction.getRouter().navigateByUrl('/log-on').then(() => { window.location.reload(); });
+        parameters.getRouter().navigateByUrl('/log-on').then(() => { window.location.reload(); });
       },
       error(errorResponse: HttpErrorResponse): void {
-        parametersOfSubmitUserCredentialsFunction.setIsLoggingOnFormSubmitted(false);
+        parameters.setIsLoggingOnFormSubmitted(false);
 
         let error: ObjectWithTextualContext = new ObjectWithTextualContext(errorResponse.error);
         console.log(`Error while logging in!\n\n${error.getTextualContext()}`);
         // REFERENCE: https://material.angular.dev/components/snack-bar/overview
         if (errorResponse.status == 406) {
-          parametersOfSubmitUserCredentialsFunction.getSnackBar().open('Кориснички налог је онемогућен!', 
-              'Затворите', { duration: 5000 });
+          parameters.getSnackBar().open('Кориснички налог је онемогућен!', 'Затворите', { duration: 5000 });
 
           return;
         }
         if (errorResponse.status == 423) {
-          parametersOfSubmitUserCredentialsFunction.getSnackBar().open('Кориснички налог је закључан!', 
-              'Затворите', { duration: 5000 });
+          parameters.getSnackBar().open('Кориснички налог је закључан!', 'Затворите', { duration: 5000 });
 
           return;
         }
         if (errorResponse.status == 400) {
-          parametersOfSubmitUserCredentialsFunction.getSnackBar().open('Унето је неисправно корисничко име и/или лозинка!', 
-              'Затворите', { duration: 5000 });
+          parameters.getSnackBar().open('Унето је неисправно корисничко име и/или лозинка!', 'Затворите', { duration: 5000 });
 
           return;
         }
         if (errorResponse.status == 422) {
-          parametersOfSubmitUserCredentialsFunction.getSnackBar().open(
-              'Дошло је до унутрашње аутентификационе грешке! Молимо Вас, покушајте поново касније.', 
+          parameters.getSnackBar().open('Дошло је до унутрашње аутентификационе грешке! Молимо Вас, покушајте поново касније.', 
               'Затворите', { duration: 5000 });
         }
       }

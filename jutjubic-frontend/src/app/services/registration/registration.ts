@@ -14,20 +14,20 @@ export class RegistrationService {
 
   constructor(private httpClient: HttpClient) { }
 
-  registerWith(parametersOfSubmitUserRegistrationRequestFunction: ParametersOfSubmitUserRegistrationRequestFunction): void {
+  registerWith(parameters: ParametersOfSubmitUserRegistrationRequestFunction): void {
     const headersOfHttpRequestWithNonEmpthyBody: HttpHeaders = new HttpHeaders({
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     });
 
     this.httpClient.post<ObjectWithTextualContext>(this.urlOfRegistrationMethod, 
-        JSON.stringify(parametersOfSubmitUserRegistrationRequestFunction.getUserRegistrationRequest()), {
+        JSON.stringify(parameters.getUserRegistrationRequest()), {
             headers: headersOfHttpRequestWithNonEmpthyBody
     })
     // REFERENCE: https://rxjs.dev/deprecations/subscribe-arguments
     .subscribe({
       next(responseObject: ObjectWithTextualContext): void {
-        parametersOfSubmitUserRegistrationRequestFunction.setHasEmailMessageForAccountActivationBeenSent(true);
+        parameters.setHasEmailMessageForAccountActivationBeenSent(true);
 
         /* REFERENCES:<br />
          * https://stackoverflow.com/questions/56410007/cast-angular-http-response-into-class<br />
@@ -38,8 +38,8 @@ export class RegistrationService {
         console.log('Registration response:', newUser);
       },
       error(errorResponse: HttpErrorResponse): void {
-        parametersOfSubmitUserRegistrationRequestFunction.setIsRegistrationFormSubmitted(false);
-        parametersOfSubmitUserRegistrationRequestFunction.setHasEmailMessageForAccountActivationBeenSent(false);
+        parameters.setIsRegistrationFormSubmitted(false);
+        parameters.setHasEmailMessageForAccountActivationBeenSent(false);
 
         let error: ObjectWithTextualContext = new ObjectWithTextualContext(errorResponse.error);
         let textualContext: string = error.getTextualContext();
@@ -47,17 +47,15 @@ export class RegistrationService {
         // REFERENCE: https://material.angular.dev/components/snack-bar/overview
         if (errorResponse.status == 406) {
           if (textualContext.includes('e-mail address')) {
-            parametersOfSubmitUserRegistrationRequestFunction.getSnackBar().open(
-                'Унета адреса електронске поште је већ повезана с неким корисником!', 'Затворите');
+            parameters.getSnackBar().open('Унета адреса електронске поште је већ повезана с неким корисником!', 'Затворите');
           } else {
-            parametersOfSubmitUserRegistrationRequestFunction.getSnackBar().open(
-                'Унето корисничко име је већ повезано с неким корисником!', 'Затворите');
+            parameters.getSnackBar().open('Унето корисничко име је већ повезано с неким корисником!', 'Затворите');
           }
 
           return;
         }
         if (errorResponse.status == 409) {
-          parametersOfSubmitUserRegistrationRequestFunction.getSnackBar().open(
+          parameters.getSnackBar().open(
               'Дошло је до грешке при слању електронске поруке с повезницом за омогућавање деловања Вашег корисничког налога!' 
                   + ' Због те грешке, регистрација је поништена! Молимо Вас, покушајте поново касније.', 
               'Затворите');
@@ -65,8 +63,8 @@ export class RegistrationService {
           return;
         }
         if (errorResponse.status == 500) {
-          parametersOfSubmitUserRegistrationRequestFunction.getSnackBar().open(
-              'Дошло је до унутрашње грешке на услуживачу! Молимо Вас, покушајте поново касније.', 'Затворите');
+          parameters.getSnackBar().open('Дошло је до унутрашње грешке на услуживачу! Молимо Вас, покушајте поново касније.', 
+              'Затворите');
         }
       }
     });
