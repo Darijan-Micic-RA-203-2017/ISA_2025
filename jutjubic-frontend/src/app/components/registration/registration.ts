@@ -41,6 +41,7 @@ export class RegistrationComponent {
   shouldRepeatedPasswordBeHidden: WritableSignal<boolean>;
   userRegistrationRequest: UserRegistrationRequest;
   isRegistrationFormSubmitted: WritableSignal<boolean>;
+  hasEmailMessageForAccountActivationBeenSent: WritableSignal<boolean>;
 
   // REFERENCE: https://material.angular.dev/components/snack-bar/overview
   snackBar: MatSnackBar = inject<MatSnackBar>(MatSnackBar);
@@ -120,9 +121,11 @@ export class RegistrationComponent {
     this.shouldRepeatedPasswordBeHidden = signal<boolean>(true);
     this.userRegistrationRequest = new UserRegistrationRequest(null);
     this.isRegistrationFormSubmitted = signal<boolean>(false);
+    this.hasEmailMessageForAccountActivationBeenSent = signal<boolean>(false);
 
     this.parametersOfSubmitUserRegistrationRequestFunction = new ParametersOfSubmitUserRegistrationRequestFunction(
-        this.userRegistrationRequest, this.isRegistrationFormSubmitted, this.snackBar);
+        this.userRegistrationRequest, this.isRegistrationFormSubmitted, this.hasEmailMessageForAccountActivationBeenSent, 
+        this.snackBar);
   }
 
   /** REFERENCE: https://material.angular.dev/components/form-field/examples */
