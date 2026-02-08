@@ -36,15 +36,6 @@ export class RegistrationService {
         let objectWithTextualContext: ObjectWithTextualContext = new ObjectWithTextualContext(responseObject);
         let newUser: User = new User(objectWithTextualContext.getObject());
         console.log('Registration response:', newUser);
-
-        // REFERENCE: https://material.angular.dev/components/snack-bar/overview
-        parametersOfSubmitUserRegistrationRequestFunction.getSnackBar().open('На систему Јутјубића направљен је кориснички ' 
-            + 'налог с унетим подацима. Том налогу тренутно је онемогућено деловање.\n\n' 
-            + 'Посетите Ваше пријемно сандуче сервиса електронске поште у ком Вас очекује електронска порука с повезницом ' 
-            + 'за омогућавање деловања.\n\n' 
-            + 'Отворите ту повезницу (кликом на њу или њеним копирањем у адресно поље друге картице Веб читача и посетом ' 
-            + 'к њој) да бисте успешно завршили регистрацију Вашег корисничког налога.', 
-            'Затворите');
       },
       error(errorResponse: HttpErrorResponse): void {
         parametersOfSubmitUserRegistrationRequestFunction.setIsRegistrationFormSubmitted(false);

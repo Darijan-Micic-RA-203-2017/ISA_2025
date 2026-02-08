@@ -200,15 +200,33 @@
 					Региструјте се
 				</button>
 			</form>
-		}
-		@else {
+		} @else if (!hasEmailMessageForAccountActivationBeenSent()) {
 			<!-- REFERENCE: https://material.angular.dev/components/progress-spinner/overview -->
 			<mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+		} @else {
+			<!-- REFERENCES:
+			https://material.angular.dev/components/icon/overview
+			https://fonts.google.com/icons
+			-->
+			<mat-icon id="successfulCreationOfTemporarilyDisabledUserAccountIcon">done_outline</mat-icon>
+			<h3>
+				На систему Јутјубића направљен је кориснички налог с унетим подацима. Том налогу тренутно је онемогућено 
+						деловање.
+			</h3>
+			<h3>
+				Посетите Ваше пријемно сандуче сервиса електронске поште у ком Вас очекује електронска порука с повезницом 
+						за омогућавање деловања.
+			</h3>
+			<h3>
+				Отворите ту повезницу (кликом на њу или њеним копирањем у адресно поље друге картице Веб читача и посетом 
+						к њој) да бисте успешно завршили регистрацију Вашег корисничког налога.
+			</h3>
 		}
 	</mat-card-content>
 	<mat-card-actions>
 		<!-- REFERENCE: https://angular.love/angular-router-everything-you-need-to-know-about -->
-		<button id="landingPageButton" type="button" matButton="text" [disabled]="isRegistrationFormSubmitted()" routerLink="/">
+		<button id="landingPageButton" type="button" matButton="text" 
+				[disabled]="isRegistrationFormSubmitted() && !hasEmailMessageForAccountActivationBeenSent()" routerLink="/">
 			Почетна страница
 		</button>
 	</mat-card-actions>

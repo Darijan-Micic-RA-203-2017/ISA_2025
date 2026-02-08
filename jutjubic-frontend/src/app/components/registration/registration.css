@@ -27,6 +27,10 @@ mat-card-content:has(> mat-progress-spinner) {
 	margin-bottom: 4%;
 }
 
+mat-card-content > :last-child:not(mat-card-footer) {
+	margin-bottom: 4%;
+}
+
 /* REFERENCE: https://material.angular.dev/components/form-field/overview */
 mat-form-field {
 	min-width: 100%;
@@ -35,6 +39,17 @@ mat-form-field {
 
 #registrationButton {
 	width: 50%;
+}
+
+/* REFERENCES:
+ * https://www.scaler.com/topics/css/css-units/
+ * https://blog.logrocket.com/using-em-vs-rem-css/
+*/
+#successfulCreationOfTemporarilyDisabledUserAccountIcon {
+	color: green;
+	font-size: 6em;
+	height: 1em;
+	width: 1em;
 }
 
 mat-card-actions > button {
