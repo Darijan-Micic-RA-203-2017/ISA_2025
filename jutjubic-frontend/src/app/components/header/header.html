@@ -11,15 +11,10 @@
 		<div id="usernameDiv">
 			<p><b>{{ username }}</b></p>
 		</div>
-	}
-	@if (!username) {
+		<button id="loggingOffButton" type="button" matButton="elevated" (click)="logOff()">Одјава</button>
+	} @else {
 		<!-- REFERENCE: https://angular.love/angular-router-everything-you-need-to-know-about -->
 		<button id="registrationPageButton" type="button" matButton="elevated" routerLink="/register">Регистрација</button>
-	}
-	@if (!username) {
 		<button id="loggingOnPageButton" type="button" matButton="elevated" routerLink="/log-on">Пријава</button>
-	}
-	@if (username) {
-		<button id="loggingOffButton" type="button" matButton="elevated" (click)="logOff()">Одјава</button>
 	}
 </mat-toolbar>

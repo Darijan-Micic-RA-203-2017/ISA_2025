@@ -7,7 +7,7 @@ import { UserCredentials } from "../model/user/user-credentials";
 
 export class ParametersOfSubmitUserCredentialsFunction {
 	private userCredentials: UserCredentials;
-	/** REFERENCES:
+	/* REFERENCES:
 	 * https://www.programfarmer.com/en-US/articles/2021/javascript-pass-by-value-pass-by-reference-pass-by-sharing
 	 * https://angular.dev/essentials/signals
 	 * https://angular.dev/guide/signals
@@ -37,9 +37,9 @@ export class ParametersOfSubmitUserCredentialsFunction {
 		return this.isLoggingOnFormSubmitted;
 	}
 
-	/** REFERENCES:
-	 * https://www.programfarmer.com/en-US/articles/2021/javascript-pass-by-value-pass-by-reference-pass-by-sharing
-	 * https://angular.dev/essentials/signals
+	/** REFERENCES:<br />
+	 * https://www.programfarmer.com/en-US/articles/2021/javascript-pass-by-value-pass-by-reference-pass-by-sharing<br />
+	 * https://angular.dev/essentials/signals<br />
 	 * https://angular.dev/guide/signals
 	*/
 	public setIsLoggingOnFormSubmitted(isLoggingOnFormSubmitted: boolean): void {

@@ -31,6 +31,6 @@ export class HeaderComponent implements OnInit {
 
     this.username = null;
 
-    this.router.navigateByUrl('/log-on').then(() => { window.location.reload(); });
+    this.router.navigateByUrl('/').then(() => { window.location.reload(); });
   }
 }
