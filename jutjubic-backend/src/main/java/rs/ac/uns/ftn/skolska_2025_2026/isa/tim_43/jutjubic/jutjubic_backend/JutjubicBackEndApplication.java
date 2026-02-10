@@ -7,18 +7,14 @@ import jakarta.validation.ValidatorFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.scheduling.annotation.EnableAsync;
 
 /** REFERENCES:<br />
  * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example<br />
  * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe1/validation_example<br />
  * https://beanvalidation.org/1.0/spec/<br />
- * https://docs.spring.io/spring-framework/docs/4.1.x/spring-framework-reference/html/validation.html<br />
- * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe2/async_example<br />
- * https://www.baeldung.com/spring-async
+ * https://docs.spring.io/spring-framework/docs/4.1.x/spring-framework-reference/html/validation.html
 */
 @SpringBootApplication()
-@EnableAsync()
 public class JutjubicBackEndApplication {
 	public JutjubicBackEndApplication() {}
 
