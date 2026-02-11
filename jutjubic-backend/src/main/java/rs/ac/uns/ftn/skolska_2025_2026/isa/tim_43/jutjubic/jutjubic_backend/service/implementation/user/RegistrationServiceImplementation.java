@@ -25,7 +25,6 @@ import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.util
 
 /** REFERENCES:<br />
  * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example<br />
- * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe2/async_example<br />
  * https://mailtrap.io/blog/spring-send-email/
 */
 @Service()
@@ -93,9 +92,12 @@ public class RegistrationServiceImplementation implements RegistrationService {
 		roles.add(userRoleService.findById(1L));
 		newUser.setRoles(roles);
 		newUser.setEmailAddress(userRegistrationRequestDTO.getEmailAddress());
-		newUser.setUsername(userRegistrationRequestDTO.getUsername());
-		String encodedPassword = passwordEncoder.encode(userRegistrationRequestDTO.getPassword());
+		String username = userRegistrationRequestDTO.getUsername();
+		newUser.setUsername(username);
+		String password = userRegistrationRequestDTO.getPassword();
+		String encodedPassword = passwordEncoder.encode(password);
 		newUser.setPassword(encodedPassword);
+		newUser.setEncodedId(passwordEncoder.encode(username.concat(" ").concat(password)));
 		newUser.setFirstName(userRegistrationRequestDTO.getFirstName());
 		newUser.setLastName(userRegistrationRequestDTO.getLastName());
 		newUser.setAddress(addressOfNewUser);
@@ -157,7 +159,7 @@ public class RegistrationServiceImplementation implements RegistrationService {
 		emailMessageTextBuilder.append("Веб читача и посетом к њој) да бисте успешно завршили ");
 		emailMessageTextBuilder.append("регистрацију Вашег корисничког налога:\n");
 		emailMessageTextBuilder.append("http://localhost:4200/activate-account/");
-		emailMessageTextBuilder.append(newUser.getPassword()).append("\n\n");
+		emailMessageTextBuilder.append(newUser.getEncodedId()).append("\n\n");
 		emailMessageTextBuilder.append("Поздрав!\nЈутјубић\n\n\n");
 		emailMessageTextBuilder.append("Respected ").append(newUser.getFirstName()).append(",\n\n");
 		emailMessageTextBuilder.append("Thank you for beginning the registration process on ");
@@ -167,7 +169,7 @@ public class RegistrationServiceImplementation implements RegistrationService {
 		emailMessageTextBuilder.append("successfully complete the registration of your user ");
 		emailMessageTextBuilder.append("account:\n");
 		emailMessageTextBuilder.append("http://localhost:4200/activate-account/");
-		emailMessageTextBuilder.append(newUser.getPassword()).append("\n\n");
+		emailMessageTextBuilder.append(newUser.getEncodedId()).append("\n\n");
 		emailMessageTextBuilder.append("Best regards,\nJutjubic\n");
 		dataOfEmailMessageForAccountActivation.setText(emailMessageTextBuilder.toString());
 		dataOfEmailMessageForAccountActivation.setTo(new String[] {newUser.getEmailAddress()});

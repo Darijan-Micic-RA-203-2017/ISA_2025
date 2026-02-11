@@ -109,6 +109,14 @@ public class User implements UserDetails, Comparable<User> {
 			+ "or in the present!")
 	private ZonedDateTime dateAndTimeOfLastPasswordChange;
 
+	@Column(name = "encoded_id", nullable = false)
+	@NotBlank(message = "The encoded ID has to be non-blank!")
+	@Pattern(regexp = "^\\S+$", 
+			message = "The encoded ID has to not contain any white-space characters!")
+	@Size(min = 16, max = 60, 
+			message = "The encoded ID has to contain at least 16 and at most 60 characters!")
+	private String encodedId;
+
 	@Column(name = "first_name", nullable = false)
 	@NotBlank(message = "The first name has to be non-blank!")
 	@Pattern(regexp = "^\\p{Lu}('\\p{Lu})?\\p{Ll}+([ \\-]\\p{Lu}('\\p{Lu})?\\p{Ll}+)?$", 
@@ -135,7 +143,7 @@ public class User implements UserDetails, Comparable<User> {
 
 	public User(long id, boolean enabled, Set<UserRole> roles, String emailAddress, 
 			String username, String password, ZonedDateTime dateAndTimeOfLastPasswordChange, 
-			String firstName, String lastName, Address address) {
+			String encodedId, String firstName, String lastName, Address address) {
 		this.id = id;
 		this.enabled = enabled;
 		this.roles = roles;
@@ -143,6 +151,7 @@ public class User implements UserDetails, Comparable<User> {
 		this.username = username;
 		this.password = password;
 		this.dateAndTimeOfLastPasswordChange = dateAndTimeOfLastPasswordChange;
+		this.encodedId = encodedId;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.address = address;
@@ -210,6 +219,14 @@ public class User implements UserDetails, Comparable<User> {
 
 	public void setDateAndTimeOfLastPasswordChange(ZonedDateTime dateAndTimeOfLastPasswordChange) {
 		this.dateAndTimeOfLastPasswordChange = dateAndTimeOfLastPasswordChange;
+	}
+
+	public String getEncodedId() {
+		return encodedId;
+	}
+
+	public void setEncodedId(String encodedId) {
+		this.encodedId = encodedId;
 	}
 
 	public String getFirstName() {
@@ -319,6 +336,10 @@ public class User implements UserDetails, Comparable<User> {
 		if (comparisonValue != 0) {
 			return comparisonValue;
 		}
+		comparisonValue = encodedId.compareTo(o.encodedId);
+		if (comparisonValue != 0) {
+			return comparisonValue;
+		}
 		comparisonValue = firstName.compareTo(o.firstName);
 		if (comparisonValue != 0) {
 			return comparisonValue;
@@ -338,7 +359,7 @@ public class User implements UserDetails, Comparable<User> {
 	@Override()
 	public int hashCode() {
 		return Objects.hash(id, enabled, roles, emailAddress, username, password, 
-				dateAndTimeOfLastPasswordChange, firstName, lastName, address);
+				dateAndTimeOfLastPasswordChange, encodedId, firstName, lastName, address);
 	}
 
 	@Override()
@@ -360,7 +381,8 @@ public class User implements UserDetails, Comparable<User> {
 				&& Objects.equals(password, other.password) 
 				&& Objects.equals(dateAndTimeOfLastPasswordChange, 
 						other.dateAndTimeOfLastPasswordChange) 
-				&& Objects.equals(firstName, other.firstName)  
+				&& Objects.equals(encodedId, other.encodedId) 
+				&& Objects.equals(firstName, other.firstName) 
 				&& Objects.equals(lastName, other.lastName) 
 				&& Objects.equals(address, other.address);
 	}
@@ -376,6 +398,7 @@ public class User implements UserDetails, Comparable<User> {
 				.append(", password = ").append(password)
 				.append(", dateAndTimeOfLastPasswordChange = ")
 				.append(dateAndTimeOfLastPasswordChange)
+				.append(", encodedId = ").append(encodedId)
 				.append(", firstName = ").append(firstName)
 				.append(", lastName = ").append(lastName)
 				.append(", address = ").append(address)

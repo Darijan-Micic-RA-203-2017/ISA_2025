@@ -9,18 +9,20 @@ INSERT INTO Addresses (id, street, number, postal_code, place, country, latitude
 -- Users:
 -- Password for this user is 'uZoric1993'.
 INSERT INTO Users (id, enabled, email_address, username, password, 
-		date_and_time_of_last_password_change, first_name, last_name, address_id) VALUES (1, true, 
-		'uros.zoric@gmail.com', 'UrosZoric1993', 
+		date_and_time_of_last_password_change, encoded_id, first_name, last_name, address_id) 
+		VALUES (1, true, 'uros.zoric@gmail.com', 'UrosZoric1993', 
 		'$2a$10$DWJZW/uNG0Sfeqzg.Vw9iOzcw7LstkH6oL.m1BP3KK6puIXoXHvK6', 
 		-- REFERENCE: https://stackoverflow.com/questions/25456465/postgres-timestamp-with-timezone
-		'2025-11-11 09:51:47.000000+01', 'Урош', 'Зорић', 1);
+		'2025-11-11 09:51:47.000000+01', 
+		'$2a$10$fAoA03ZEbeKqQZw.stQxyuNCfbzct2t/XYEirXSHNsjfuzpHrsxwe', 'Урош', 'Зорић', 1);
 -- Password for this user is 'fCvetkovic2001'.
 INSERT INTO Users (id, enabled, email_address, username, password, 
-		date_and_time_of_last_password_change, first_name, last_name, address_id) VALUES (2, true, 
-		'filip.cvetkovic@gmail.com', 'FilipCvetkovic2001', 
+		date_and_time_of_last_password_change, encoded_id, first_name, last_name, address_id) 
+		VALUES (2, true, 'filip.cvetkovic@gmail.com', 'FilipCvetkovic2001', 
 		'$2a$10$k/2wBWL.TCEpS9Fi8FsIBeT2LeURUluthMTpEIS7KwBM9K6FMFeZ2', 
 		-- REFERENCE: https://stackoverflow.com/questions/25456465/postgres-timestamp-with-timezone
-		'2025-11-12 12:27:34.000000+01', 'Филип', 'Цветковић', 2);
+		'2025-11-12 12:27:34.000000+01', 
+		'$2a$10$ebkP8AYppodULybR9/VuMe8NAudGCa7Gs1V54sSAt5iiUbDNu.PXy', 'Филип', 'Цветковић', 2);
 
 -- User roles:
 INSERT INTO User_roles (id, name) VALUES (1, 'ROLE_USER');
