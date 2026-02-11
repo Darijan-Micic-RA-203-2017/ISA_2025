@@ -128,6 +128,7 @@ public class LoggingOnController {
 		String textualContext = textualContextBuilder.toString();
 		System.out.println(textualContext);
 
+		// REFERENCE: https://datatracker.ietf.org/doc/html/rfc7231#section-6.3.1
 		return new ResponseEntity<ObjectWithTextualContextDTO>(
 				new ObjectWithTextualContextDTO(
 						new TokenWithLifeDurationDTO(token, lifeDurationOfTokenInMilliseconds), 

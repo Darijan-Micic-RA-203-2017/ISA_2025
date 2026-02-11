@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.ObjectWithTextualContextDTO;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.user.UserDTO;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.user.UserRegistrationRequestDTO;
+import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.user.WrappedEncodedIdDTO;
+import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.exception.UserAccountActivationException;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.exception.UserRegistrationException;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.user.User;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.service.user.RegistrationService;
@@ -37,12 +40,12 @@ public class RegistrationController {
 	}
 
 	@PostMapping(path = {""})
-	public ResponseEntity<ObjectWithTextualContextDTO> registerWith(
+	public ResponseEntity<ObjectWithTextualContextDTO> registerUserBasedOn(
 			@Valid() @RequestBody() UserRegistrationRequestDTO userRegistrationRequestDTO) {
 		User registeredUser = null;
 		UserDTO registeredUserDTO = null;
 		try {
-			registeredUser = registrationService.registerWith(userRegistrationRequestDTO);
+			registeredUser = registrationService.registerUserBasedOn(userRegistrationRequestDTO);
 		} catch (UserRegistrationException uRE) {
 			// REFERENCE: https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.6
 			return new ResponseEntity<ObjectWithTextualContextDTO>(
@@ -99,5 +102,35 @@ public class RegistrationController {
 		return new ResponseEntity<ObjectWithTextualContextDTO>(
 				new ObjectWithTextualContextDTO(registeredUserDTO, textualContext), 
 				HttpStatus.CREATED);
+	}
+
+	@PutMapping(path = {"/activate-account"})
+	public ResponseEntity<ObjectWithTextualContextDTO> activateAccountOfUserWith(
+			@RequestBody() WrappedEncodedIdDTO wrappedEncodedIdDTO) {
+		User activatedUser = null;
+		UserDTO activatedUserDTO = null;
+		try {
+			activatedUser = registrationService.activateAccountOfUserWith(
+					wrappedEncodedIdDTO.getEncodedId());
+		} catch (UserAccountActivationException uAAE) {
+			// REFERENCE: https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.6
+			return new ResponseEntity<ObjectWithTextualContextDTO>(
+					new ObjectWithTextualContextDTO(activatedUserDTO, uAAE.getMessage()), 
+					HttpStatus.NOT_ACCEPTABLE);
+		}
+
+		StringBuilder textualContextBuilder = new StringBuilder();
+		textualContextBuilder.append("The account of the user with the e-mail address \"");
+		textualContextBuilder.append(activatedUser.getEmailAddress());
+		textualContextBuilder.append("\" has been activated.");
+		String textualContext = textualContextBuilder.toString();
+		System.out.println(textualContext);
+
+		activatedUserDTO = new UserDTO(activatedUser);
+
+		// REFERENCE: https://datatracker.ietf.org/doc/html/rfc7231#section-6.3.1
+		return new ResponseEntity<ObjectWithTextualContextDTO>(
+				new ObjectWithTextualContextDTO(activatedUserDTO, textualContext), 
+				HttpStatus.OK);
 	}
 }

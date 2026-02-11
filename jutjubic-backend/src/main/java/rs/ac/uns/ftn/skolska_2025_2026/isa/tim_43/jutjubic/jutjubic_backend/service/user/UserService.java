@@ -10,6 +10,7 @@ public interface UserService {
 	User findById(long id);
 	User findByEmailAddress(String emailAddress);
 	User findByUsername(String username);
+	User findByEncodedId(String encodedId);
 	User save(User user);
 	void deleteById(long id);
 }

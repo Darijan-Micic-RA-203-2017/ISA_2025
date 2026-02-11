@@ -3,6 +3,7 @@ package rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.ser
 import org.springframework.mail.MailException;
 
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.user.UserRegistrationRequestDTO;
+import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.exception.UserAccountActivationException;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.exception.UserRegistrationException;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.address.Address;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.user.User;
@@ -17,8 +18,9 @@ public interface RegistrationService {
 	Address saveAddressOfNewUser(UserRegistrationRequestDTO userRegistrationRequestDTO);
 	User saveNewUser(UserRegistrationRequestDTO userRegistrationRequestDTO, 
 			Address addressOfNewUser);
-	User registerWith(UserRegistrationRequestDTO userRegistrationRequestDTO) 
+	User registerUserBasedOn(UserRegistrationRequestDTO userRegistrationRequestDTO) 
 			throws UserRegistrationException;
 	void sendEmailMessageForAccountActivationOf(User newUser) throws MailException;
 	void cancelRegistrationOf(User newUser);
+	User activateAccountOfUserWith(String encodedId) throws UserAccountActivationException;
 }
