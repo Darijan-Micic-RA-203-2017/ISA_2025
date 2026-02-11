@@ -11,8 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.user.UserRegistrationRequestDTO;
-import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.exception.EmailAddressAlreadyAssociatedWithSomeUserException;
-import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.exception.UsernameAlreadyAssociatedWithSomeUserException;
+import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.exception.UserRegistrationException;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.address.Address;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.user.User;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.user.UserRole;
@@ -107,16 +106,14 @@ public class RegistrationServiceImplementation implements RegistrationService {
 
 	@Override()
 	public User registerWith(UserRegistrationRequestDTO userRegistrationRequestDTO) 
-			throws EmailAddressAlreadyAssociatedWithSomeUserException, 
-			UsernameAlreadyAssociatedWithSomeUserException {
+			throws UserRegistrationException {
 		String emailAddress = userRegistrationRequestDTO.getEmailAddress();
 		if (isEmailAddressAlreadyAssociatedWithSomeUser(emailAddress)) {
 			StringBuilder exceptionMessageBuilder = new StringBuilder();
 			exceptionMessageBuilder.append("The e-mail address \"").append(emailAddress);
 			exceptionMessageBuilder.append("\" is already associated with some user!");
 
-			throw new EmailAddressAlreadyAssociatedWithSomeUserException(
-					exceptionMessageBuilder.toString());
+			throw new UserRegistrationException(exceptionMessageBuilder.toString());
 		}
 
 		String username = userRegistrationRequestDTO.getUsername();
@@ -125,8 +122,7 @@ public class RegistrationServiceImplementation implements RegistrationService {
 			exceptionMessageBuilder.append("The username \"").append(username);
 			exceptionMessageBuilder.append("\" is already associated with some user!");
 
-			throw new UsernameAlreadyAssociatedWithSomeUserException(
-					exceptionMessageBuilder.toString());
+			throw new UserRegistrationException(exceptionMessageBuilder.toString());
 		}
 
 		Address addressOfNewUser = saveAddressOfNewUser(userRegistrationRequestDTO);
