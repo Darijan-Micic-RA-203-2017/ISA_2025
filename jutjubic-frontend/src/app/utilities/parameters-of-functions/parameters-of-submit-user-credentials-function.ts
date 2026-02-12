@@ -3,7 +3,7 @@ import { Router } from "@angular/router";
 
 import { MatSnackBar } from "@angular/material/snack-bar";
 
-import { UserCredentials } from "../model/user/user-credentials";
+import { UserCredentials } from "../../model/user/user-credentials";
 
 export class ParametersOfSubmitUserCredentialsFunction {
 	private userCredentials: UserCredentials;

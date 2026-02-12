@@ -10,7 +10,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { RegistrationService } from '../../services/registration/registration';
 
 import { WrappedDigestedIdentificator } from '../../model/user/wrapped-digested-identificator';
-import { ParametersOfActivateAccountOfUserFunction } from '../../utilities/parameters-of-activate-account-of-user-function';
+import { ParametersOfActivateAccountOfUserFunction } from '../../utilities/parameters-of-functions/parameters-of-activate-account-of-user-function';
 
 @Component({
   standalone: true,

@@ -1,7 +1,7 @@
 import { WritableSignal } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 
-import { WrappedDigestedIdentificator } from "../model/user/wrapped-digested-identificator";
+import { WrappedDigestedIdentificator } from "../../model/user/wrapped-digested-identificator";
 
 export class ParametersOfActivateAccountOfUserFunction {
 	private wrappedDigestedIdentificator: WrappedDigestedIdentificator;

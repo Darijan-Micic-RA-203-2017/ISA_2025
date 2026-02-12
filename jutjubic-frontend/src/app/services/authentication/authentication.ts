@@ -5,7 +5,8 @@ import { JwtPayload, jwtDecode } from 'jwt-decode';
 
 import { ObjectWithTextualContext } from '../../model/object-with-textual-context';
 import { TokenWithLifeDuration } from '../../model/user/token-with-life-duration';
-import { ParametersOfSubmitUserCredentialsFunction } from '../../utilities/parameters-of-submit-user-credentials-function';
+import { HeadersConstants } from '../../utilities/constants/headers-constants';
+import { ParametersOfSubmitUserCredentialsFunction } from '../../utilities/parameters-of-functions/parameters-of-submit-user-credentials-function';
 
 /** REFERENCE: https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-front-app */
 @Injectable({
@@ -32,13 +33,8 @@ export class AuthenticationService {
   }
 
   logOnWith(parameters: ParametersOfSubmitUserCredentialsFunction): void {
-    const headersOfHttpRequestWithNonEmpthyBody: HttpHeaders = new HttpHeaders({
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    });
-
     this.httpClient.post<ObjectWithTextualContext>(this.urlOfLoggingOnMethod, JSON.stringify(parameters.getUserCredentials()), {
-        headers: headersOfHttpRequestWithNonEmpthyBody
+        headers: HeadersConstants.headersOfHttpRequestWithNonEmpthyBody
     })
     // REFERENCE: https://rxjs.dev/deprecations/subscribe-arguments
     .subscribe({
@@ -81,7 +77,7 @@ export class AuthenticationService {
         console.log(`Error while logging in!\n\n${error.getTextualContext()}`);
         // REFERENCE: https://material.angular.dev/components/snack-bar/overview
         if (errorResponse.status == 406) {
-          parameters.getSnackBar().open('Кориснички налог је онемогућен!', 'Затворите', { duration: 5000 });
+          parameters.getSnackBar().open('Корисничком налогу је онемогућено деловање!', 'Затворите', { duration: 5000 });
 
           return;
         }
@@ -101,5 +97,11 @@ export class AuthenticationService {
         }
       }
     });
+  }
+
+  logOff(): void {
+    localStorage.removeItem('jwtToken');
+    localStorage.removeItem('username');
+    localStorage.removeItem('exp');
   }
 }

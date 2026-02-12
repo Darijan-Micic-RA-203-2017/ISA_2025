@@ -13,7 +13,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthenticationService } from '../../services/authentication/authentication';
 
 import { UserCredentials } from '../../model/user/user-credentials';
-import { ParametersOfSubmitUserCredentialsFunction } from '../../utilities/parameters-of-submit-user-credentials-function';
+import { ParametersOfSubmitUserCredentialsFunction } from '../../utilities/parameters-of-functions/parameters-of-submit-user-credentials-function';
 import { numberOfLettersValidator } from '../../validation/number-of-letters/number-of-letters-validator';
 
 @Component({

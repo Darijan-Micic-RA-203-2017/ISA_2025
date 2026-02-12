@@ -3,8 +3,9 @@ import { Injectable } from '@angular/core';
 
 import { ObjectWithTextualContext } from '../../model/object-with-textual-context';
 import { User } from '../../model/user/user';
-import { ParametersOfActivateAccountOfUserFunction } from '../../utilities/parameters-of-activate-account-of-user-function';
-import { ParametersOfSubmitUserRegistrationRequestFunction } from '../../utilities/parameters-of-submit-user-registration-request-function';
+import { HeadersConstants } from '../../utilities/constants/headers-constants';
+import { ParametersOfActivateAccountOfUserFunction } from '../../utilities/parameters-of-functions/parameters-of-activate-account-of-user-function';
+import { ParametersOfSubmitUserRegistrationRequestFunction } from '../../utilities/parameters-of-functions/parameters-of-submit-user-registration-request-function';
 
 /** REFERENCE: https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-front-app */
 @Injectable({
@@ -17,14 +18,9 @@ export class RegistrationService {
   constructor(private httpClient: HttpClient) { }
 
   registerUserBasedOn(parameters: ParametersOfSubmitUserRegistrationRequestFunction): void {
-    const headersOfHttpRequestWithNonEmpthyBody: HttpHeaders = new HttpHeaders({
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    });
-
     this.httpClient.post<ObjectWithTextualContext>(this.urlOfRegistrationMethod, 
         JSON.stringify(parameters.getUserRegistrationRequest()), {
-            headers: headersOfHttpRequestWithNonEmpthyBody
+            headers: HeadersConstants.headersOfHttpRequestWithNonEmpthyBody
     })
     // REFERENCE: https://rxjs.dev/deprecations/subscribe-arguments
     .subscribe({
@@ -73,14 +69,9 @@ export class RegistrationService {
   }
 
   activateAccountOfUserWith(parameters: ParametersOfActivateAccountOfUserFunction): void {
-    const headersOfHttpRequestWithNonEmpthyBody: HttpHeaders = new HttpHeaders({
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    });
-
     this.httpClient.put<ObjectWithTextualContext>(this.urlOfAccountActivationMethod, 
         JSON.stringify(parameters.getWrappedDigestedIdentificator()), {
-            headers: headersOfHttpRequestWithNonEmpthyBody
+            headers: HeadersConstants.headersOfHttpRequestWithNonEmpthyBody
     })
     // REFERENCE: https://rxjs.dev/deprecations/subscribe-arguments
     .subscribe({

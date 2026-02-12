@@ -1,7 +1,7 @@
 import { WritableSignal } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 
-import { UserRegistrationRequest } from "../model/user/user-registration-request";
+import { UserRegistrationRequest } from "../../model/user/user-registration-request";
 
 export class ParametersOfSubmitUserRegistrationRequestFunction {
 	private userRegistrationRequest: UserRegistrationRequest;

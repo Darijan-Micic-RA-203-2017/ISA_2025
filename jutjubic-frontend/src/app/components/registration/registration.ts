@@ -14,7 +14,7 @@ import { RegistrationService } from '../../services/registration/registration';
 
 import { Address } from '../../model/address/address';
 import { UserRegistrationRequest } from '../../model/user/user-registration-request';
-import { ParametersOfSubmitUserRegistrationRequestFunction } from '../../utilities/parameters-of-submit-user-registration-request-function';
+import { ParametersOfSubmitUserRegistrationRequestFunction } from '../../utilities/parameters-of-functions/parameters-of-submit-user-registration-request-function';
 import { numberOfLettersValidator } from '../../validation/number-of-letters/number-of-letters-validator';
 import { repeatedPasswordValidator } from '../../validation/repeated-password/repeated-password-validator';
 
