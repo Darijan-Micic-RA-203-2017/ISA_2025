@@ -13,6 +13,12 @@ public class WebConfiguration implements WebMvcConfigurer {
 
 	@Override()
 	public void addCorsMappings(CorsRegistry registry) {
-		registry.addMapping("/**").allowedOrigins("http://localhost:4200").maxAge(3600);
+		registry.addMapping("/**").allowedOrigins("http://localhost:4200")
+				/* REFERENCES:
+				 * https://www.reddit.com/r/developersIndia/comments/1l9fj5w/help_facing_cors_issue_in_prod_even_after/
+				 * https://stackoverflow.com/questions/36809528/spring-boot-cors-filter-cors-preflight-channel-did-not-succeed
+				*/
+				.allowedMethods("*")
+				.maxAge(3600);
 	}
 }
