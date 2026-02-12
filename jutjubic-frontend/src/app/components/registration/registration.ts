@@ -165,6 +165,6 @@ export class RegistrationComponent {
     enteredAddress.setLongitude(this.registrationFormGroup.get('addressFormGroup')?.value['longitudeControl']);
     parameters.getUserRegistrationRequest().setAddress(enteredAddress);
 
-    this.registrationService.registerWith(parameters);
+    this.registrationService.registerUserBasedOn(parameters);
   }
 }
