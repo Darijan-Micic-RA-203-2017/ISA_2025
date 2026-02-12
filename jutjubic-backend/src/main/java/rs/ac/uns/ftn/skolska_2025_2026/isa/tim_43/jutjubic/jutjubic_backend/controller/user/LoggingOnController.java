@@ -60,8 +60,8 @@ public class LoggingOnController {
 
 			StringBuilder textualContextBuilder = new StringBuilder();
 			textualContextBuilder.append("The user with the username \"").append(username);
-			textualContextBuilder.append("\" has not been logged on because they are ");
-			textualContextBuilder.append("disabled!");
+			textualContextBuilder.append("\" has not been logged on because their account ");
+			textualContextBuilder.append("is disabled!");
 
 			// REFERENCE: https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.6
 			return new ResponseEntity<ObjectWithTextualContextDTO>(
@@ -74,8 +74,8 @@ public class LoggingOnController {
 
 			StringBuilder textualContextBuilder = new StringBuilder();
 			textualContextBuilder.append("The user with the username \"").append(username);
-			textualContextBuilder.append("\" has not been logged on because they are ");
-			textualContextBuilder.append("locked!");
+			textualContextBuilder.append("\" has not been logged on because their account ");
+			textualContextBuilder.append("is locked!");
 
 			// REFERENCE: https://datatracker.ietf.org/doc/html/rfc4918#section-11.3
 			return new ResponseEntity<ObjectWithTextualContextDTO>(
@@ -104,8 +104,8 @@ public class LoggingOnController {
 			textualContextBuilder.append("The user with the username \"").append(username);
 			textualContextBuilder.append("\" has not been logged on because an internal ");
 			textualContextBuilder.append("authentication exception has occured!\n");
-			textualContextBuilder.append("The user is not disabled, not locked and the entered");
-			textualContextBuilder.append(" password is valid.");
+			textualContextBuilder.append("The user's account is not disabled, not locked and ");
+			textualContextBuilder.append("the entered password is valid.");
 
 			// REFERENCE: https://datatracker.ietf.org/doc/html/rfc4918#section-11.2
 			return new ResponseEntity<ObjectWithTextualContextDTO>(

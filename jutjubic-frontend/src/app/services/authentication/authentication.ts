@@ -72,7 +72,7 @@ export class AuthenticationService {
         // REFERENCE: https://material.angular.dev/components/snack-bar/overview
         parameters.getSnackBar().open('Успешно сте пријављени на систем Јутјубића.', 'Затворите', { duration: 5000 });
 
-        parameters.getRouter().navigateByUrl('/log-on').then(() => { window.location.reload(); });
+        parameters.getRouter().navigateByUrl('/').then(() => { window.location.reload(); });
       },
       error(errorResponse: HttpErrorResponse): void {
         parameters.setIsLoggingOnFormSubmitted(false);
