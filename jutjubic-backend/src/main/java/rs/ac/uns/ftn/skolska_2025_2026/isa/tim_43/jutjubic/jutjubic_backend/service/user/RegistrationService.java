@@ -10,16 +10,24 @@ import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.mode
 
 /** REFERENCES:<br />
  * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example<br />
- * https://mailtrap.io/blog/spring-send-email/
+ * https://mailtrap.io/blog/spring-send-email/<br />
+ * https://www.geeksforgeeks.org/computer-networks/message-digest-in-information-security/<br />
+ * https://www.geeksforgeeks.org/java/sha-256-hash-in-java/
 */
 public interface RegistrationService {
 	boolean isEmailAddressAlreadyAssociatedWithSomeUser(String emailAddress);
 	boolean isUsernameAlreadyAssociatedWithSomeUser(String username);
 	Address saveAddressOfNewUser(UserRegistrationRequestDTO userRegistrationRequestDTO);
+	/** REFERENCES:<br />
+	 * https://www.geeksforgeeks.org/computer-networks/message-digest-in-information-security/<br />
+	 * https://www.geeksforgeeks.org/java/sha-256-hash-in-java/
+	*/
+	String generateDigestedIdentifierFrom(String username, String password);
 	User saveNewUser(UserRegistrationRequestDTO userRegistrationRequestDTO, 
 			Address addressOfNewUser);
 	User registerUserBasedOn(UserRegistrationRequestDTO userRegistrationRequestDTO) 
 			throws UserRegistrationException;
+	/** REFERENCE: https://mailtrap.io/blog/spring-send-email/ */
 	void sendEmailMessageForAccountActivationOf(User newUser) throws MailException;
 	void cancelRegistrationOf(User newUser);
 	User activateAccountOfUserWith(String encodedId) throws UserAccountActivationException;

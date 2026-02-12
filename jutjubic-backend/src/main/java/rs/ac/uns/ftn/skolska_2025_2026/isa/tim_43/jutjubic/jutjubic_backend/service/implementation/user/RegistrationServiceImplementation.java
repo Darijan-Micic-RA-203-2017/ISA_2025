@@ -1,5 +1,9 @@
 package rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.service.implementation.user;
 
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.ZonedDateTime;
 import java.util.Set;
 import java.util.TreeSet;
@@ -25,7 +29,9 @@ import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.util
 
 /** REFERENCES:<br />
  * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe4/spring-security-example<br />
- * https://mailtrap.io/blog/spring-send-email/
+ * https://mailtrap.io/blog/spring-send-email/<br />
+ * https://www.geeksforgeeks.org/computer-networks/message-digest-in-information-security/<br />
+ * https://www.geeksforgeeks.org/java/sha-256-hash-in-java/
 */
 @Service()
 public class RegistrationServiceImplementation implements RegistrationService {
@@ -83,6 +89,29 @@ public class RegistrationServiceImplementation implements RegistrationService {
 		return addressService.save(addressOfNewUser);
 	}
 
+	/** REFERENCES:<br />
+	 * https://www.geeksforgeeks.org/computer-networks/message-digest-in-information-security/<br />
+	 * https://www.geeksforgeeks.org/java/sha-256-hash-in-java/
+	*/
+	@Override()
+	public String generateDigestedIdentifierFrom(String username, String password) {
+		MessageDigest messageDigest = null;
+		try {
+			messageDigest = MessageDigest.getInstance("SHA-256");
+		} catch (NoSuchAlgorithmException nSAE) {
+			nSAE.printStackTrace();
+
+			return "";
+		}
+
+		String concatenatedUsernameAndPassword = username.concat(" ").concat(password);
+		messageDigest.update(concatenatedUsernameAndPassword.getBytes(StandardCharsets.UTF_8));
+		byte[] digestion = messageDigest.digest();
+		String generatedDigestedIdentifier = String.format("%064x", new BigInteger(1, digestion));
+
+		return generatedDigestedIdentifier;
+	}
+
 	@Override()
 	public User saveNewUser(UserRegistrationRequestDTO userRegistrationRequestDTO, 
 			Address addressOfNewUser) {
@@ -134,6 +163,7 @@ public class RegistrationServiceImplementation implements RegistrationService {
 		return saveNewUser(userRegistrationRequestDTO, addressOfNewUser);
 	}
 
+	/** REFERENCE: https://mailtrap.io/blog/spring-send-email/ */
 	@Override()
 	public void sendEmailMessageForAccountActivationOf(User newUser) throws MailException {
 		TextualEmailMessageData dataOfEmailMessageForAccountActivation = 
