@@ -58,8 +58,8 @@ public class UserServiceImplementation implements UserDetailsService, UserServic
 	}
 
 	@Override()
-	public User findByEncodedId(String encodedId) {
-		return userRepository.findByEncodedId(encodedId);
+	public User findByDigestedIdentificator(String digestedIdentificator) {
+		return userRepository.findByDigestedIdentificator(digestedIdentificator);
 	}
 
 	@Override()

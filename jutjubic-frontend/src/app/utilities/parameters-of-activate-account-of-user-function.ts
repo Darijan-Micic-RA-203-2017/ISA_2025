@@ -1,10 +1,10 @@
 import { WritableSignal } from "@angular/core";
 import { MatSnackBar } from "@angular/material/snack-bar";
 
-import { WrappedEncodedId } from "../model/user/wrapped-encoded-id";
+import { WrappedDigestedIdentificator } from "../model/user/wrapped-digested-identificator";
 
 export class ParametersOfActivateAccountOfUserFunction {
-	private wrappedEncodedId: WrappedEncodedId;
+	private wrappedDigestedIdentificator: WrappedDigestedIdentificator;
 	/* REFERENCES:
 	 * https://www.programfarmer.com/en-US/articles/2021/javascript-pass-by-value-pass-by-reference-pass-by-sharing
 	 * https://angular.dev/essentials/signals
@@ -14,18 +14,19 @@ export class ParametersOfActivateAccountOfUserFunction {
 	private snackBar: MatSnackBar;
 
 	/** REFERENCE: https://www.programfarmer.com/en-US/articles/2021/javascript-pass-by-value-pass-by-reference-pass-by-sharing */
-	constructor(wrappedEncodedId: WrappedEncodedId, hasAccountBeenActivated: WritableSignal<boolean>, snackBar: MatSnackBar) {
-		this.wrappedEncodedId = wrappedEncodedId;
+	constructor(wrappedDigestedIdentificator: WrappedDigestedIdentificator, hasAccountBeenActivated: WritableSignal<boolean>, 
+			snackBar: MatSnackBar) {
+		this.wrappedDigestedIdentificator = wrappedDigestedIdentificator;
 		this.hasAccountBeenActivated = hasAccountBeenActivated;
 		this.snackBar = snackBar;
 	}
 
-	public getWrappedEncodedId(): WrappedEncodedId {
-		return this.wrappedEncodedId;
+	public getWrappedDigestedIdentificator(): WrappedDigestedIdentificator {
+		return this.wrappedDigestedIdentificator;
 	}
 
-	public setWrappedEncodedId(wrappedEncodedId: WrappedEncodedId): void {
-		this.wrappedEncodedId = wrappedEncodedId;
+	public setWrappedDigestedIdentificator(wrappedDigestedIdentificator: WrappedDigestedIdentificator): void {
+		this.wrappedDigestedIdentificator = wrappedDigestedIdentificator;
 	}
 
 	/** REFERENCES:<br />

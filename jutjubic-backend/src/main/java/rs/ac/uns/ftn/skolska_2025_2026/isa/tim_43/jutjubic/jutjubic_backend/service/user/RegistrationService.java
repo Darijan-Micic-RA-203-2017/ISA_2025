@@ -22,7 +22,7 @@ public interface RegistrationService {
 	 * https://www.geeksforgeeks.org/computer-networks/message-digest-in-information-security/<br />
 	 * https://www.geeksforgeeks.org/java/sha-256-hash-in-java/
 	*/
-	String generateDigestedIdentifierFrom(String username, String password);
+	String generateDigestedIdentificatorFrom(String username, String password);
 	User saveNewUser(UserRegistrationRequestDTO userRegistrationRequestDTO, 
 			Address addressOfNewUser);
 	User registerUserBasedOn(UserRegistrationRequestDTO userRegistrationRequestDTO) 
@@ -30,5 +30,6 @@ public interface RegistrationService {
 	/** REFERENCE: https://mailtrap.io/blog/spring-send-email/ */
 	void sendEmailMessageForAccountActivationOf(User newUser) throws MailException;
 	void cancelRegistrationOf(User newUser);
-	User activateAccountOfUserWith(String encodedId) throws UserAccountActivationException;
+	User activateAccountOfUserWith(String digestedIdentificator) 
+			throws UserAccountActivationException;
 }

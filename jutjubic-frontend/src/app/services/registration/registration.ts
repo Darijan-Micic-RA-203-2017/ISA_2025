@@ -79,7 +79,7 @@ export class RegistrationService {
     });
 
     this.httpClient.put<ObjectWithTextualContext>(this.urlOfAccountActivationMethod, 
-        JSON.stringify(parameters.getWrappedEncodedId()), {
+        JSON.stringify(parameters.getWrappedDigestedIdentificator()), {
             headers: headersOfHttpRequestWithNonEmpthyBody
     })
     // REFERENCE: https://rxjs.dev/deprecations/subscribe-arguments
@@ -103,7 +103,7 @@ export class RegistrationService {
         console.log(`Error on activation of account!\n\n${textualContext}`);
         // REFERENCE: https://material.angular.dev/components/snack-bar/overview
         if (textualContext.includes('no user')) {
-          parameters.getSnackBar().open('Не постоји корисник с таквим енкодираним препознавачем!', 'Затворите');
+          parameters.getSnackBar().open('Не постоји корисник с таквим провареним препознавачем!', 'Затворите');
         } else {
           parameters.getSnackBar().open('Корисничком налогу је већ омогућено деловање!', 'Затворите');
         }

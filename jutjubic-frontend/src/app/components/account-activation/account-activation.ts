@@ -9,7 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { RegistrationService } from '../../services/registration/registration';
 
-import { WrappedEncodedId } from '../../model/user/wrapped-encoded-id';
+import { WrappedDigestedIdentificator } from '../../model/user/wrapped-digested-identificator';
 import { ParametersOfActivateAccountOfUserFunction } from '../../utilities/parameters-of-activate-account-of-user-function';
 
 @Component({
@@ -21,7 +21,7 @@ import { ParametersOfActivateAccountOfUserFunction } from '../../utilities/param
 })
 export class AccountActivationComponent {
   // REFERENCE: https://angular.dev/guide/routing/read-route-state
-  wrappedEncodedId: WrappedEncodedId = new WrappedEncodedId({ encodedId: '' });
+  wrappedDigestedIdentificator: WrappedDigestedIdentificator = new WrappedDigestedIdentificator({ digestedIdentificator: '' });
   activatedRoute: ActivatedRoute = inject<ActivatedRoute>(ActivatedRoute);
 
   /* REFERENCES:
@@ -39,12 +39,12 @@ export class AccountActivationComponent {
   constructor(private registrationService: RegistrationService) {
     // REFERENCE: https://angular.dev/guide/routing/read-route-state
     this.activatedRoute.params.subscribe((params: Params) => {
-      this.wrappedEncodedId.setEncodedId(params['encoded_id']);
+      this.wrappedDigestedIdentificator.setDigestedIdentificator(params['digested_identificator']);
     });
     this.hasAccountBeenActivated = signal<boolean>(false);
 
-    this.parametersOfActivateAccountOfUserFunction = new ParametersOfActivateAccountOfUserFunction(this.wrappedEncodedId, 
-        this.hasAccountBeenActivated, this.snackBar);
+    this.parametersOfActivateAccountOfUserFunction = new ParametersOfActivateAccountOfUserFunction(
+        this.wrappedDigestedIdentificator, this.hasAccountBeenActivated, this.snackBar);
 
     this.activateAccountOfUser();
   }

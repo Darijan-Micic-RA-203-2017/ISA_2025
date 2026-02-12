@@ -35,6 +35,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	@Query(value = "SELECT u FROM User u JOIN FETCH u.roles r " 
 			+ "JOIN FETCH u.address a " 
-			+ "WHERE u.encodedId = ?1")
-	User findByEncodedId(String encodedId);
+			+ "WHERE u.digestedIdentificator = ?1")
+	User findByDigestedIdentificator(String digestedIdentificator);
 }

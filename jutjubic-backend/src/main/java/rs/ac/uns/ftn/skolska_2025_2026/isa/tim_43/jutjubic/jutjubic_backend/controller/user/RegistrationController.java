@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.ObjectWithTextualContextDTO;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.user.UserDTO;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.user.UserRegistrationRequestDTO;
-import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.user.WrappedEncodedIdDTO;
+import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.user.WrappedDigestedIdentificatorDTO;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.exception.UserAccountActivationException;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.exception.UserRegistrationException;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.user.User;
@@ -106,12 +106,12 @@ public class RegistrationController {
 
 	@PutMapping(path = {"/activate-account"})
 	public ResponseEntity<ObjectWithTextualContextDTO> activateAccountOfUserWith(
-			@RequestBody() WrappedEncodedIdDTO wrappedEncodedIdDTO) {
+			@RequestBody() WrappedDigestedIdentificatorDTO wrappedDigestedIdentificatorDTO) {
 		User activatedUser = null;
 		UserDTO activatedUserDTO = null;
 		try {
 			activatedUser = registrationService.activateAccountOfUserWith(
-					wrappedEncodedIdDTO.getEncodedId());
+					wrappedDigestedIdentificatorDTO.getDigestedIdentificator());
 		} catch (UserAccountActivationException uAAE) {
 			// REFERENCE: https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.6
 			return new ResponseEntity<ObjectWithTextualContextDTO>(

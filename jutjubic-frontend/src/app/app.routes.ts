@@ -9,7 +9,7 @@ import { RegistrationComponent } from './components/registration/registration';
  * https://angular.dev/guide/routing/define-routes
 */
 export const routes: Routes = [
-	{ path: 'log-on',                       component: LoggingOnComponent         },
-	{ path: 'register',                     component: RegistrationComponent      },
-	{ path: 'activate-account/:encoded_id', component: AccountActivationComponent }
+	{ path: 'log-on',                                   component: LoggingOnComponent         },
+	{ path: 'register',                                 component: RegistrationComponent      },
+	{ path: 'activate-account/:digested_identificator', component: AccountActivationComponent }
 ];

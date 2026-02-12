@@ -94,7 +94,7 @@ public class RegistrationServiceImplementation implements RegistrationService {
 	 * https://www.geeksforgeeks.org/java/sha-256-hash-in-java/
 	*/
 	@Override()
-	public String generateDigestedIdentifierFrom(String username, String password) {
+	public String generateDigestedIdentificatorFrom(String username, String password) {
 		MessageDigest messageDigest = null;
 		try {
 			messageDigest = MessageDigest.getInstance("SHA-256");
@@ -107,9 +107,9 @@ public class RegistrationServiceImplementation implements RegistrationService {
 		String concatenatedUsernameAndPassword = username.concat(" ").concat(password);
 		messageDigest.update(concatenatedUsernameAndPassword.getBytes(StandardCharsets.UTF_8));
 		byte[] digestion = messageDigest.digest();
-		String generatedDigestedIdentifier = String.format("%064x", new BigInteger(1, digestion));
+		String digestedIdentificator = String.format("%064x", new BigInteger(1, digestion));
 
-		return generatedDigestedIdentifier;
+		return digestedIdentificator;
 	}
 
 	@Override()
@@ -126,7 +126,7 @@ public class RegistrationServiceImplementation implements RegistrationService {
 		String password = userRegistrationRequestDTO.getPassword();
 		String encodedPassword = passwordEncoder.encode(password);
 		newUser.setPassword(encodedPassword);
-		newUser.setEncodedId(passwordEncoder.encode(username.concat(" ").concat(password)));
+		newUser.setDigestedIdentificator(generateDigestedIdentificatorFrom(username, password));
 		newUser.setFirstName(userRegistrationRequestDTO.getFirstName());
 		newUser.setLastName(userRegistrationRequestDTO.getLastName());
 		newUser.setAddress(addressOfNewUser);
@@ -186,7 +186,7 @@ public class RegistrationServiceImplementation implements RegistrationService {
 		emailMessageTextBuilder.append("Веб читача и посетом к њој) да бисте успешно завршили ");
 		emailMessageTextBuilder.append("регистрацију Вашег корисничког налога:\n");
 		emailMessageTextBuilder.append("http://localhost:4200/activate-account/");
-		emailMessageTextBuilder.append(newUser.getEncodedId()).append("\n\n");
+		emailMessageTextBuilder.append(newUser.getDigestedIdentificator()).append("\n\n");
 		emailMessageTextBuilder.append("Поздрав!\nЈутјубић\n\n\n");
 		emailMessageTextBuilder.append("Respected ").append(newUser.getFirstName()).append(",\n\n");
 		emailMessageTextBuilder.append("Thank you for beginning the registration process on ");
@@ -196,7 +196,7 @@ public class RegistrationServiceImplementation implements RegistrationService {
 		emailMessageTextBuilder.append("successfully complete the registration of your user ");
 		emailMessageTextBuilder.append("account:\n");
 		emailMessageTextBuilder.append("http://localhost:4200/activate-account/");
-		emailMessageTextBuilder.append(newUser.getEncodedId()).append("\n\n");
+		emailMessageTextBuilder.append(newUser.getDigestedIdentificator()).append("\n\n");
 		emailMessageTextBuilder.append("Best regards,\nJutjubic\n");
 		dataOfEmailMessageForAccountActivation.setText(emailMessageTextBuilder.toString());
 		dataOfEmailMessageForAccountActivation.setTo(new String[] {newUser.getEmailAddress()});
@@ -212,15 +212,18 @@ public class RegistrationServiceImplementation implements RegistrationService {
 	}
 
 	@Override()
-	public User activateAccountOfUserWith(String encodedId) throws UserAccountActivationException {
-		User userPendingActivationOfAccount = userService.findByEncodedId(encodedId);
+	public User activateAccountOfUserWith(String digestedIdentificator) 
+			throws UserAccountActivationException {
+		User userPendingActivationOfAccount = 
+				userService.findByDigestedIdentificator(digestedIdentificator);
 		if (userPendingActivationOfAccount == null) {
-			throw new UserAccountActivationException("There is no user with such encoded id!");
+			throw new UserAccountActivationException(
+					"There is no user with such digested identificator!");
 		}
 		if (userPendingActivationOfAccount.isEnabled()) {
 			StringBuilder exceptionMessageBuilder = new StringBuilder();
-			exceptionMessageBuilder.append("The account of the user with the encoded id \"");
-			exceptionMessageBuilder.append(encodedId).append("\" is already activated!");
+			exceptionMessageBuilder.append("The account of the user with the provided ");
+			exceptionMessageBuilder.append("digested identificator is already activated!");
 
 			throw new UserAccountActivationException(exceptionMessageBuilder.toString());
 		}

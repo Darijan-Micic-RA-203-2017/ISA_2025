@@ -43,7 +43,9 @@ import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.vali
  * https://dev.to/eric6166/creating-custom-annotations-for-validation-in-spring-boot-16j1<br />
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions<br />
  * https://www.convex.dev/typescript/core-concepts/functions-methods/typescript-regex<br />
- * https://forum.knime.com/t/string-manipulation-multi-column-regex-patternsyntaxexception-illegal-repetition/60894/4
+ * https://forum.knime.com/t/string-manipulation-multi-column-regex-patternsyntaxexception-illegal-repetition/60894/4<br />
+ * https://www.geeksforgeeks.org/computer-networks/message-digest-in-information-security/<br />
+ * https://www.geeksforgeeks.org/java/sha-256-hash-in-java/
 */
 @Entity()
 @Table(name = "users")
@@ -109,13 +111,17 @@ public class User implements UserDetails, Comparable<User> {
 			+ "or in the present!")
 	private ZonedDateTime dateAndTimeOfLastPasswordChange;
 
-	@Column(name = "encoded_id", nullable = false)
-	@NotBlank(message = "The encoded ID has to be non-blank!")
-	@Pattern(regexp = "^\\S+$", 
-			message = "The encoded ID has to not contain any white-space characters!")
-	@Size(min = 16, max = 60, 
-			message = "The encoded ID has to contain at least 16 and at most 60 characters!")
-	private String encodedId;
+	/** REFERENCES:<br />
+	 * https://www.geeksforgeeks.org/computer-networks/message-digest-in-information-security/<br />
+	 * https://www.geeksforgeeks.org/java/sha-256-hash-in-java/
+	*/
+	@Column(name = "digested_identificator", nullable = false)
+	@NotBlank(message = "The digested identificator has to be non-blank!")
+	@Pattern(regexp = "^[a-z0-9]+$", 
+			message = "The digested identificator has to contain only small letters and digits!")
+	@Size(min = 64, max = 64, 
+			message = "The digested identificator has to contain exactly 64 characters!")
+	private String digestedIdentificator;
 
 	@Column(name = "first_name", nullable = false)
 	@NotBlank(message = "The first name has to be non-blank!")
@@ -143,7 +149,7 @@ public class User implements UserDetails, Comparable<User> {
 
 	public User(long id, boolean enabled, Set<UserRole> roles, String emailAddress, 
 			String username, String password, ZonedDateTime dateAndTimeOfLastPasswordChange, 
-			String encodedId, String firstName, String lastName, Address address) {
+			String digestedIdentificator, String firstName, String lastName, Address address) {
 		this.id = id;
 		this.enabled = enabled;
 		this.roles = roles;
@@ -151,7 +157,7 @@ public class User implements UserDetails, Comparable<User> {
 		this.username = username;
 		this.password = password;
 		this.dateAndTimeOfLastPasswordChange = dateAndTimeOfLastPasswordChange;
-		this.encodedId = encodedId;
+		this.digestedIdentificator = digestedIdentificator;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.address = address;
@@ -221,12 +227,12 @@ public class User implements UserDetails, Comparable<User> {
 		this.dateAndTimeOfLastPasswordChange = dateAndTimeOfLastPasswordChange;
 	}
 
-	public String getEncodedId() {
-		return encodedId;
+	public String getDigestedIdentificator() {
+		return digestedIdentificator;
 	}
 
-	public void setEncodedId(String encodedId) {
-		this.encodedId = encodedId;
+	public void setDigestedIdentificator(String digestedIdentificator) {
+		this.digestedIdentificator = digestedIdentificator;
 	}
 
 	public String getFirstName() {
@@ -336,7 +342,7 @@ public class User implements UserDetails, Comparable<User> {
 		if (comparisonValue != 0) {
 			return comparisonValue;
 		}
-		comparisonValue = encodedId.compareTo(o.encodedId);
+		comparisonValue = digestedIdentificator.compareTo(o.digestedIdentificator);
 		if (comparisonValue != 0) {
 			return comparisonValue;
 		}
@@ -359,7 +365,8 @@ public class User implements UserDetails, Comparable<User> {
 	@Override()
 	public int hashCode() {
 		return Objects.hash(id, enabled, roles, emailAddress, username, password, 
-				dateAndTimeOfLastPasswordChange, encodedId, firstName, lastName, address);
+				dateAndTimeOfLastPasswordChange, digestedIdentificator, firstName, lastName, 
+				address);
 	}
 
 	@Override()
@@ -381,7 +388,7 @@ public class User implements UserDetails, Comparable<User> {
 				&& Objects.equals(password, other.password) 
 				&& Objects.equals(dateAndTimeOfLastPasswordChange, 
 						other.dateAndTimeOfLastPasswordChange) 
-				&& Objects.equals(encodedId, other.encodedId) 
+				&& Objects.equals(digestedIdentificator, other.digestedIdentificator) 
 				&& Objects.equals(firstName, other.firstName) 
 				&& Objects.equals(lastName, other.lastName) 
 				&& Objects.equals(address, other.address);
@@ -398,7 +405,7 @@ public class User implements UserDetails, Comparable<User> {
 				.append(", password = ").append(password)
 				.append(", dateAndTimeOfLastPasswordChange = ")
 				.append(dateAndTimeOfLastPasswordChange)
-				.append(", encodedId = ").append(encodedId)
+				.append(", digestedIdentificator = ").append(digestedIdentificator)
 				.append(", firstName = ").append(firstName)
 				.append(", lastName = ").append(lastName)
 				.append(", address = ").append(address)
