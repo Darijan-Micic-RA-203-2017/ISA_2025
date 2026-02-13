@@ -35,11 +35,18 @@ mat-card-content > :last-child:not(mat-card-footer) {
  * https://www.scaler.com/topics/css/css-units/
  * https://blog.logrocket.com/using-em-vs-rem-css/
 */
-#successfulActivationOfUserAccountIcon {
-	color: green;
+mat-card-content > mat-icon {
 	font-size: 6em;
 	height: 1em;
 	width: 1em;
+}
+
+#successfulActivationOfUserAccountIcon {
+	color: green;
+}
+
+#failedActivationOfUserAccountIcon {
+	color: red;
 }
 
 mat-card-actions > button {

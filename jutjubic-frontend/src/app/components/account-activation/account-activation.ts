@@ -5,7 +5,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { RegistrationService } from '../../services/registration/registration';
 
@@ -29,10 +28,8 @@ export class AccountActivationComponent {
    * https://angular.dev/essentials/signals
    * https://angular.dev/guide/signals
   */
-  hasAccountBeenActivated: WritableSignal<boolean>;
-
-  // REFERENCE: https://material.angular.dev/components/snack-bar/overview
-  snackBar: MatSnackBar = inject<MatSnackBar>(MatSnackBar);
+  hasAccountBeenActivated: WritableSignal<boolean | null>;
+  reasonForFailureOfAccountActivation: WritableSignal<string | null>;
 
   parametersOfActivateAccountOfUserFunction: ParametersOfActivateAccountOfUserFunction;
 
@@ -41,10 +38,11 @@ export class AccountActivationComponent {
     this.activatedRoute.params.subscribe((params: Params) => {
       this.wrappedDigestedIdentificator.setDigestedIdentificator(params['digested_identificator']);
     });
-    this.hasAccountBeenActivated = signal<boolean>(false);
+    this.hasAccountBeenActivated = signal<boolean | null>(null);
+    this.reasonForFailureOfAccountActivation = signal<string | null>(null);
 
     this.parametersOfActivateAccountOfUserFunction = new ParametersOfActivateAccountOfUserFunction(
-        this.wrappedDigestedIdentificator, this.hasAccountBeenActivated, this.snackBar);
+        this.wrappedDigestedIdentificator, this.hasAccountBeenActivated, this.reasonForFailureOfAccountActivation);
 
     this.activateAccountOfUser();
   }

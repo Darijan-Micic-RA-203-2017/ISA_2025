@@ -45,11 +45,14 @@ mat-form-field {
  * https://www.scaler.com/topics/css/css-units/
  * https://blog.logrocket.com/using-em-vs-rem-css/
 */
-#successfulCreationOfTemporarilyDisabledUserAccountIcon {
-	color: green;
+mat-card-content > mat-icon {
 	font-size: 6em;
 	height: 1em;
 	width: 1em;
+}
+
+#successfulCreationOfTemporarilyDisabledUserAccountIcon {
+	color: green;
 }
 
 mat-card-actions > button {

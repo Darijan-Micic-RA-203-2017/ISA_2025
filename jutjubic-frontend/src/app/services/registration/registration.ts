@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { ObjectWithTextualContext } from '../../model/object-with-textual-context';
@@ -92,11 +92,13 @@ export class RegistrationService {
         let error: ObjectWithTextualContext = new ObjectWithTextualContext(errorResponse.error);
         let textualContext: string = error.getTextualContext();
         console.log(`Error on activation of account!\n\n${textualContext}`);
-        // REFERENCE: https://material.angular.dev/components/snack-bar/overview
         if (textualContext.includes('no user')) {
-          parameters.getSnackBar().open('Не постоји корисник с таквим провареним препознавачем!', 'Затворите');
+          parameters.setReasonForFailureOfAccountActivation('Не постоји корисник с таквим провареним препознавачем!');
+        } else if (textualContext.includes('already')) {
+          parameters.setReasonForFailureOfAccountActivation('Корисничком налогу је већ омогућено деловање!');
         } else {
-          parameters.getSnackBar().open('Корисничком налогу је већ омогућено деловање!', 'Затворите');
+          parameters.setReasonForFailureOfAccountActivation('Проварен препознавач мора бити прослеђен и не сме бити празан ' 
+              + '(садржати само беле знакове). Такође, он мора садржати тачно 64 знака и то искључиво мала слова и цифре!');
         }
       }
     });

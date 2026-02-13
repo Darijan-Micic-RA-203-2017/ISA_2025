@@ -5,26 +5,34 @@
 	</mat-card-header>
 	<mat-card-content>
 		<!-- REFERENCE: https://dev.to/vetriselvan_11/angular-20-control-flow-part-1-say-goodbye-to-ngif-ngfor-and-ngswitch-42d8 -->
-		@if (!hasAccountBeenActivated()) {
+		@if (hasAccountBeenActivated() == null) {
 			<!-- REFERENCE: https://material.angular.dev/components/progress-spinner/overview -->
 			<mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
-		} @else {
+		} @else if (hasAccountBeenActivated()) {
 			<!-- REFERENCES:
 			https://material.angular.dev/components/icon/overview
 			https://fonts.google.com/icons
 			-->
-			<mat-icon id="successfulActivationOfUserAccountIcon">done_outline</mat-icon>
+			<mat-icon id="successfulActivationOfUserAccountIcon">check</mat-icon>
 			<h3>
 				Вашем корисничком налогу успешно је омогућено деловање.
 			</h3>
 			<h3>
 				Добро дошли на Јутјубић!
 			</h3>
+		} @else {
+			<!-- REFERENCES:
+			https://material.angular.dev/components/icon/overview
+			https://fonts.google.com/icons
+			-->
+			<mat-icon id="failedActivationOfUserAccountIcon">block</mat-icon>
+			<h3>{{ reasonForFailureOfAccountActivation() }}</h3>
 		}
 	</mat-card-content>
 	<mat-card-actions>
 		<!-- REFERENCE: https://angular.love/angular-router-everything-you-need-to-know-about -->
-		<button id="landingPageButton" type="button" matButton="text" [disabled]="!hasAccountBeenActivated()" routerLink="/">
+		<button id="landingPageButton" type="button" matButton="text" [disabled]="hasAccountBeenActivated() == null" 
+				routerLink="/">
 			Почетна страница
 		</button>
 	</mat-card-actions>
