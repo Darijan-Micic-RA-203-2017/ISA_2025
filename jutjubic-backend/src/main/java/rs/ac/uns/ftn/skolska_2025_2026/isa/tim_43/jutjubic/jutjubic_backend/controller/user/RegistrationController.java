@@ -40,8 +40,8 @@ public class RegistrationController {
 	}
 
 	@PostMapping(path = {""})
-	public ResponseEntity<ObjectWithTextualContextDTO> registerUserBasedOn(
-			@Valid() @RequestBody() UserRegistrationRequestDTO userRegistrationRequestDTO) {
+	public ResponseEntity<ObjectWithTextualContextDTO> registerUserBasedOn(@Valid() 
+			@RequestBody() UserRegistrationRequestDTO userRegistrationRequestDTO) {
 		User registeredUser = null;
 		UserDTO registeredUserDTO = null;
 		try {
@@ -105,7 +105,7 @@ public class RegistrationController {
 	}
 
 	@PutMapping(path = {"/activate-account"})
-	public ResponseEntity<ObjectWithTextualContextDTO> activateAccountOfUserWith(
+	public ResponseEntity<ObjectWithTextualContextDTO> activateAccountOfUserWith(@Valid() 
 			@RequestBody() WrappedDigestedIdentificatorDTO wrappedDigestedIdentificatorDTO) {
 		User activatedUser = null;
 		UserDTO activatedUserDTO = null;

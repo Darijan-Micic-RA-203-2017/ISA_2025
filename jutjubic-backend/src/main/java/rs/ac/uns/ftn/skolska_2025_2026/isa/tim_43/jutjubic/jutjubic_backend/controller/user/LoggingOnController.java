@@ -46,8 +46,8 @@ public class LoggingOnController {
 	}
 
 	@PostMapping(path = {""})
-	public ResponseEntity<ObjectWithTextualContextDTO> logOnWith(
-			@Valid() @RequestBody() UserCredentialsDTO userCredentialsDTO) {
+	public ResponseEntity<ObjectWithTextualContextDTO> logOnWith(@Valid() @RequestBody() 
+			UserCredentialsDTO userCredentialsDTO) {
 		String username = userCredentialsDTO.getUsername();
 		String password = userCredentialsDTO.getPassword();
 
