@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.user;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -65,7 +66,9 @@ public class User implements UserDetails, Comparable<User> {
 	@NotNull(message = "The \"enabled\" field has to have a non-null value!")
 	private boolean enabled;
 
-	@ManyToMany(fetch = FetchType.LAZY)
+	/** REFERENCE: https://stackoverflow.com/questions/53647672/how-to-save-parent-and-child-in-one-shot-jpa-hibernate */
+	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, 
+			CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinTable(name = "joining_table_of_users_and_roles", 
 			joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id", 
 					nullable = false, columnDefinition = "bigserial")}, 
@@ -139,8 +142,9 @@ public class User implements UserDetails, Comparable<User> {
 					+ "except space, hyphen and single quotation mark!")
 	private String lastName;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "address_id", nullable = true, 
+	/** REFERENCE: https://stackoverflow.com/questions/53647672/how-to-save-parent-and-child-in-one-shot-jpa-hibernate */
+	@OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.ALL})
+	@JoinColumn(name = "address_id", nullable = false, 
 			referencedColumnName = "id", columnDefinition = "bigserial")
 	@NotNull(message = "The address has to not be null!")
 	private Address address;
