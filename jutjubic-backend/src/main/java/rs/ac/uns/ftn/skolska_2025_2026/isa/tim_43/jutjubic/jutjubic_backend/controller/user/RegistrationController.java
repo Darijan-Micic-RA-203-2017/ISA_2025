@@ -47,10 +47,27 @@ public class RegistrationController {
 		try {
 			registeredUser = registrationService.registerUserBasedOn(userRegistrationRequestDTO);
 		} catch (UserRegistrationException uRE) {
+			System.err.println(uRE.getMessage());
+
 			// REFERENCE: https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.6
 			return new ResponseEntity<ObjectWithTextualContextDTO>(
 					new ObjectWithTextualContextDTO(registeredUserDTO, uRE.getMessage()), 
 					HttpStatus.NOT_ACCEPTABLE);
+		} catch (MailException mE) {
+			System.err.println(mE.getMessage());
+
+			StringBuilder textualContextBuilder = new StringBuilder();
+			textualContextBuilder.append("The registration of the user with the e-mail address \"");
+			textualContextBuilder.append(userRegistrationRequestDTO.getEmailAddress());
+			textualContextBuilder.append("\" has been cancelled because an e-mail exception has ");
+			textualContextBuilder.append("occurred! The user has not been saved to the database!");
+			String textualContext = textualContextBuilder.toString();
+			System.err.println(textualContext);
+
+			// REFERENCE: https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.8
+			return new ResponseEntity<ObjectWithTextualContextDTO>(
+					new ObjectWithTextualContextDTO(registeredUserDTO, textualContext), 
+					HttpStatus.CONFLICT);
 		}
 
 		if (registeredUser == null) {
@@ -60,33 +77,12 @@ public class RegistrationController {
 			textualContextBuilder.append("\" has not been registered because an internal ");
 			textualContextBuilder.append("server error has occured!");
 			String textualContext = textualContextBuilder.toString();
-			System.out.println(textualContext);
+			System.err.println(textualContext);
 
 			// REFERENCE: https://datatracker.ietf.org/doc/html/rfc7231#section-6.6.1
 			return new ResponseEntity<ObjectWithTextualContextDTO>(
 					new ObjectWithTextualContextDTO(registeredUserDTO, textualContext), 
 					HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
-		try {
-			registrationService.sendEmailMessageForAccountActivationOf(registeredUser);
-		} catch (MailException mE) {
-			mE.printStackTrace();
-
-			registrationService.cancelRegistrationOf(registeredUser);
-
-			StringBuilder textualContextBuilder = new StringBuilder();
-			textualContextBuilder.append("The registration of the user with the e-mail address \"");
-			textualContextBuilder.append(userRegistrationRequestDTO.getEmailAddress());
-			textualContextBuilder.append("\" has been cancelled because an e-mail exception has ");
-			textualContextBuilder.append("occurred! The user has been deleted from the database!");
-			String textualContext = textualContextBuilder.toString();
-			System.out.println(textualContext);
-
-			// REFERENCE: https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.8
-			return new ResponseEntity<ObjectWithTextualContextDTO>(
-					new ObjectWithTextualContextDTO(registeredUserDTO, textualContext), 
-					HttpStatus.CONFLICT);
 		}
 
 		StringBuilder textualContextBuilder = new StringBuilder();
@@ -113,6 +109,8 @@ public class RegistrationController {
 			activatedUser = registrationService.activateAccountOfUserWith(
 					wrappedDigestedIdentificatorDTO.getDigestedIdentificator());
 		} catch (UserAccountActivationException uAAE) {
+			System.err.println(uAAE.getMessage());
+
 			// REFERENCE: https://datatracker.ietf.org/doc/html/rfc7231#section-6.5.6
 			return new ResponseEntity<ObjectWithTextualContextDTO>(
 					new ObjectWithTextualContextDTO(activatedUserDTO, uAAE.getMessage()), 

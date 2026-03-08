@@ -56,7 +56,7 @@ public class LoggingOnController {
 			authentication = authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(username, password));
 		} catch (DisabledException dE) {
-			System.out.println(dE.getMessage());
+			System.err.println(dE.getMessage());
 
 			StringBuilder textualContextBuilder = new StringBuilder();
 			textualContextBuilder.append("The user with the username \"").append(username);
@@ -70,7 +70,7 @@ public class LoggingOnController {
 							textualContextBuilder.toString()), 
 					HttpStatus.NOT_ACCEPTABLE);
 		} catch (LockedException lE) {
-			System.out.println(lE.getMessage());
+			System.err.println(lE.getMessage());
 
 			StringBuilder textualContextBuilder = new StringBuilder();
 			textualContextBuilder.append("The user with the username \"").append(username);
@@ -84,7 +84,7 @@ public class LoggingOnController {
 							textualContextBuilder.toString()), 
 					HttpStatus.LOCKED);
 		} catch (BadCredentialsException bCE) {
-			System.out.println(bCE.getMessage());
+			System.err.println(bCE.getMessage());
 
 			StringBuilder textualContextBuilder = new StringBuilder();
 			textualContextBuilder.append("The user with the username \"").append(username);
@@ -98,7 +98,7 @@ public class LoggingOnController {
 							textualContextBuilder.toString()), 
 					HttpStatus.BAD_REQUEST);
 		} catch (AuthenticationException e) {
-			System.out.println(e.getMessage());
+			System.err.println(e.getMessage());
 
 			StringBuilder textualContextBuilder = new StringBuilder();
 			textualContextBuilder.append("The user with the username \"").append(username);
