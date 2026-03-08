@@ -42,6 +42,8 @@ public interface RegistrationService {
 	User createNewUser(UserRegistrationRequestDTO userRegistrationRequestDTO, 
 			Address addressOfNewUser);
 
+	void clearListsOfEmailAddressesAndUsernamesAlreadyAllocatedBySomeUsers();
+
 	/** REFERENCES:<br />
 	 * https://github.com/isa-asistent/Vezbe-2025/blob/main/vezbe6/Transakcije.pdf<br />
 	 * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe6/tx-optimistic-example<br />

@@ -5,6 +5,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -39,6 +41,9 @@ import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.util
 */
 @Service()
 public class RegistrationServiceImplementation implements RegistrationService {
+	private static List<String> emailAddressesAlreadyAllocatedBySomeUsers = new ArrayList<String>();
+	private static List<String> usernamesAlreadyAllocatedBySomeUsers = new ArrayList<String>();
+
 	private AddressService addressService;
 	private UserRoleService userRoleService;
 	private UserService userService;
@@ -79,6 +84,12 @@ public class RegistrationServiceImplementation implements RegistrationService {
 		User possibleExistingUserWithSameEmailAddress = 
 				userService.findByEmailAddress(emailAddress);
 		if (possibleExistingUserWithSameEmailAddress == null) {
+			if (emailAddressesAlreadyAllocatedBySomeUsers.contains(emailAddress)) {
+				return true;
+			}
+
+			emailAddressesAlreadyAllocatedBySomeUsers.add(emailAddress);
+
 			return false;
 		}
 
@@ -90,6 +101,12 @@ public class RegistrationServiceImplementation implements RegistrationService {
 	public boolean isUsernameAlreadyAssociatedWithSomeUser(String username) {
 		User possibleExistingUserWithSameUsername = userService.findByUsername(username);
 		if (possibleExistingUserWithSameUsername == null) {
+			if (usernamesAlreadyAllocatedBySomeUsers.contains(username)) {
+				return true;
+			}
+
+			usernamesAlreadyAllocatedBySomeUsers.add(username);
+
 			return false;
 		}
 
@@ -160,6 +177,12 @@ public class RegistrationServiceImplementation implements RegistrationService {
 		return userService.create(newUser);
 	}
 
+	@Override()
+	public void clearListsOfEmailAddressesAndUsernamesAlreadyAllocatedBySomeUsers() {
+		emailAddressesAlreadyAllocatedBySomeUsers.clear();
+		usernamesAlreadyAllocatedBySomeUsers.clear();
+	}
+
 	/* REFERENCES:<br />
 	 * https://github.com/isa-asistent/Vezbe-2025/blob/main/vezbe6/Transakcije.pdf<br />
 	 * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe6/tx-optimistic-example<br />
@@ -192,6 +215,7 @@ public class RegistrationServiceImplementation implements RegistrationService {
 		Address addressOfNewUser = saveAddressOfNewUser(userRegistrationRequestDTO);
 		User newUser = createNewUser(userRegistrationRequestDTO, addressOfNewUser);
 		sendEmailMessageForAccountActivationOf(newUser);
+		clearListsOfEmailAddressesAndUsernamesAlreadyAllocatedBySomeUsers();
 
 		return newUser;
 	}
