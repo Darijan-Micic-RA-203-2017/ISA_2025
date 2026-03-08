@@ -13,7 +13,11 @@ import org.springframework.core.env.Environment;
 import org.springframework.mail.MailException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.address.AddressDTO;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.user.UserRegistrationRequestDTO;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.exception.UserAccountActivationException;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.exception.UserRegistrationException;
@@ -55,38 +59,58 @@ public class RegistrationServiceImplementation implements RegistrationService {
 	}
 
 	@Override()
+	public AddressService getAddressService() {
+		return addressService;
+	}
+
+	@Override()
+	public UserRoleService getUserRoleService() {
+		return userRoleService;
+	}
+
+	@Override()
+	public UserService getUserService() {
+		return userService;
+	}
+
+	@Override()
+	@Transactional(readOnly = true, propagation = Propagation.MANDATORY)
 	public boolean isEmailAddressAlreadyAssociatedWithSomeUser(String emailAddress) {
 		User possibleExistingUserWithSameEmailAddress = 
 				userService.findByEmailAddress(emailAddress);
-		if (possibleExistingUserWithSameEmailAddress != null) {
-			return true;
+		if (possibleExistingUserWithSameEmailAddress == null) {
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 	@Override()
+	@Transactional(readOnly = true, propagation = Propagation.MANDATORY)
 	public boolean isUsernameAlreadyAssociatedWithSomeUser(String username) {
 		User possibleExistingUserWithSameUsername = userService.findByUsername(username);
-		if (possibleExistingUserWithSameUsername != null) {
-			return true;
+		if (possibleExistingUserWithSameUsername == null) {
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 	@Override()
+	@Transactional(readOnly = false, propagation = Propagation.MANDATORY)
 	public Address saveAddressOfNewUser(UserRegistrationRequestDTO userRegistrationRequestDTO) {
 		Address addressOfNewUser = new Address();
-		addressOfNewUser.setStreet(userRegistrationRequestDTO.getAddress().getStreet());
-		addressOfNewUser.setNumber(userRegistrationRequestDTO.getAddress().getNumber());
-		addressOfNewUser.setPostalCode(userRegistrationRequestDTO.getAddress().getPostalCode());
-		addressOfNewUser.setPlace(userRegistrationRequestDTO.getAddress().getPlace());
-		addressOfNewUser.setCountry(userRegistrationRequestDTO.getAddress().getCountry());
-		addressOfNewUser.setLatitude(userRegistrationRequestDTO.getAddress().getLatitude());
-		addressOfNewUser.setLongitude(userRegistrationRequestDTO.getAddress().getLongitude());
+		AddressDTO addressDTO = userRegistrationRequestDTO.getAddress();
+		addressOfNewUser.setStreet(addressDTO.getStreet());
+		addressOfNewUser.setNumber(addressDTO.getNumber());
+		addressOfNewUser.setPostalCode(addressDTO.getPostalCode());
+		addressOfNewUser.setPlace(addressDTO.getPlace());
+		addressOfNewUser.setCountry(addressDTO.getCountry());
+		addressOfNewUser.setLatitude(addressDTO.getLatitude());
+		addressOfNewUser.setLongitude(addressDTO.getLongitude());
+		addressOfNewUser.setVersion(1);
 
-		return addressService.save(addressOfNewUser);
+		return addressService.create(addressOfNewUser);
 	}
 
 	/** REFERENCES:<br />
@@ -113,7 +137,8 @@ public class RegistrationServiceImplementation implements RegistrationService {
 	}
 
 	@Override()
-	public User saveNewUser(UserRegistrationRequestDTO userRegistrationRequestDTO, 
+	@Transactional(readOnly = false, propagation = Propagation.MANDATORY)
+	public User createNewUser(UserRegistrationRequestDTO userRegistrationRequestDTO, 
 			Address addressOfNewUser) {
 		User newUser = new User();
 		newUser.setEnabled(false);
@@ -130,13 +155,23 @@ public class RegistrationServiceImplementation implements RegistrationService {
 		newUser.setFirstName(userRegistrationRequestDTO.getFirstName());
 		newUser.setLastName(userRegistrationRequestDTO.getLastName());
 		newUser.setAddress(addressOfNewUser);
+		newUser.setVersion(1);
 
-		return userService.save(newUser);
+		return userService.create(newUser);
 	}
 
+	/* REFERENCES:<br />
+	 * https://github.com/isa-asistent/Vezbe-2025/blob/main/vezbe6/Transakcije.pdf<br />
+	 * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe6/tx-optimistic-example<br />
+	 * https://stackoverflow.com/questions/53647672/how-to-save-parent-and-child-in-one-shot-jpa-hibernate<br />
+	 * https://stackoverflow.com/a/39615854
+	*/
 	@Override()
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, 
+			isolation = Isolation.DEFAULT, 
+			rollbackFor = {UserRegistrationException.class, MailException.class})
 	public User registerUserBasedOn(UserRegistrationRequestDTO userRegistrationRequestDTO) 
-			throws UserRegistrationException {
+			throws UserRegistrationException, MailException {
 		String emailAddress = userRegistrationRequestDTO.getEmailAddress();
 		if (isEmailAddressAlreadyAssociatedWithSomeUser(emailAddress)) {
 			StringBuilder exceptionMessageBuilder = new StringBuilder();
@@ -145,7 +180,6 @@ public class RegistrationServiceImplementation implements RegistrationService {
 
 			throw new UserRegistrationException(exceptionMessageBuilder.toString());
 		}
-
 		String username = userRegistrationRequestDTO.getUsername();
 		if (isUsernameAlreadyAssociatedWithSomeUser(username)) {
 			StringBuilder exceptionMessageBuilder = new StringBuilder();
@@ -156,11 +190,10 @@ public class RegistrationServiceImplementation implements RegistrationService {
 		}
 
 		Address addressOfNewUser = saveAddressOfNewUser(userRegistrationRequestDTO);
-		if (addressOfNewUser == null || addressOfNewUser.getId() < 1) {
-			return null;
-		}
+		User newUser = createNewUser(userRegistrationRequestDTO, addressOfNewUser);
+		sendEmailMessageForAccountActivationOf(newUser);
 
-		return saveNewUser(userRegistrationRequestDTO, addressOfNewUser);
+		return newUser;
 	}
 
 	/** REFERENCE: https://mailtrap.io/blog/spring-send-email/ */
@@ -192,7 +225,7 @@ public class RegistrationServiceImplementation implements RegistrationService {
 		emailMessageTextBuilder.append("Thank you for beginning the registration process on ");
 		emailMessageTextBuilder.append("our platform! Please open the following link (by ");
 		emailMessageTextBuilder.append("clicking on it or copying it into the address field of ");
-		emailMessageTextBuilder.append("the other Web browser tab and visiting it) in order to ");
+		emailMessageTextBuilder.append("another Web browser tab and visiting it) in order to ");
 		emailMessageTextBuilder.append("successfully complete the registration of your user ");
 		emailMessageTextBuilder.append("account:\n");
 		emailMessageTextBuilder.append("http://localhost:4200/activate-account/");
@@ -205,13 +238,8 @@ public class RegistrationServiceImplementation implements RegistrationService {
 	}
 
 	@Override()
-	public void cancelRegistrationOf(User newUser) {
-		long idOfAddressOfNewUser = newUser.getAddress().getId();
-		userService.deleteById(newUser.getId());
-		addressService.deleteById(idOfAddressOfNewUser);
-	}
-
-	@Override()
+	@Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW, 
+			rollbackFor = {UserAccountActivationException.class})
 	public User activateAccountOfUserWith(String digestedIdentificator) 
 			throws UserAccountActivationException {
 		User userPendingActivationOfAccount = 
@@ -228,8 +256,6 @@ public class RegistrationServiceImplementation implements RegistrationService {
 			throw new UserAccountActivationException(exceptionMessageBuilder.toString());
 		}
 
-		userPendingActivationOfAccount.setEnabled(true);
-
-		return userService.save(userPendingActivationOfAccount);
+		return userService.enable(userPendingActivationOfAccount);
 	}
 }
