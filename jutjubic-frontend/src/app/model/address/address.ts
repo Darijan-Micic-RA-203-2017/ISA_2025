@@ -7,6 +7,11 @@ export class Address {
 	private country: string;
 	private latitude: number;
 	private longitude: number;
+	/** REFERENCES:<br />
+	 * https://github.com/isa-asistent/Vezbe-2025/blob/main/vezbe6/Transakcije.pdf<br />
+	 * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe6/tx-optimistic-example
+	*/
+	private version: number;
 
 	/** REFERENCES:<br />
 	 * https://stackoverflow.com/questions/56410007/cast-angular-http-response-into-class<br />
@@ -22,6 +27,7 @@ export class Address {
 			this.country = '';
 			this.latitude = 0.0;
 			this.longitude = 0.0;
+			this.version = 1;
 
 			return;
 		}
@@ -34,6 +40,7 @@ export class Address {
 		this.country = value['country'];
 		this.latitude = value['latitude'];
 		this.longitude = value['longitude'];
+		this.version = value['version'];
 	}
 
 	public getId(): number {
@@ -98,5 +105,13 @@ export class Address {
 
 	public setLongitude(longitude: number): void {
 		this.longitude = longitude;
+	}
+
+	public getVersion(): number {
+		return this.version;
+	}
+
+	public setVersion(version: number): void {
+		this.version = version;
 	}
 }

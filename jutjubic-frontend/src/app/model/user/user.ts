@@ -11,6 +11,11 @@ export class User {
 	private firstName: string;
 	private lastName: string;
 	private address: Address;
+	/** REFERENCES:<br />
+	 * https://github.com/isa-asistent/Vezbe-2025/blob/main/vezbe6/Transakcije.pdf<br />
+	 * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe6/tx-optimistic-example
+	*/
+	private version: number;
 
 	/** REFERENCES:<br />
 	 * https://stackoverflow.com/questions/56410007/cast-angular-http-response-into-class<br />
@@ -26,6 +31,7 @@ export class User {
 			this.firstName = '';
 			this.lastName = '';
 			this.address = new Address(null);
+			this.version = 1;
 
 			return;
 		}
@@ -38,6 +44,7 @@ export class User {
 		this.firstName = value['firstName'];
 		this.lastName = value['lastName'];
 		this.address = value['address'];
+		this.version = value['version'];
 	}
 
 	public getId(): number {
@@ -102,5 +109,13 @@ export class User {
 
 	public setAddress(address: Address): void {
 		this.address = address;
+	}
+
+	public getVersion(): number {
+		return this.version;
+	}
+
+	public setVersion(version: number): void {
+		this.version = version;
 	}
 }

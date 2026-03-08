@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.address.Address;
@@ -38,6 +39,13 @@ public class AddressDTO {
 
 	private double longitude;
 
+	/** REFERENCES:<br />
+	 * https://github.com/isa-asistent/Vezbe-2025/blob/main/vezbe6/Transakcije.pdf<br />
+	 * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe6/tx-optimistic-example
+	*/
+	@Positive(message = "The version has to be positive!")
+	private int version;
+
 	public AddressDTO() {}
 
 	public AddressDTO(long id, String street, String number, String postalCode, String place, 
@@ -61,6 +69,7 @@ public class AddressDTO {
 		this.country = address.getCountry();
 		this.latitude = address.getLatitude();
 		this.longitude = address.getLongitude();
+		this.version = address.getVersion();
 	}
 
 	public long getId() {
@@ -125,5 +134,13 @@ public class AddressDTO {
 
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
+	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
 	}
 }

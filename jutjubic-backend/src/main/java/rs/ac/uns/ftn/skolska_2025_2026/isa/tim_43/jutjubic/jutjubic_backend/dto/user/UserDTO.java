@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
@@ -69,6 +70,13 @@ public class UserDTO {
 	@NotNull(message = "The address has to not be null!")
 	private AddressDTO address;
 
+	/** REFERENCES:<br />
+	 * https://github.com/isa-asistent/Vezbe-2025/blob/main/vezbe6/Transakcije.pdf<br />
+	 * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe6/tx-optimistic-example
+	*/
+	@Positive(message = "The version has to be positive!")
+	private int version;
+
 	public UserDTO() {}
 
 	public UserDTO(long id, boolean enabled, List<UserRoleDTO> roles, String emailAddress, 
@@ -95,6 +103,7 @@ public class UserDTO {
 		this.firstName = user.getFirstName();
 		this.lastName = user.getLastName();
 		this.address = new AddressDTO(user.getAddress());
+		this.version = user.getVersion();
 	}
 
 	public long getId() {
@@ -159,5 +168,13 @@ public class UserDTO {
 
 	public void setAddress(AddressDTO address) {
 		this.address = address;
+	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
 	}
 }

@@ -7,8 +7,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
 import java.util.Objects;
@@ -45,6 +47,15 @@ public class UserRole implements GrantedAuthority, Comparable<UserRole> {
 					+ "(\"UPPER_CASE_SNAKE_CASE\") and start with \"ROLE_\"!")
 	private String name;
 
+	/** REFERENCES:<br />
+	 * https://github.com/isa-asistent/Vezbe-2025/blob/main/vezbe6/Transakcije.pdf<br />
+	 * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe6/tx-optimistic-example
+	*/
+	@Version()
+	@Column(name = "version", nullable = false)
+	@Positive(message = "The version has to be positive!")
+	private int version;
+
 	public UserRole() {}
 
 	public UserRole(long id, String name) {
@@ -68,6 +79,14 @@ public class UserRole implements GrantedAuthority, Comparable<UserRole> {
 		this.name = name;
 	}
 
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
+	}
+
 	@Override()
 	public String getAuthority() {
 		return name;
@@ -88,13 +107,17 @@ public class UserRole implements GrantedAuthority, Comparable<UserRole> {
 		if (comparisonValue != 0) {
 			return comparisonValue;
 		}
+		comparisonValue = Integer.compare(version, o.version);
+		if (comparisonValue != 0) {
+			return comparisonValue;
+		}
 
 		return 0;
 	}
 
 	@Override()
 	public int hashCode() {
-		return Objects.hash(id, name);
+		return Objects.hash(id, name, version);
 	}
 
 	@Override()
@@ -109,7 +132,7 @@ public class UserRole implements GrantedAuthority, Comparable<UserRole> {
 
 		UserRole other = (UserRole) obj;
 
-		return id == other.id && Objects.equals(name, other.name);
+		return id == other.id && Objects.equals(name, other.name) && version == other.version;
 	}
 
 	@Override()
@@ -117,6 +140,7 @@ public class UserRole implements GrantedAuthority, Comparable<UserRole> {
 		StringBuilder builder = new StringBuilder("UserRole [");
 
 		builder.append("id = ").append(id).append(", name = ").append(name)
+				.append(", version = ").append(version)
 				.append("]");
 
 		return builder.toString();

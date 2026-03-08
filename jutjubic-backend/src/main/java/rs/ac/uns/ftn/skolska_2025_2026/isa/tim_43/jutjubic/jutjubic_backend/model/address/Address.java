@@ -7,8 +7,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
 import java.util.Objects;
@@ -61,6 +63,15 @@ public class Address implements Comparable<Address> {
 
 	@Column(name = "longitude", nullable = false)
 	private double longitude;
+
+	/** REFERENCES:<br />
+	 * https://github.com/isa-asistent/Vezbe-2025/blob/main/vezbe6/Transakcije.pdf<br />
+	 * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe6/tx-optimistic-example
+	*/
+	@Version()
+	@Column(name = "version", nullable = false)
+	@Positive(message = "The version has to be positive!")
+	private int version;
 
 	public Address() {}
 
@@ -140,6 +151,14 @@ public class Address implements Comparable<Address> {
 		this.longitude = longitude;
 	}
 
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
+	}
+
 	/** REFERENCE: https://www.geeksforgeeks.org/java/comparable-interface-in-java-with-examples/ */
 	@Override()
 	public int compareTo(Address o) {
@@ -179,13 +198,18 @@ public class Address implements Comparable<Address> {
 		if (comparisonValue != 0) {
 			return comparisonValue;
 		}
+		comparisonValue = Integer.compare(version, o.version);
+		if (comparisonValue != 0) {
+			return comparisonValue;
+		}
 
 		return 0;
 	}
 
 	@Override()
 	public int hashCode() {
-		return Objects.hash(id, street, number, postalCode, place, country, latitude, longitude);
+		return Objects.hash(id, street, number, postalCode, place, country, latitude, longitude, 
+				version);
 	}
 
 	@Override()
@@ -207,7 +231,8 @@ public class Address implements Comparable<Address> {
 				&& Objects.equals(place, other.place) 
 				&& Objects.equals(country, other.country) 
 				&& Double.doubleToLongBits(latitude) == Double.doubleToLongBits(other.latitude) 
-				&& Double.doubleToLongBits(longitude) == Double.doubleToLongBits(other.longitude);
+				&& Double.doubleToLongBits(longitude) == Double.doubleToLongBits(other.longitude) 
+				&& version == other.version;
 	}
 
 	@Override()
@@ -220,6 +245,7 @@ public class Address implements Comparable<Address> {
 				.append(", country = ").append(country)
 				.append(", latitude = ").append(latitude)
 				.append(", longitude = ").append(longitude)
+				.append(", version = ").append(version)
 				.append("]");
 
 		return builder.toString();

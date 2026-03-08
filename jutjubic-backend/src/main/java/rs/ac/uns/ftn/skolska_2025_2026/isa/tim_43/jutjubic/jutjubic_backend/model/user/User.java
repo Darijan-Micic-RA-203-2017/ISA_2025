@@ -13,12 +13,14 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
@@ -149,6 +151,15 @@ public class User implements UserDetails, Comparable<User> {
 	@NotNull(message = "The address has to not be null!")
 	private Address address;
 
+	/** REFERENCES:<br />
+	 * https://github.com/isa-asistent/Vezbe-2025/blob/main/vezbe6/Transakcije.pdf<br />
+	 * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe6/tx-optimistic-example
+	*/
+	@Version()
+	@Column(name = "version", nullable = false)
+	@Positive(message = "The version has to be positive!")
+	private int version;
+
 	public User() {}
 
 	public User(long id, boolean enabled, Set<UserRole> roles, String emailAddress, 
@@ -263,6 +274,14 @@ public class User implements UserDetails, Comparable<User> {
 		this.address = address;
 	}
 
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
+	}
+
 	@Override()
 	public boolean isAccountNonExpired() {
 		return true;
@@ -362,6 +381,10 @@ public class User implements UserDetails, Comparable<User> {
 		if (comparisonValue != 0) {
 			return comparisonValue;
 		}
+		comparisonValue = Integer.compare(version, o.version);
+		if (comparisonValue != 0) {
+			return comparisonValue;
+		}
 
 		return 0;
 	}
@@ -370,7 +393,7 @@ public class User implements UserDetails, Comparable<User> {
 	public int hashCode() {
 		return Objects.hash(id, enabled, roles, emailAddress, username, password, 
 				dateAndTimeOfLastPasswordChange, digestedIdentificator, firstName, lastName, 
-				address);
+				address, version);
 	}
 
 	@Override()
@@ -395,7 +418,7 @@ public class User implements UserDetails, Comparable<User> {
 				&& Objects.equals(digestedIdentificator, other.digestedIdentificator) 
 				&& Objects.equals(firstName, other.firstName) 
 				&& Objects.equals(lastName, other.lastName) 
-				&& Objects.equals(address, other.address);
+				&& Objects.equals(address, other.address) && version == other.version;
 	}
 
 	@Override()
@@ -413,6 +436,7 @@ public class User implements UserDetails, Comparable<User> {
 				.append(", firstName = ").append(firstName)
 				.append(", lastName = ").append(lastName)
 				.append(", address = ").append(address)
+				.append(", version = ").append(version)
 				.append("]");
 
 		return builder.toString();

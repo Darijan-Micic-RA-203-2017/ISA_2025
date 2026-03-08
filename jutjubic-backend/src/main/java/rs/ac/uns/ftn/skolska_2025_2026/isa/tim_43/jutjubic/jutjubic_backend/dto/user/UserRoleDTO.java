@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.user.UserRole;
@@ -23,6 +24,13 @@ public class UserRoleDTO {
 					+ "(\"UPPER_CASE_SNAKE_CASE\") and start with \"ROLE_\"!")
 	private String name;
 
+	/** REFERENCES:<br />
+	 * https://github.com/isa-asistent/Vezbe-2025/blob/main/vezbe6/Transakcije.pdf<br />
+	 * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe6/tx-optimistic-example
+	*/
+	@Positive(message = "The version has to be positive!")
+	private int version;
+
 	public UserRoleDTO() {}
 
 	public UserRoleDTO(long id, String name) {
@@ -33,6 +41,7 @@ public class UserRoleDTO {
 	public UserRoleDTO(UserRole userRole) {
 		this.id = userRole.getId();
 		this.name = userRole.getName();
+		this.version = userRole.getVersion();
 	}
 
 	public long getId() {
@@ -49,5 +58,13 @@ public class UserRoleDTO {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
 	}
 }
