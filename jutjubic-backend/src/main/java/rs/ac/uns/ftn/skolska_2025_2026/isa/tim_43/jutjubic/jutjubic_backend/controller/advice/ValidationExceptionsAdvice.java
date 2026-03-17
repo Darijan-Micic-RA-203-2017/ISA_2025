@@ -1,4 +1,4 @@
-package rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.validation;
+package rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.controller.advice;
 
 import java.util.List;
 
@@ -20,11 +20,11 @@ import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.
  * https://dev.to/eric6166/creating-custom-annotations-for-validation-in-spring-boot-16j1
 */
 @RestControllerAdvice()
-public class ValidationErrorsHandler {
-	public ValidationErrorsHandler() {}
+public class ValidationExceptionsAdvice {
+	public ValidationExceptionsAdvice() {}
 
 	@ExceptionHandler(exception = {MethodArgumentNotValidException.class})
-	public ResponseEntity<ObjectWithTextualContextDTO> handleConstraintViolationException(
+	public ResponseEntity<ObjectWithTextualContextDTO> handleMethodArgumentNotValidException(
 			MethodArgumentNotValidException mANVE) {
 		List<ObjectError> listOfErrors = mANVE.getBindingResult().getAllErrors();
 
