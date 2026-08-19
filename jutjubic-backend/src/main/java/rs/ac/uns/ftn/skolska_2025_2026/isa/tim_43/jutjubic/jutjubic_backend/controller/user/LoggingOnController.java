@@ -1,8 +1,6 @@
 package rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.controller.user;
 
-import io.github.resilience4j.ratelimiter.RequestNotPermitted;
-import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
-
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +24,7 @@ import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.user.TokenWithLifeDurationDTO;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.dto.user.UserCredentialsDTO;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.model.user.User;
+import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.utility.RateLimit;
 import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.utility.TokenUtilities;
 
 /** REFERENCES:<br />
@@ -33,7 +32,7 @@ import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.util
  * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe1/validation_example<br />
  * https://beanvalidation.org/1.0/spec/<br />
  * https://docs.spring.io/spring-framework/docs/4.1.x/spring-framework-reference/html/validation.html<br />
- * https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe5/ratelimiter-example
+ * https://medium.com/@vivekrajyaguru1993/how-i-built-a-simple-rate-limiter-in-spring-boot-using-redis-step-by-step-3b70d6dee066
 */
 @RestController()
 @RequestMapping(path = {"/log-on"}, consumes = {MediaType.APPLICATION_JSON_VALUE}, 
@@ -49,10 +48,10 @@ public class LoggingOnController {
 		this.tokenUtilities = tokenUtilities;
 	}
 
-	@RateLimiter(name = "loggingOnRateLimiter", fallbackMethod = "fallbackForLogOn")
+	@RateLimit(limit = 5, timeWindowInMilliseconds = 60000L)
 	@PostMapping(path = {""})
 	public ResponseEntity<ObjectWithTextualContextDTO> logOnWith(@Valid() @RequestBody() 
-			UserCredentialsDTO userCredentialsDTO) {
+			UserCredentialsDTO userCredentialsDTO, HttpServletRequest request) {
 		String username = userCredentialsDTO.getUsername();
 		String password = userCredentialsDTO.getPassword();
 
@@ -139,11 +138,5 @@ public class LoggingOnController {
 						new TokenWithLifeDurationDTO(token, lifeDurationOfTokenInMilliseconds), 
 						textualContext), 
 				HttpStatus.OK);
-	}
-
-	/** REFERENCE: https://github.com/isa-asistent/Vezbe-2025/tree/main/vezbe5/ratelimiter-example */
-	public ResponseEntity<ObjectWithTextualContextDTO> fallbackForLogOn(
-			RequestNotPermitted rNPE) {
-		throw rNPE;
 	}
 }

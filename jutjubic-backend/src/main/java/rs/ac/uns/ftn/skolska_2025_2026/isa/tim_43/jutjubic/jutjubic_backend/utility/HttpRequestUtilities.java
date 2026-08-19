@@ -6,9 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-/** REFERENCES:<br />
- * https://stackoverflow.com/questions/4678797/how-do-i-get-the-remote-address-of-a-client-in-servlet
-*/
+/** REFERENCE: https://stackoverflow.com/questions/4678797/how-do-i-get-the-remote-address-of-a-client-in-servlet */
 public class HttpRequestUtilities {
 	private static final List<String> requestHeadersThatCouldContainIpAddressOfUser 
 			= Arrays.asList("X-Forwarded-For", "Proxy-Client-IP", "WL-Proxy-Client-IP", 

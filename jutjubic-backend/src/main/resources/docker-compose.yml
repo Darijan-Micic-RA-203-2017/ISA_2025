@@ -1,0 +1,42 @@
+# REFERENCE: https://sliplane.io/blog/setting-up-redis-with-docker-compose
+# REFERENCE: https://hub.docker.com/_/redis
+# REFERENCE: https://stackoverflow.com/questions/70807705/how-to-use-redis-username-with-password-in-docker-compose
+# REFERENCE: https://oneuptime.com/blog/post/2026-01-21-redis-docker-compose/view
+# REFERENCE: https://docs.docker.com/compose/gettingstarted/
+# REFERENCE: https://docs.docker.com/reference/compose-file/
+# REFERENCE: https://docs.docker.com/reference/compose-file/build/
+
+# REFERENCE: https://docs.docker.com/compose/how-tos/project-name/
+name: jutjubic
+
+# REFERENCE: https://docs.docker.com/reference/compose-file/services/
+services:
+  rate_limiter_db_for_jutjubic:
+# REFERENCE: https://www.dash0.com/faq/how-to-set-the-image-name-in-a-dockerfile
+    container_name: rate_limiter_db_for_jutjubic
+    image: rate_limiter_db_for_jutjubic
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: always
+    ports:
+      - "6379:6379"
+# Ensures that Redis is run by the owner of the "dump.rdb" file.
+    user: "redis:redis"
+    environment:
+      - PASSWORD_FOR_REDIS_DB=${PASSWORD_FOR_REDIS_DB}
+# REFERENCE: https://oneuptime.com/blog/post/2026-01-25-redis-noauth-authentication-error/view
+# REFERENCE: https://oneuptime.com/blog/post/2026-01-25-fix-redis-authentication-failed-errors/view
+# If there has been at least one write operation, a snapshot of the data is saved to the Redis
+# database every 10 minutes. Only the messages that are classified as low on the severity list as
+# warnings are logged.
+# Accessing the Redis database requires the password specified in the environment file.
+    command: redis-server --save 10 1 --loglevel warning --requirepass ${PASSWORD_FOR_REDIS_DB}
+    volumes:
+      - data_of_rate_limiter_db_for_jutjubic:/data
+
+# REFERENCE: https://docs.docker.com/reference/compose-file/volumes/
+volumes:
+  data_of_rate_limiter_db_for_jutjubic:
+    name: data_of_rate_limiter_db_for_jutjubic
+    driver: local

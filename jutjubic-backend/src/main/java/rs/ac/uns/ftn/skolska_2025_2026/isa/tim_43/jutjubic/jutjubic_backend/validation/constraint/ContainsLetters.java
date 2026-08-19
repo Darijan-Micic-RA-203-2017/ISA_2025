@@ -17,7 +17,7 @@ import rs.ac.uns.ftn.skolska_2025_2026.isa.tim_43.jutjubic.jutjubic_backend.vali
 */
 @Target(value = {ElementType.FIELD})
 @Retention(value = RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = ContainsLettersValidator.class)
+@Constraint(validatedBy = {ContainsLettersValidator.class})
 public @interface ContainsLetters {
 	int minLetters() default 0;
 	int maxLetters() default 0;
